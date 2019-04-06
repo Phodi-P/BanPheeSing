@@ -29,5 +29,11 @@
     <ClInclude Include="custom_utility.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="object_spawn.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

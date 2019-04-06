@@ -1,22 +1,15 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <SFML/Graphics.hpp>
-#include "custom_utility.h"
+#include "object.h"
 
-class Player
+class Player : public Obj
 {
 public:
-	Player(std::string);
-
-	void setPos(float, float);
-	sf::Vector2f getPos();
-
-	void draw(sf::RenderWindow &);
+	Player(std::string, std::vector<Obj*> *);
 	void control(bool, bool, bool, bool);
-private:
-	sf::Sprite obj;
+
+
+protected:
 	sf::Texture t;
 
 	std::string name = "A";
@@ -24,28 +17,10 @@ private:
 	float speed = 5.0f;
 };
 
-Player::Player(std::string ImgDir = " ")
+Player::Player(std::string ImgDir, std::vector<Obj*> *ObjListInput)
 {
-	if (!t.loadFromFile(ImgDir))
-	{
-		std::cerr << "Error: Cannot find player's texture\n";
-	}
-	obj.setTexture(t);
-}
-
-void Player::setPos(float x, float y)
-{
-	obj.setPosition(sf::Vector2f(x, y));
-}
-
-sf::Vector2f Player::getPos()
-{
-	return obj.getPosition();
-}
-
-void Player::draw(sf::RenderWindow &window)
-{
-	window.draw(obj);
+	pushToVector(ObjListInput);
+	setTexture(ImgDir);
 }
 
 void Player::control(bool Right, bool Left, bool Down, bool Up)
