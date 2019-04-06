@@ -6,9 +6,9 @@ const int WindowHeight = 1080;
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "SFML works!");
-	//sf::CircleShape shape(100.f); //Example shape
-	//shape.setFillColor(sf::Color::Green); //Example shape
+	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
+	sf::CircleShape shape(10.f); //Example shape
+	shape.setFillColor(sf::Color::Green); //Example shape
 
 	while (window.isOpen())
 	{
@@ -20,16 +20,15 @@ int main()
 			case sf::Event::Closed:
 				window.close();
 				break;
-			case sf::Event::TextEntered:
-				window.setTitle("Some texts are entered");
-				break;
 			case sf::Event::KeyPressed:
+				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				break;
 			}
 		}
 
+
 		window.clear();
-		//window.draw(shape); //Example shape
+		window.draw(shape); //Example shape
 		window.display();
 	}
 
