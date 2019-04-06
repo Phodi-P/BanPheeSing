@@ -1,4 +1,8 @@
+
+#include <iostream>
 #include <SFML/Graphics.hpp>
+
+#include "player.h"
 
 //Settings
 const int WindowWidth = 1920;
@@ -7,8 +11,10 @@ const int WindowHeight = 1080;
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
+	/*
 	sf::CircleShape shape(10.f); //Example shape
-	shape.setFillColor(sf::Color::Green); //Example shape
+	shape.setFillColor(sf::Color::Green); //Example shape*/
+	Player Player;
 
 
 	while (window.isOpen())
@@ -27,12 +33,11 @@ int main()
 			}
 		}
 
-		float xMovement = float(sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A));
-		float yMovement = float(sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W));
-		shape.move(sf::Vector2f(xMovement,yMovement));
+		Player.control(sf::Keyboard::isKeyPressed(sf::Keyboard::D), sf::Keyboard::isKeyPressed(sf::Keyboard::A), sf::Keyboard::isKeyPressed(sf::Keyboard::S), sf::Keyboard::isKeyPressed(sf::Keyboard::W));
 
 		window.clear();
-		window.draw(shape); //Example shape
+		//window.draw(shape); //Example shape
+		Player.draw(window);
 		window.display();
 	}
 
