@@ -17,7 +17,7 @@ protected:
 	float speed = 5.0f;
 };
 
-Player::Player(std::string ImgDir, std::vector<Obj*> *ObjListInput)
+Player::Player(std::string ImgDir, std::vector<Obj*> *ObjListInput) //Problem with vector list
 {
 	pushToVector(ObjListInput);
 	setTexture(ImgDir);
