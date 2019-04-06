@@ -10,6 +10,7 @@ int main()
 	sf::CircleShape shape(10.f); //Example shape
 	shape.setFillColor(sf::Color::Green); //Example shape
 
+
 	while (window.isOpen())
 	{
 		sf::Event evnt;
@@ -26,6 +27,9 @@ int main()
 			}
 		}
 
+		float xMovement = float(sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A));
+		float yMovement = float(sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W));
+		shape.move(sf::Vector2f(xMovement,yMovement));
 
 		window.clear();
 		window.draw(shape); //Example shape
