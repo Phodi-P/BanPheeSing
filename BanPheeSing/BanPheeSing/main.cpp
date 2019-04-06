@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "custom_utility.h"
+#include "custom_utility.h" //Add some frequently used utility functions here
 
 #include "player.h"
 #include "npc.h"
@@ -14,10 +14,9 @@ const int WindowHeight = 1080;
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
-	/*
-	sf::CircleShape shape(10.f); //Example shape
-	shape.setFillColor(sf::Color::Green); //Example shape*/
-	Player Player;
+
+	//Create Objects here
+	Player Player("gurumaa.jpg");
 	Npc Npc1(20,0,10,"B");
 
 
@@ -37,13 +36,21 @@ int main()
 			}
 		}
 
-		Player.control(sf::Keyboard::isKeyPressed(sf::Keyboard::D), sf::Keyboard::isKeyPressed(sf::Keyboard::A), sf::Keyboard::isKeyPressed(sf::Keyboard::S), sf::Keyboard::isKeyPressed(sf::Keyboard::W));
-		Npc1.moveTo(sf::Vector2f(600.0f, 600.0f));
+		//Player controls
+		bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+		bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+		bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+		bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+
+		Player.control(Right, Left, Down, Up);
+		
+		Npc1.moveTo(sf::Vector2f(700.0f, 700.0f));
 
 		window.clear();
-		//window.draw(shape); //Example shape
+
 		Player.draw(window);
 		Npc1.draw(window);
+
 		window.display();
 	}
 

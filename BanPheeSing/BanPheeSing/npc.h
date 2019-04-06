@@ -18,7 +18,7 @@ public:
 	void draw(sf::RenderWindow &);
 private:
 	sf::CircleShape obj;
-	CUt CUt;
+	//CUt CUt;
 
 	std::string name;
 	float speed = 5.0f;
@@ -49,8 +49,11 @@ void Npc::draw(sf::RenderWindow &window)
 
 void Npc::moveTo(sf::Vector2f dest)
 {
-	float xMovement = float(CUt.sign(dest.x-getPos().x));
-	float yMovement = float(CUt.sign(dest.y - getPos().y));
+	//float xMovement = float(CUt.sign(dest.x-getPos().x));
+	//float yMovement = float(CUt.sign(dest.y - getPos().y));
+
+	float xMovement = float(CUt::sign(dest.x-getPos().x));
+	float yMovement = float(CUt::sign(dest.y - getPos().y));
 
 	obj.move(sf::Vector2f(xMovement*speed, yMovement*speed));
 }

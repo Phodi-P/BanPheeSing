@@ -8,23 +8,29 @@
 class Player
 {
 public:
-	Player(float, float, float);
+	Player(std::string);
+
 	void setPos(float, float);
 	sf::Vector2f getPos();
+
 	void draw(sf::RenderWindow &);
 	void control(bool, bool, bool, bool);
 private:
-	sf::CircleShape obj;
+	sf::Sprite obj;
+	sf::Texture t;
 
 	std::string name = "A";
+
 	float speed = 5.0f;
 };
 
-Player::Player(float InitX = 0.0f, float InitY = 0.0f, float InitR = 10.0f)
+Player::Player(std::string ImgDir = " ")
 {
-	obj.setRadius(InitR);
-	obj.setFillColor(sf::Color::Green);
-	obj.setPosition(sf::Vector2f(InitX, InitY));
+	if (!t.loadFromFile(ImgDir))
+	{
+		std::cerr << "Error: Cannot find player's texture\n";
+	}
+	obj.setTexture(t);
 }
 
 void Player::setPos(float x, float y)
