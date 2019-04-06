@@ -23,5 +23,11 @@
     <ClInclude Include="player.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="npc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="custom_utility.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
