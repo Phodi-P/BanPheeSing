@@ -18,7 +18,10 @@ public:
 	void setPos(sf::Vector2f);
 	sf::Vector2f getPos();
 
-	void setTexture(std::string);
+	sf::Sprite getObj();
+
+	void setTexture(std::string, sf::IntRect);
+	void setScale(float, float);
 
 	void moveTo(sf::Vector2f);
 
@@ -29,6 +32,10 @@ protected:
 
 	float speed = 1.0f;
 	int id;
+	bool isMoving = false;
+
+	float scaleX = 1.0f;
+	float scaleY = 1.0f;
 
 	sf::Sprite obj;
 	sf::Texture texture;
@@ -41,17 +48,9 @@ Obj::Obj()
 	//Default
 }
 
-void Obj::pushToVector(std::vector<Obj*> *inputList)
+sf::Sprite Obj::getObj()
 {
-	ObjList = inputList;
-	if (ObjList != NULL)
-	{
-		//Store object pointer to global vector
-		(*ObjList).push_back(this);
-
-		//Save object index
-		id = (*ObjList).size() - 1;
-	}
+	return obj;
 }
 
 Obj::~Obj()
@@ -76,19 +75,35 @@ void Obj::draw(sf::RenderWindow &window)
 
 void Obj::moveTo(sf::Vector2f dest)
 {
-	float xMovement = float(CUt::sign(dest.x - getPos().x));
-	float yMovement = float(CUt::sign(dest.y - getPos().y));
+	if (dest != getPos())
+	{
+		isMoving = true;
 
-	obj.move(sf::Vector2f(xMovement*speed, yMovement*speed));
+		float xMovement = float(CUt::sign(dest.x - getPos().x));
+		float yMovement = float(CUt::sign(dest.y - getPos().y));
+
+		obj.move(sf::Vector2f(xMovement*speed, yMovement*speed));
+	}
+	if (dest == getPos())
+	{
+		isMoving = false;
+	}
 }
 
-void Obj::setTexture(std::string ImgDir)
+void Obj::setScale(float x, float y)
 {
-	if (!texture.loadFromFile(ImgDir))
+	scaleX = x;
+	scaleY = y;
+}
+
+void Obj::setTexture(std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,0))
+{
+	if (!texture.loadFromFile(ImgDir, rect))
 	{
 		std::cerr << "Error: Cannot find player's texture\n";
 
 		texture.loadFromFile(".\\textures\\missing_error.png");
 	}
 	obj.setTexture(texture);
+	obj.setScale(scaleX, scaleY);
 }
