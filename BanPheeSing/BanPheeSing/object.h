@@ -21,7 +21,7 @@ public:
 
 	void setupAnim(std::string, int , int , int , int);
 	int animate(int, int);
-	void setTexture(std::string, sf::IntRect);
+	void setMyTexture(sf::Texture &, std::string, sf::IntRect);
 	void setScale(float, float);
 
 	void moveTo(sf::Vector2f);
@@ -46,7 +46,7 @@ protected:
 
 	//Sprite sheet animation details
 	bool isAnimated = false;
-	sf::Texture t;
+	sf::Texture spriteSheet;
 	std::string ImgDir;
 	sf::Clock animationClock;
 	int frameWidth = 32;
@@ -54,6 +54,7 @@ protected:
 	int frameRows = 1;
 	int frameColumns = 1;
 	int curFrame = 0;
+
 
 };
 
@@ -116,15 +117,27 @@ void Obj::setScale(float x, float y)
 	scaleY = y;
 }
 
-void Obj::setTexture(std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,0))
+void Obj::setMyTexture(sf::Texture &TarTexture, std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,0))
 {
-	if (!texture.loadFromFile(ImgDir, rect))
+	if (!isAnimated)
 	{
-		std::cerr << "Error: Cannot find player's texture\n";
+		if (!TarTexture.loadFromFile(ImgDir))
+		{
+			std::cerr << "Error: Cannot find player's texture\n";
 
-		texture.loadFromFile(".\\textures\\missing_error.png");
+			TarTexture.loadFromFile(".\\textures\\missing_error.png");
+		}
 	}
-	obj.setTexture(texture);
+	if(isAnimated)
+	{
+		if (!TarTexture.loadFromFile(ImgDir, rect))
+		{
+			std::cerr << "Error: Cannot find player's texture\n";
+
+			TarTexture.loadFromFile(".\\textures\\missing_error.png");
+		}
+	}
+	obj.setTexture(TarTexture);
 	obj.setScale(scaleX, scaleY);
 }
 
@@ -139,7 +152,7 @@ void Obj::setupAnim(std::string ImgDirI, int frameIWidth, int frameIHeight, int 
 
 	ImgDir = ImgDirI;
 
-	setTexture(ImgDir, sf::IntRect(0, 0, frameWidth, frameHeight));
+	setMyTexture(spriteSheet,ImgDir, sf::IntRect(0, 0, frameWidth, frameHeight));
 }
 
 int Obj::animate(int setFrame = -1, int fps = 1)
@@ -166,7 +179,7 @@ int Obj::animate(int setFrame = -1, int fps = 1)
 
 		rect = sf::IntRect(frameWidth*tarCol, frameHeight*tarRow, (frameWidth*tarCol) + frameWidth, (frameHeight*tarRow) + frameHeight);
 
-		setTexture(ImgDir, rect);
+		setMyTexture(spriteSheet,ImgDir, rect);
 
 		return curFrame;
 	}

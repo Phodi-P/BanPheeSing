@@ -13,11 +13,13 @@ private:
 	float speed = 5.0f;
 };
 
-Npc::Npc(sf::Vector2f pos, std::string ImgDir, std::string n = "NPC")
+Npc::Npc(sf::Vector2f pos, std::string ImgIDir, std::string n = "NPC")
 {
 	name = n;
-	setTexture(ImgDir);
 	setPos(pos);
+	ImgDir = ImgIDir;
+
+	setMyTexture(texture,ImgDir);
 }
 
 int Npc::walkingAnimate(int fps = 6)

@@ -16,6 +16,7 @@ const int WindowHeight = 1080/1;
 //Global Variables
 std::vector<Obj*> allObjPtr;
 
+
 int main()
 	{
 	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
@@ -24,9 +25,10 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\red_sprite.png", "B");
+	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\green_sprite.png", "B");
 	Npc1.setScale(4.0f, 4.0f);
-	Npc1.setupAnim(".\\textures\\red_sprite.png", 32, 32, 4, 3);
+	Npc1.setupAnim(".\\textures\\green_sprite.png", 32, 32, 4, 3);
+	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 
 	sf::Clock clock;
@@ -52,6 +54,9 @@ int main()
 				if (evnt.key.code == sf::Keyboard::S) Player.animate(0, 0);
 				*/
 				break;
+			case sf::Event::MouseButtonPressed:
+				NPCTarget = sf::Vector2f(sf::Mouse::getPosition());
+				break;
 			}
 		}
 
@@ -65,7 +70,7 @@ int main()
 		Player.control(Right, Left, Down, Up, Sprint);
 		Player.walkingAnimate(Right-Left,Down-Up,6);
 		//NPC test
-		Npc1.moveTo(sf::Vector2f(900.0f, 700.0f));
+		Npc1.moveTo(NPCTarget);
 		Npc1.walkingAnimate();
 
 
