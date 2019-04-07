@@ -29,8 +29,22 @@ protected:
 	int curFrame = 0;
 	*/
 
+	//Game Mechanics
+
 	float speed = 1.5f;
 	float sprintSpeed = 4.0f;
+
+	sf::Clock staminaClock;
+
+	bool canSprint = true; 
+
+	float maxStamina = 100.0f; //[Editable]
+	float minStamina = 50.0f; //[Editable]
+	float curStamina = maxStamina;
+
+	float staminaRegenRate = 7.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
+	float staminaDrainRate = 30.5f; //[Editable]
+
 };
 
 Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frameIRows = 1, int frameIColumns = 1) //Problem with vector list
@@ -47,35 +61,6 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 	setTexture(ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
 }
 
-/*
-//***[Note] This function will advance the animation forward if the input is -1(Default) and set to specific frame when input is not -1 [Note]***
-int Player::animate(int setFrame = -1, int fps = 1)
-{
-	sf::IntRect rect;
-	if (setFrame != -1)
-	{
-		curFrame = setFrame;
-	}
-	else if(setFrame == -1)
-	{
-		if (fps > 0 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
-		{
-			animationClock.restart();
-			curFrame++;
-		}
-		curFrame++;
-		if (curFrame > (frameColumns*frameRows) - 1) curFrame = 0;
-	}
-	int tarRow = std::ceil(curFrame / frameColumns);
-	int tarCol = (curFrame % frameColumns);
-
-	rect = sf::IntRect(frameWidth*tarCol, frameHeight*tarRow, (frameWidth*tarCol) + frameWidth, (frameHeight*tarRow) + frameHeight);
-
-	setTexture(ImgDir, rect);
-
-	return curFrame;
-}
-*/
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
 int Player::walkingAnimate(int DirX = 0, int DirY = 0, int fps = 4)
 {
@@ -123,8 +108,34 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 	float yMovement = float(Down - Up);
 
 	float spd;
-	if (Sprint) spd = sprintSpeed;
-	else spd = speed;
+	if (!canSprint && curStamina >= minStamina)
+	{
+		canSprint = true;
+	}
+	if (Sprint && canSprint)
+	{
+		spd = sprintSpeed;
+		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
+		{
+			staminaClock.restart();
+			curStamina--;
+			if (curStamina <= 0)
+			{
+				curStamina = 0;
+				canSprint = false;
+			}
+		}
+	}
+	else
+	{
+		spd = speed;
+		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaRegenRate)
+		{
+			staminaClock.restart();
+			curStamina++;
+			if (curStamina > maxStamina) curStamina = maxStamina;
+		}
+	}
 
 	if(xMovement != 0 && yMovement != 0) obj.move(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
 	else obj.move(sf::Vector2f(xMovement*spd, yMovement*spd));

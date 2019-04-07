@@ -66,7 +66,7 @@ int main()
 		Player.walkingAnimate(Right-Left,Down-Up,6);
 		//NPC test
 		Npc1.moveTo(sf::Vector2f(900.0f, 700.0f));
-		//Npc1.walkingAnimate();
+		Npc1.walkingAnimate();
 
 
 
