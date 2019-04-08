@@ -58,7 +58,7 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 
 	ImgDir = ImgDirI;
 
-	setMyTexture(spriteSheet,ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
+	setMyTexture(ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
 }
 
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***

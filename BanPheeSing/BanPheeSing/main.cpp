@@ -25,9 +25,8 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\green_sprite.png", "B");
+	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\green_sprite.png",32 ,32 ,4 ,3 , "B");
 	Npc1.setScale(4.0f, 4.0f);
-	Npc1.setupAnim(".\\textures\\green_sprite.png", 32, 32, 4, 3);
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 
