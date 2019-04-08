@@ -21,7 +21,7 @@ public:
 
 	void setupAnim(std::string, int , int , int , int);
 	int animate(int, int);
-	void setMyTexture(sf::Texture &, std::string, sf::IntRect);
+	void setMyTexture(std::string, sf::IntRect);
 	void setScale(float, float);
 
 	void moveTo(sf::Vector2f);
@@ -46,7 +46,6 @@ protected:
 
 	//Sprite sheet animation details
 	bool isAnimated = false;
-	sf::Texture spriteSheet;
 	std::string ImgDir;
 	sf::Clock animationClock;
 	int frameWidth = 32;
@@ -117,30 +116,31 @@ void Obj::setScale(float x, float y)
 	scaleY = y;
 }
 
-void Obj::setMyTexture(sf::Texture &TarTexture, std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,0))
+void Obj::setMyTexture(std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,0))
 {
 	if (!isAnimated)
 	{
-		if (!TarTexture.loadFromFile(ImgDir))
+		if (!texture.loadFromFile(ImgDir))
 		{
 			std::cerr << "Error: Cannot find player's texture\n";
 
-			TarTexture.loadFromFile(".\\textures\\missing_error.png");
+			texture.loadFromFile(".\\textures\\missing_error.png");
 		}
 	}
 	if(isAnimated)
 	{
-		if (!TarTexture.loadFromFile(ImgDir, rect))
+		if (!texture.loadFromFile(ImgDir, rect))
 		{
 			std::cerr << "Error: Cannot find player's texture\n";
 
-			TarTexture.loadFromFile(".\\textures\\missing_error.png");
+			texture.loadFromFile(".\\textures\\missing_error.png");
 		}
 	}
-	obj.setTexture(TarTexture);
+	obj.setTexture(texture);
 	obj.setScale(scaleX, scaleY);
 }
 
+//***[Note] If you want to make animated object **Do not set texture before using this function or it will result in werid animation [Note]***
 void Obj::setupAnim(std::string ImgDirI, int frameIWidth, int frameIHeight, int frameIRows = 1, int frameIColumns = 1)
 {
 	isAnimated = true;
@@ -152,7 +152,7 @@ void Obj::setupAnim(std::string ImgDirI, int frameIWidth, int frameIHeight, int 
 
 	ImgDir = ImgDirI;
 
-	setMyTexture(spriteSheet,ImgDir, sf::IntRect(0, 0, frameWidth, frameHeight));
+	setMyTexture(ImgDir, sf::IntRect(0, 0, frameWidth, frameHeight));
 }
 
 int Obj::animate(int setFrame = -1, int fps = 1)
@@ -179,7 +179,7 @@ int Obj::animate(int setFrame = -1, int fps = 1)
 
 		rect = sf::IntRect(frameWidth*tarCol, frameHeight*tarRow, (frameWidth*tarCol) + frameWidth, (frameHeight*tarRow) + frameHeight);
 
-		setMyTexture(spriteSheet,ImgDir, rect);
+		setMyTexture(ImgDir, rect);
 
 		return curFrame;
 	}
