@@ -17,17 +17,6 @@ protected:
 
 	std::string name = "A";
 
-	//Sprite sheet animation details
-	/*
-	sf::Texture t;
-	std::string ImgDir;
-	sf::Clock animationClock;
-	int frameWidth = 32;
-	int frameHeight = 32;
-	int frameRows = 1;
-	int frameColumns = 1;
-	int curFrame = 0;
-	*/
 
 	//Game Mechanics
 
@@ -137,8 +126,8 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		}
 	}
 
-	if(xMovement != 0 && yMovement != 0) obj.move(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
-	else obj.move(sf::Vector2f(xMovement*spd, yMovement*spd));
+	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
+	else moveDir(sf::Vector2f(xMovement*spd, yMovement*spd));
 
 	
 }
