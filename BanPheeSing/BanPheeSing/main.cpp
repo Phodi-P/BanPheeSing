@@ -7,6 +7,7 @@
 
 #include "player.h"
 #include "npc.h"
+#include "text_box.h"
 
 //Settings
 const int WindowWidth = 1920/1;
@@ -38,13 +39,9 @@ int main()
 		std::cerr << "ERROR: Cannot load font\n";
 	}
 
-	sf::Text text;
+	TextBox testText("à¨ÁÊì", "ÊÇÑÊ´Õ!!! ªÒÇâÅ¡¡¡¡", ".\\textures\\some_pic.png", mainFont);
+	//TextBox testText("James", "Hello World!!!", ".\\textures\\some_pic.png", mainFont);
 
-	text.setFont(mainFont); // font is a sf::Font
-	text.setString(L"ÊÇÑÊ´Õ ªÒÇâÅ¡");
-	text.setCharacterSize(24); // in pixels, not points!
-	text.setFillColor(sf::Color::Red);
-	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 
 
@@ -90,7 +87,7 @@ int main()
 
 		Player.draw(window);
 		Npc1.draw(window);
-		window.draw(text);
+		testText.draw(window);
 
 		window.display();
 	}

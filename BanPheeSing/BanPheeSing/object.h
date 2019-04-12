@@ -128,6 +128,8 @@ bool Obj::moveTo(sf::Vector2f dest)
 		if ((std::abs(dest.x - getPos().x) <= 1) && (std::abs(dest.y - getPos().y) <= 1))
 		{
 			setPos(dest); //Stop when distanct to target is 1
+			tempX = 0;
+			tempY = 0;
 		}
 
 		float xMovement = float(CUt::sign(dest.x - getPos().x));
@@ -140,6 +142,8 @@ bool Obj::moveTo(sf::Vector2f dest)
 	if (dest == getPos())
 	{
 		isMoving = false;
+		tempX = 0;
+		tempY = 0;
 		return true; //Return true when destination is reached
 	}
 
