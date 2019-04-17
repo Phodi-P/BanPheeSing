@@ -7,6 +7,7 @@
 
 #include "player.h"
 #include "npc.h"
+#include "text_box.h"
 
 //Settings
 const int WindowWidth = 1920/1;
@@ -21,6 +22,7 @@ int main()
 	{
 	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	//sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha");
+
 	//Create Objects here
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
@@ -30,10 +32,27 @@ int main()
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 
+	//Font loading
+	sf::Font mainFont;
+	if (!mainFont.loadFromFile(".\\fonts\\PrintAble4U Regular.ttf"))
+	{
+		std::cerr << "ERROR: Cannot load font\n";
+	}
+
+	TextBox testText;
+	testText.setFont(mainFont);
+	testText.setStrings("Claudette Morel", "Oh shit!!\nHe saw me.");
+	testText.setImg(".\\textures\\test_portrait.png");
+	testText.setColor(sf::Color::Magenta);
+	testText.isDisplay = true;
+
+
+
 	sf::Clock clock;
 
 	while (window.isOpen())
 	{
+		testText.checkContinue();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -44,17 +63,10 @@ int main()
 				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
-
-				//Imediatly change player sprite dir when press control buttons 
-				/*
-				if (evnt.key.code == sf::Keyboard::D) Player.animate(6, 0);
-				if (evnt.key.code == sf::Keyboard::A) Player.animate(3, 0);
-				if (evnt.key.code == sf::Keyboard::W) Player.animate(9, 0);
-				if (evnt.key.code == sf::Keyboard::S) Player.animate(0, 0);
-				*/
 				break;
 			case sf::Event::MouseButtonPressed:
-				NPCTarget = sf::Vector2f(sf::Mouse::getPosition());
+				NPCTarget = sf::Vector2f(sf::Mouse::getPosition(window));
+				Npc1.vec_moveToQueue.push_back(NPCTarget);
 				break;
 			}
 		}
@@ -67,9 +79,9 @@ int main()
 		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
 		Player.control(Right, Left, Down, Up, Sprint);
-		Player.walkingAnimate(Right-Left,Down-Up,6);
+		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 		//NPC test
-		Npc1.moveTo(NPCTarget);
+		Npc1.moveToQueue();
 		Npc1.walkingAnimate();
 
 
@@ -79,6 +91,7 @@ int main()
 
 		Player.draw(window);
 		Npc1.draw(window);
+		testText.draw(window);
 
 		window.display();
 	}
