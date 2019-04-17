@@ -8,6 +8,7 @@
 #include "player.h"
 #include "npc.h"
 #include "text_box.h"
+#include "tilemap.h"
 
 //Settings
 const int WindowWidth = 1920/1;
@@ -27,7 +28,7 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\green_sprite.png",32 ,32 ,4 ,3 , "B");
+	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\koy_sprite.png",32 ,32 ,4 ,3 , "B");
 	Npc1.setScale(4.0f, 4.0f);
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
@@ -46,7 +47,21 @@ int main()
 	testText.setColor(sf::Color::Magenta);
 	testText.isDisplay = true;
 
+	// define the level with an array of tile indices
+	const int level[] =
+	{
+		0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
+		1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
+		0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
+		0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
+		0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
+		2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
+		0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
+	};
 
+	TileMap map;
+	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
 
 	sf::Clock clock;
 
@@ -89,6 +104,7 @@ int main()
 		//Rendering
 		window.clear();
 
+		window.draw(map);
 		Player.draw(window);
 		Npc1.draw(window);
 		testText.draw(window);

@@ -35,5 +35,8 @@
     <ClInclude Include="text_box.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="tilemap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
