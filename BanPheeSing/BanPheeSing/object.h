@@ -137,17 +137,18 @@ bool Obj::moveTo(sf::Vector2f dest)
 
 		tempX = xMovement * speed;
 		tempY = yMovement * speed;
-
+		moveDir(sf::Vector2f(tempX*((tempX != 0 && tempY != 0) ? 0.707 : 1), tempY));
 	}
 	if (dest == getPos())
 	{
 		isMoving = false;
 		tempX = 0;
 		tempY = 0;
+		moveDir(sf::Vector2f(0, 0));
 		return true; //Return true when destination is reached
 	}
 
-	moveDir(sf::Vector2f(tempX*((tempX!=0 && tempY != 0)?0.707:1), tempY));
+	
 
 	return false; //Return false when destination is not reached
 }

@@ -12,6 +12,8 @@ public:
 	int walkingAnimate(int, int, int);
 	int getCurrentFrame();
 
+	bool isSprinting = false;
+
 
 protected:
 
@@ -107,10 +109,12 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
 		{
 			staminaClock.restart();
-			curStamina--;
+			isSprinting = true;
+			if(xMovement != 0 || yMovement != 0) curStamina--;
 			if (curStamina <= 0)
 			{
 				curStamina = 0;
+				isSprinting = false;
 				canSprint = false;
 			}
 		}

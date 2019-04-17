@@ -39,9 +39,12 @@ int main()
 		std::cerr << "ERROR: Cannot load font\n";
 	}
 
-	TextBox testText("à¨ÁÊì", "ÊÇÑÊ´Õ!!! ªÒÇâÅ¡¡¡¡", ".\\textures\\some_pic.png", mainFont);
-	//TextBox testText("James", "Hello World!!!", ".\\textures\\some_pic.png", mainFont);
-
+	TextBox testText;
+	testText.setFont(mainFont);
+	testText.setStrings("Claudette Morel", "Oh shit!!\nHe saw me.");
+	testText.setImg(".\\textures\\test_portrait.png");
+	testText.setColor(sf::Color::Magenta);
+	testText.isDisplay = true;
 
 
 
@@ -49,6 +52,7 @@ int main()
 
 	while (window.isOpen())
 	{
+		testText.checkContinue();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -75,7 +79,7 @@ int main()
 		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
 		Player.control(Right, Left, Down, Up, Sprint);
-		Player.walkingAnimate(Right-Left,Down-Up,6);
+		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 		//NPC test
 		Npc1.moveToQueue();
 		Npc1.walkingAnimate();
