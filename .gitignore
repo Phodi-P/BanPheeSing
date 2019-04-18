@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /BanPheeSing/BanPheeSing/textures/working
+/BanPheeSing/minimal_test
