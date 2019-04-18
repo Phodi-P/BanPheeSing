@@ -5,7 +5,7 @@
 class Npc : public Obj
 {
 public:
-	Npc(sf::Vector2f, std::string, std::string);
+	Npc(sf::Vector2f, std::string, int, int, int, int, std::string);
 	int walkingAnimate(int);
 private:
 
@@ -13,13 +13,13 @@ private:
 	float speed = 5.0f;
 };
 
-Npc::Npc(sf::Vector2f pos, std::string ImgIDir, std::string n = "NPC")
+Npc::Npc(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int frameRow , int frameCol, std::string n = "NPC")
 {
 	name = n;
 	setPos(pos);
 	ImgDir = ImgIDir;
 
-	setMyTexture(texture,ImgDir);
+	setupAnim(ImgIDir, frameW, frameH, frameRow, frameCol);
 }
 
 int Npc::walkingAnimate(int fps = 6)

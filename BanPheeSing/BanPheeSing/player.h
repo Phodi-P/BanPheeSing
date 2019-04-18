@@ -12,22 +12,13 @@ public:
 	int walkingAnimate(int, int, int);
 	int getCurrentFrame();
 
+	bool isSprinting = false;
+
 
 protected:
 
 	std::string name = "A";
 
-	//Sprite sheet animation details
-	/*
-	sf::Texture t;
-	std::string ImgDir;
-	sf::Clock animationClock;
-	int frameWidth = 32;
-	int frameHeight = 32;
-	int frameRows = 1;
-	int frameColumns = 1;
-	int curFrame = 0;
-	*/
 
 	//Game Mechanics
 
@@ -58,7 +49,7 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 
 	ImgDir = ImgDirI;
 
-	setMyTexture(spriteSheet,ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
+	setMyTexture(ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
 }
 
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
@@ -118,10 +109,12 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
 		{
 			staminaClock.restart();
-			curStamina--;
+			isSprinting = true;
+			if(xMovement != 0 || yMovement != 0) curStamina--;
 			if (curStamina <= 0)
 			{
 				curStamina = 0;
+				isSprinting = false;
 				canSprint = false;
 			}
 		}
@@ -137,8 +130,8 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		}
 	}
 
-	if(xMovement != 0 && yMovement != 0) obj.move(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
-	else obj.move(sf::Vector2f(xMovement*spd, yMovement*spd));
+	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
+	else moveDir(sf::Vector2f(xMovement*spd, yMovement*spd));
 
 	
 }
