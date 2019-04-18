@@ -158,12 +158,10 @@ void TextBox::calculateString()
 		displayString += inputString[i];
 		text.setString(displayString);
 		curLineCount++;
-		std::cout << curLineCount << "\n";
 		if (curLineCount >= textPerLine)
 		{
 			curLineCount = 0;
 			displayString += '\n';
-			std::cout << "Newline\n";
 		}
 	}
 }

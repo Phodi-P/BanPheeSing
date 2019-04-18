@@ -79,6 +79,7 @@ int main()
 	while (window.isOpen())
 	{
 		testText.checkContinue();
+		float deltaTime = clock.getElapsedTime().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -109,7 +110,7 @@ int main()
 		bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-		Player.control(Right, Left, Down, Up, Sprint);
+		Player.control(Right, Left, Down, Up, Sprint, deltaTime);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -123,7 +124,7 @@ int main()
 
 		testText.updatePosition();
 
-		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds()));
+		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+"\ndeltaTime: "+std::to_string(deltaTime));
 		FPS.setPosition(getViewOffset(view));
 		clock.restart();
 
@@ -135,6 +136,7 @@ int main()
 		Player.draw(window);
 		Ghost.draw(window);
 		testText.draw(window);
+		Ghost.drawDist(window);
 
 		window.draw(FPS);
 

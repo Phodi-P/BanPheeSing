@@ -20,6 +20,7 @@ public:
 
 	void setupStatic(std::string);
 	void setupAnim(std::string, int , int , int , int);
+	void setVisibility(bool);
 
 	int animate(int, int);
 
@@ -45,6 +46,7 @@ public:
 protected:
 	//Variables
 	bool isInitialized = false;
+	bool isVisible = true;
 	sf::RectangleShape obj;
 	sf::Texture texture;
 
@@ -62,6 +64,7 @@ protected:
 
 	float xSpeed = 0;
 	float ySpeed = 0;
+
 
 
 	//Sprite sheet animation details
@@ -105,6 +108,11 @@ void Obj::setPos(sf::Vector2f pos)
 	obj.setPosition(pos);
 }
 
+void Obj::setVisibility(bool visible)
+{
+	isVisible = visible;
+}
+
 sf::Vector2f Obj::getPos()
 {
 	return obj.getPosition();
@@ -112,8 +120,11 @@ sf::Vector2f Obj::getPos()
 
 void Obj::draw(sf::RenderWindow &window)
 {
-	window.draw(obj);
-	window.draw(CenterPoint);
+	if (isVisible)
+	{
+		window.draw(obj);
+		window.draw(CenterPoint);
+	}
 }
 
 void Obj::moveDir(sf::Vector2f spd)
