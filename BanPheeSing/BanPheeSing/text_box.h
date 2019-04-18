@@ -15,6 +15,7 @@ public:
 	TextBox();
 	TextBox(std::string, std::string, std::string, sf::Font);
 
+	void setView(sf::View &);
 	void setMargin(int);
 	void setHeight(int);
 	void setFont(sf::Font);
@@ -22,14 +23,18 @@ public:
 	void setImg(std::string);
 	void setColor(sf::Color);
 
+
 	void checkContinue();
 
+	void updatePosition();
 	void draw(sf::RenderWindow &window);
 
 private:
 	int textboxMargin = 15;
 	int textboxHeight = 400;
 	int textPerLine = 85;
+
+	bool hasView = false;
 
 	sf::Font font;
 	std::string speakerName;
@@ -44,12 +49,12 @@ private:
 	sf::Text text;
 	sf::Texture ImgTexture;
 	sf::Sprite Img;
+	sf::View *view;
+
+	sf::Vector2f Offset = sf::Vector2f(0,0);
 
 	void updateSetting();
 	void calculateString();
-
-	const int WindowWidth = 1920;
-	const int WindowHeight = 1080;
 };
 
 TextBox::TextBox()
@@ -66,6 +71,12 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 
 	updateSetting();
 	isDisplay = true;
+}
+
+void TextBox::setView(sf::View &view)
+{
+	this->view = &view;
+	hasView = true;
 }
 
 void TextBox::setColor(sf::Color color)
@@ -91,7 +102,10 @@ void TextBox::setImg(std::string ImgDir)
 
 void TextBox::updateSetting()
 {
-	box.setPosition(sf::Vector2f(0, WindowHeight - textboxHeight));
+	if (hasView) Offset = view->getCenter();
+	else Offset = sf::Vector2f(0, 0);
+
+	box.setPosition(sf::Vector2f(Offset.x+0, Offset.y+WindowHeight - textboxHeight));
 	box.setSize(sf::Vector2f(WindowWidth, textboxHeight));
 
 	text_speaker.setFont(font);
@@ -107,7 +121,7 @@ void TextBox::updateSetting()
 	text.setCharacterSize(48);
 	text.setFillColor(sf::Color::Black);
 
-	text.setPosition(textboxMargin, WindowHeight - textboxHeight + 120);
+	text.setPosition(Offset.x+textboxMargin, Offset.y+WindowHeight - textboxHeight + 120);
 
 	if (ImgDir != "")
 	{
@@ -118,9 +132,20 @@ void TextBox::updateSetting()
 			ImgTexture.loadFromFile(".\\textures\\missing_error.png");
 		}
 		Img.setTexture(ImgTexture);
-		Img.setPosition(0,WindowHeight - textboxHeight-700);
+		Img.setPosition(Offset.x,Offset.y+WindowHeight - textboxHeight-700);
 	}
-		text_speaker.setPosition(textboxMargin, WindowHeight - textboxHeight + textboxMargin);
+		text_speaker.setPosition(Offset.x+textboxMargin, Offset.y+WindowHeight - textboxHeight + textboxMargin);
+}
+
+void TextBox::updatePosition()
+{
+	if (hasView) Offset = view->getCenter();
+	else Offset = sf::Vector2f(0, 0);
+
+	box.setPosition(sf::Vector2f(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight));
+	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120);
+	Img.setPosition(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight - 700);
+	text_speaker.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
 }
 
 void TextBox::calculateString()

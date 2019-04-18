@@ -7,12 +7,15 @@
 
 #include "player.h"
 #include "npc.h"
+#include "ghost.h"
 #include "text_box.h"
 #include "tilemap.h"
 
-//Settings
-const int WindowWidth = 1920/1;
-const int WindowHeight = 1080/1;
+void resizeView(const sf::RenderWindow &window, sf::View &view)
+{
+	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+	view.setSize(sf::Vector2f(float(WindowHeight)*aspectRatio, float(WindowHeight)));
+}
 
 
 //Global Variables
@@ -21,15 +24,17 @@ std::vector<Obj*> allObjPtr;
 
 int main()
 	{
-	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
-	//sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha");
+	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
+	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
+	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha");
 
 	//Create Objects here
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-	Npc Npc1(sf::Vector2f(0.0f,0.0f), ".\\textures\\koy_sprite.png",32 ,32 ,4 ,3 , "B");
-	Npc1.setScale(4.0f, 4.0f);
+	Ghost Ghost(sf::Vector2f(0.0f,0.0f), ".\\textures\\ghost_sprite.png",96 ,192 ,4 ,3);
+	Ghost.setScale(1.0f, 1.0f);
+	Ghost.setSpd(3.0f);
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 
@@ -40,12 +45,17 @@ int main()
 		std::cerr << "ERROR: Cannot load font\n";
 	}
 
+	sf::Text FPS;
+	FPS.setFont(mainFont);
+	//FPS.setColor(sf::Color::Blue);
+
 	TextBox testText;
 	testText.setFont(mainFont);
 	testText.setStrings("Claudette Morel", "Oh shit!!\nHe saw me.");
 	testText.setImg(".\\textures\\test_portrait.png");
 	testText.setColor(sf::Color::Magenta);
 	testText.isDisplay = true;
+	testText.setView(view);
 
 	// define the level with an array of tile indices
 	const int level[] =
@@ -62,6 +72,7 @@ int main()
 
 	TileMap map;
 	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+	map.setScale(sf::Vector2f(4, 4));
 
 	sf::Clock clock;
 
@@ -76,15 +87,20 @@ int main()
 			case sf::Event::Closed:
 				window.close();
 				break;
+			case sf::Event::Resized:
+				resizeView(window, view);
+				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				break;
 			case sf::Event::MouseButtonPressed:
-				NPCTarget = sf::Vector2f(sf::Mouse::getPosition(window));
-				Npc1.vec_moveToQueue.push_back(NPCTarget);
+				//NPCTarget = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				break;
 			}
 		}
+
+		view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
 
 		//Player controls
 		bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
@@ -95,19 +111,32 @@ int main()
 
 		Player.control(Right, Left, Down, Up, Sprint);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			Ghost.chase({ 0,0 }, { 0,300 }, Player.getPos());
+		}
 		//NPC test
-		Npc1.moveToQueue();
-		Npc1.walkingAnimate();
+		//Ghost.moveToQueue();
+		//Ghost.walkingAnimate();
 
 
+		testText.updatePosition();
+
+		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds()));
+		FPS.setPosition(getViewOffset(view));
+		clock.restart();
 
 		//Rendering
 		window.clear();
 
 		window.draw(map);
+		window.setView(view);
 		Player.draw(window);
-		Npc1.draw(window);
+		Ghost.draw(window);
 		testText.draw(window);
+
+		window.draw(FPS);
 
 		window.display();
 	}

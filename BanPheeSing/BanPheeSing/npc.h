@@ -5,27 +5,35 @@
 class Npc : public Obj
 {
 public:
+	Npc();
 	Npc(sf::Vector2f, std::string, int, int, int, int, std::string);
 	int walkingAnimate(int);
 private:
 
 	std::string name;
-	float speed = 5.0f;
 };
-
+Npc::Npc()
+{
+	//Default
+}
 Npc::Npc(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int frameRow , int frameCol, std::string n = "NPC")
 {
 	name = n;
 	setPos(pos);
 	ImgDir = ImgIDir;
-
+	obj.setSize(sf::Vector2f(frameW, frameH));
+	obj.setOrigin(sf::Vector2f(frameW / 2, frameH / 2));
 	setupAnim(ImgIDir, frameW, frameH, frameRow, frameCol);
 }
 
 int Npc::walkingAnimate(int fps = 6)
 {
-	int DirX = CUt::sign(xSpeed);
-	int DirY = CUt::sign(ySpeed);
+	int DirX = 0;
+	int DirY = 0;
+
+	DirX = CUt::sign(xSpeed);
+	DirY = CUt::sign(ySpeed);
+
 
 	if (DirX == 0 && DirY == 0)
 	{

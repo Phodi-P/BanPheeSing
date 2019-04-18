@@ -12,7 +12,7 @@ public:
 
 	Obj();
 	//~Obj();
-	sf::Sprite getObj();
+	sf::RectangleShape getObj();
 
 	//Graphic and animation
 
@@ -23,13 +23,14 @@ public:
 
 	int animate(int, int);
 
+
 	void draw(sf::RenderWindow &);
 	
 	//Movement
 
 	void setPos(sf::Vector2f);
 	sf::Vector2f getPos();
-
+	void setSpd(float);
 	sf::Vector2f getSpd();
 
 	void moveDir(sf::Vector2f);
@@ -37,22 +38,24 @@ public:
 	bool moveTo(sf::Vector2f);
 	int moveToQueue();
 
-	float speed = 1.0f;
 	int curMoveToQueue = 0;
 	std::vector<sf::Vector2f> vec_moveToQueue;
-
 
 	
 protected:
 	//Variables
 	bool isInitialized = false;
-	sf::Sprite obj;
+	sf::RectangleShape obj;
 	sf::Texture texture;
+
+	sf::CircleShape CenterPoint;
 
 	//Movement config
 
 	int id;
 	bool isMoving = false;
+
+	float speed = 1.5f;
 
 	float scaleX = 1.0f;
 	float scaleY = 1.0f;
@@ -80,9 +83,18 @@ protected:
 Obj::Obj()
 {
 	//Default
+	obj.setSize(sf::Vector2f(32, 32));
+	obj.setOrigin(sf::Vector2f(16, 16));
+	CenterPoint.setRadius(5.0f);
+	CenterPoint.setFillColor(sf::Color::Red);
 }
 
-sf::Sprite Obj::getObj()
+void Obj::setSpd(float spd)
+{
+	speed = spd;
+}
+
+sf::RectangleShape Obj::getObj()
 {
 	return obj;
 }
@@ -101,6 +113,7 @@ sf::Vector2f Obj::getPos()
 void Obj::draw(sf::RenderWindow &window)
 {
 	window.draw(obj);
+	window.draw(CenterPoint);
 }
 
 void Obj::moveDir(sf::Vector2f spd)
@@ -108,7 +121,14 @@ void Obj::moveDir(sf::Vector2f spd)
 	xSpeed = spd.x;
 	ySpeed = spd.y;
 
+	if (spd.x != 0 && spd.y != 0)
+	{
+		spd.x *= 0.707;
+		spd.y *= 0.707;
+	}
+
 	obj.move(spd);
+	CenterPoint.setPosition(getPos());
 
 }
 
@@ -117,6 +137,8 @@ sf::Vector2f Obj::getSpd()
 	return sf::Vector2f(xSpeed, ySpeed);
 }
 
+//Move to target destination
+//Returns true when target is reached
 bool Obj::moveTo(sf::Vector2f dest)
 {
 	float tempX = 0;
@@ -132,12 +154,25 @@ bool Obj::moveTo(sf::Vector2f dest)
 			tempY = 0;
 		}
 
-		float xMovement = float(CUt::sign(dest.x - getPos().x));
-		float yMovement = float(CUt::sign(dest.y - getPos().y));
+
+
+		float xMovement = float((dest.x - getPos().x));
+		float yMovement = float((dest.y - getPos().y));
+
+		float len = std::sqrt(xMovement*xMovement + yMovement * yMovement);
+
+		(len != 0) ? xMovement /= len : 0;
+		(len != 0) ? yMovement /= len : 0;
 
 		tempX = xMovement * speed;
 		tempY = yMovement * speed;
-		moveDir(sf::Vector2f(tempX*((tempX != 0 && tempY != 0) ? 0.707 : 1), tempY));
+
+		moveDir(sf::Vector2f(tempX, tempY));
+
+		//tempX = xMovement * speed;
+		//tempY = yMovement * speed;
+
+		//moveDir(sf::Vector2f(tempX*((tempX != 0 && tempY != 0) ? 0.707 : 1), tempY));
 	}
 	if (dest == getPos())
 	{
@@ -198,7 +233,7 @@ void Obj::setMyTexture(std::string ImgDir, sf::IntRect rect = sf::IntRect(0,0,0,
 			texture.loadFromFile(".\\textures\\missing_error.png");
 		}
 	}
-	obj.setTexture(texture);
+	obj.setTexture(&texture);
 	obj.setScale(scaleX, scaleY);
 }
 
@@ -261,7 +296,6 @@ int Obj::animate(int setFrame = -1, int fps = 1)
 		int tarCol = (curFrame % frameColumns);
 
 		rect = sf::IntRect(frameWidth*tarCol, frameHeight*tarRow, (frameWidth*tarCol) + frameWidth, (frameHeight*tarRow) + frameHeight);
-
 		setMyTexture(ImgDir, rect);
 
 		return curFrame;

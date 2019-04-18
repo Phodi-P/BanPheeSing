@@ -114,13 +114,13 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 			if (curStamina <= 0)
 			{
 				curStamina = 0;
-				isSprinting = false;
 				canSprint = false;
 			}
 		}
 	}
 	else
 	{
+		isSprinting = false;
 		spd = speed;
 		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaRegenRate)
 		{

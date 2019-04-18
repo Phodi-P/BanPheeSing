@@ -38,5 +38,11 @@
     <ClInclude Include="tilemap.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ghost.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
