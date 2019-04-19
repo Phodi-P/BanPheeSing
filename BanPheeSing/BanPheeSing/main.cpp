@@ -10,10 +10,12 @@
 #include "npc.h"
 #include "tilemap.h"
 
-const std::string tilesetPath = ".\\textures\\test_tileset.png";
-const sf::Vector2u tilesetSize = sf::Vector2u(32, 132);
-const unsigned int tilesetRow = 1;
-const unsigned int tilesetCol = 4;
+const std::string tilesetPath = ".\\textures\\test_tileset4.png";
+const sf::Vector2u tilesetSize = sf::Vector2u(32, 32);
+const sf::Vector2u mapSize = sf::Vector2u(50, 50);
+const unsigned int tilesetRow = 7;
+const unsigned int tilesetCol = 20;
+
 
 int maxTileIdx = (tilesetCol*tilesetRow) - 1;
 
@@ -34,7 +36,7 @@ int main()
 	Player.setScale(4.0f, 4.0f);
 
 	Obj tilePreview;
-	tilePreview.setupAnim(tilesetPath, tilesetSize.x, tilesetSize.y, 16, 16);
+	tilePreview.setupAnim(tilesetPath, tilesetSize.x, tilesetSize.y, tilesetRow, tilesetCol);
 	tilePreview.setScale(4.0f, 4.0f);
 	tilePreview.getObj().setFillColor(sf::Color(255, 255, 255, 0));
 	
@@ -51,21 +53,13 @@ int main()
 
 
 	// define the level with an array of tile indices
-	/*const*/ int level[] =
-	{
-		0, 1, 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		2, 3, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-		0, 1, 2, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
-		0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
-		0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
-		0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
-		2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
-		0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-	};
+	/*const*/ int *level;
+	level = new int[mapSize.x*mapSize.y];
+	for (int i = 0; i < mapSize.x*mapSize.y; i++) level[i] = -1;
 
 	TileMap map;
-	map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
-	map.setScale(sf::Vector2f(4, 4));
+	map.load(tilesetPath, sf::Vector2u(32, 32), level, mapSize.x, mapSize.y);
+	map.setScale(sf::Vector2f(2, 2));
 
 	sf::Clock clock;
 
@@ -90,6 +84,7 @@ int main()
 			switch (evnt.type)
 			{
 			case sf::Event::Closed:
+				delete level;
 				window.close();
 				break;
 			case sf::Event::Resized:
@@ -123,9 +118,9 @@ int main()
 					break;*/
 				case sf::Keyboard::P:
 					fwrite.open(".\\maps\\test_map.txt");
-					fwrite << 8 << std::endl << 16 << std::endl;
-					for (int i = 0; i < 8; i++) {
-						for (int j = 0; j < 16; j++) fwrite << level[(i * 16) + j];
+					fwrite << mapSize.y << std::endl << mapSize.x << std::endl;
+					for (int i = 0; i < mapSize.x; i++) {
+						for (int j = 0; j < 16; j++) fwrite << level[(i * mapSize.y) + j];
 						fwrite << std::endl;
 					} 
 					fwrite.close();
@@ -137,7 +132,7 @@ int main()
 				//When mouse button is Pressed
 				posX = (int)((mousePosition.x / 4) / 32);
 				posY = (int)((mousePosition.y / 4) / 32);
-				pos = (posY * 16) + posX;
+				pos = (posY * mapSize.x) + posX;
 				if (isRected) {
 					if (startRect.x == -1 && startRect.y == -1) {
 						startRect.x = posX;
@@ -148,7 +143,7 @@ int main()
 						endRect.y = posY;
 
 						for (int i = startRect.y; i <= endRect.y; i++) for (int j = startRect.x; j <= endRect.x; j++) level[(i * 16) + j] = selectedTileset;
-						map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
+						map.load(tilesetPath, sf::Vector2u(32, 32), level, mapSize.x, mapSize.y);
 						startRect.x = -1;
 						startRect.y = -1;
 						endRect.x = -1;
@@ -161,7 +156,7 @@ int main()
 				//std::cout << (int)(mousePosition.y / 32) << " " << (int)(mousePosition.x / 32) << std::endl;
 				//
 				level[pos] = selectedTileset;
-				map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
+				map.load(tilesetPath, sf::Vector2u(32, 32), level, mapSize.x, mapSize.y);
 				break;
 
 			case sf::Event::MouseWheelScrolled:
