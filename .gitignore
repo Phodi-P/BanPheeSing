@@ -261,3 +261,9 @@ __pycache__/
 *.pyc
 /BanPheeSing/BanPheeSing/textures/working
 /BanPheeSing/minimal_test
+
+
+#Visual studio project settings
+/BanPheeSing/BanPheeSing/BanPheeSing.vcxproj
+/BanPheeSing/BanPheeSing/BanPheeSing.vcxproj.filters
+/BanPheeSing/BanPheeSing/BanPheeSing.vcxproj.user
