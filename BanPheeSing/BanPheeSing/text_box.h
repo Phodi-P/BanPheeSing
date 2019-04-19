@@ -6,6 +6,32 @@
 #include "custom_utility.h"
 #include <vector>
 
+class TextDiaglogue
+{
+public:
+	std::string speakerName;
+	std::string inputString;
+	std::string ImgDir;
+	sf::Font font;
+	sf::Color speakerColor;
+
+	TextDiaglogue(std::string, std::string, std::string, sf::Font, sf::Color);
+	TextDiaglogue();
+};
+
+TextDiaglogue::TextDiaglogue()
+{
+	//Default
+}
+TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, std::string ImgDir, sf::Font font, sf::Color speakerColor)
+{
+	this->speakerName = speakerName;
+	this->inputString = inputString;
+	this->ImgDir = ImgDir;
+	this->font = font;
+	this->speakerColor = speakerColor;
+}
+
 
 class TextBox
 {
@@ -23,8 +49,11 @@ public:
 	void setImg(std::string);
 	void setColor(sf::Color);
 
+	void setDialogue(TextDiaglogue);
+	void addDialogue(TextDiaglogue);
 
-	void checkContinue();
+
+	void Continue();
 
 	void updatePosition();
 	void draw(sf::RenderWindow &window);
@@ -35,6 +64,8 @@ private:
 	int textPerLine = 85;
 
 	bool hasView = false;
+
+	std::vector<TextDiaglogue> diagQueue;
 
 	sf::Font font;
 	std::string speakerName;
@@ -47,6 +78,7 @@ private:
 	sf::RectangleShape box;
 	sf::Text text_speaker;
 	sf::Text text;
+	sf::Text ContinueText;
 	sf::Texture ImgTexture;
 	sf::Sprite Img;
 	sf::View *view;
@@ -68,6 +100,24 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 	inputString = textInput;
 	ImgDir = ImgDirInput;
 	font = fontInput;
+
+	updateSetting();
+
+	ContinueText.setFont(font);
+	ContinueText.setString(speakerName);
+	ContinueText.setCharacterSize(72);
+	ContinueText.setFillColor(sf::Color(255,255,255,125));
+
+	isDisplay = true;
+}
+
+void TextBox::setDialogue(TextDiaglogue input)
+{
+	speakerName = input.speakerName;
+	inputString = input.inputString;
+	ImgDir = input.ImgDir;
+	font = input.font;
+	speakerColor = input.speakerColor;
 
 	updateSetting();
 	isDisplay = true;
@@ -182,10 +232,26 @@ void TextBox::setFont(sf::Font FontIn)
 	updateSetting();
 }
 
-void TextBox::checkContinue()
+void TextBox::addDialogue(TextDiaglogue diag)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isDisplay) isDisplay = false;
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isDisplay) isDisplay = false;
+	diagQueue.push_back(diag);
+}
+
+void TextBox::Continue()
+{
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+	{
+		if (diagQueue.size() > 0)
+		{
+			isDisplay = true;
+			setDialogue(diagQueue[0]);
+			diagQueue.erase(diagQueue.begin());
+		}
+		else
+		{
+			isDisplay = false;
+		}
+	}
 }
 
 void TextBox::draw(sf::RenderWindow &window)

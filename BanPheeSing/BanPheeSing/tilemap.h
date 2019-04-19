@@ -6,12 +6,55 @@
 #include "custom_utility.h"
 #include <vector>
 
+class Level
+{
+public:
+	std::vector<int> tileMap;
+	unsigned int width;
+	unsigned int height;
+
+	std::vector<sf::Vector2f> objPos;
+	std::vector<sf::Vector2f> objSize;
+	std::vector<int> objType;
+
+	void readFile(std::string);
+
+};
+
+void Level::readFile(std::string filePath)
+{
+
+	std::ifstream map(filePath.c_str());
+	std::string txtline;
+
+	//Get map width and height
+	getline(map, txtline);
+	height = std::stoi(txtline);
+
+	getline(map, txtline);
+	width = std::stoi(txtline);
+
+
+	while (getline(map, txtline))
+	{
+		for (int i = 0; i < txtline.size(); i++)
+		{
+			int curData = txtline[i] - '0';
+			tileMap.push_back(curData);
+		}
+	}
+}
+
+
 class TileMap : public sf::Drawable, public sf::Transformable
 {
 public:
 
-    bool load(const std::string& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height)
+    bool load(const std::string& tileset, sf::Vector2u tileSize, const Level &level)
     {
+		const int* tiles = &level.tileMap.front();
+		unsigned int width = level.width;
+		unsigned int height = level.height;
         // load the tileset texture
         if (!m_tileset.loadFromFile(tileset))
             return false;

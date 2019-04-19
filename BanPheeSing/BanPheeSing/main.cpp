@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <fstream>
 
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 
@@ -24,9 +25,9 @@ std::vector<Obj*> allObjPtr;
 
 int main()
 	{
-	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
-	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "BanPheeSing: Very Alpha");
+	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
 
 	//Create Objects here
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
@@ -50,36 +51,24 @@ int main()
 	//FPS.setColor(sf::Color::Blue);
 
 	TextBox testText;
-	testText.setFont(mainFont);
-	testText.setStrings("Claudette Morel", "Oh shit!!\nHe saw me.");
-	testText.setImg(".\\textures\\test_portrait.png");
-	testText.setColor(sf::Color::Magenta);
-	testText.isDisplay = true;
 	testText.setView(view);
+	testText.isDisplay = true;
+	//testText.addDialogue(TextDiaglogue("Claudette", "Oh shit!!!\nHe saw me!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
+	//testText.addDialogue(TextDiaglogue("Some random guy", "Don't worry\nI'll help you.", ".//textures//test_portrait2.png", mainFont, sf::Color::Black));
+	//testText.addDialogue(TextDiaglogue("Claudette", "Run you fool!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
 
-	// define the level with an array of tile indices
-	const int level[] =
-	{
-		0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-		1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
-		0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
-		0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
-		0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
-		2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
-		0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-	};
+	Level level;
+	level.readFile(".\\maps\\test_map.txt");
 
 	TileMap map;
-	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level);
 	map.setScale(sf::Vector2f(4, 4));
 
 	sf::Clock clock;
 
 	while (window.isOpen())
 	{
-		testText.checkContinue();
-		float deltaTime = clock.getElapsedTime().asSeconds();
+		deltaTime = clock.getElapsedTime().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -97,6 +86,8 @@ int main()
 			case sf::Event::MouseButtonPressed:
 				//NPCTarget = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				//Ghost.vec_moveToQueue.push_back(NPCTarget);
+				testText.Continue();
+
 				break;
 			}
 		}
@@ -110,7 +101,7 @@ int main()
 		bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-		Player.control(Right, Left, Down, Up, Sprint, deltaTime);
+		Player.control(Right, Left, Down, Up, Sprint);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))

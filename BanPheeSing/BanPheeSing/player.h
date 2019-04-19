@@ -7,7 +7,7 @@ class Player : public Obj
 {
 public:
 	Player(std::string, int, int, int, int);
-	void control(bool, bool, bool, bool, bool, float);
+	void control(bool, bool, bool, bool, bool);
 
 	int walkingAnimate(int, int, int);
 	int getCurrentFrame();
@@ -22,8 +22,8 @@ protected:
 
 	//Game Mechanics
 
-	float speed = 60.0f;
-	float sprintSpeed = 40.0f;
+	float speed = 300.0f;
+	float sprintSpeed = 700.0f;
 
 	sf::Clock staminaClock;
 
@@ -93,7 +93,7 @@ int Player::getCurrentFrame()
 	return curFrame;
 }
 
-void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint, float deltaTime)
+void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 {
 	float xMovement = float(Right - Left);
 	float yMovement = float(Down - Up);
@@ -130,7 +130,7 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint, flo
 		}
 	}
 
-	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
+	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707*deltaTime, yMovement*spd*0.707*deltaTime)); //Fix diagnal movement speed issue
 	else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
 
 	

@@ -57,7 +57,7 @@ protected:
 	int id;
 	bool isMoving = false;
 
-	float speed = 1.5f;
+	float speed = 300.0f;
 
 	float scaleX = 1.0f;
 	float scaleY = 1.0f;
@@ -129,8 +129,8 @@ void Obj::draw(sf::RenderWindow &window)
 
 void Obj::moveDir(sf::Vector2f spd)
 {
-	xSpeed = spd.x;
-	ySpeed = spd.y;
+	xSpeed = spd.x*deltaTime;
+	ySpeed = spd.y*deltaTime;
 
 	if (spd.x != 0 && spd.y != 0)
 	{

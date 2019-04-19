@@ -27,7 +27,7 @@ private:
 	float runTime = 2.5f;
 	float slowTime = 6.0f;
 	float timeBeforeRun = 12.0f;
-	float killDist = 5.0f;
+	float killDist = 1.5f;
 
 	QuickText showDist;
 

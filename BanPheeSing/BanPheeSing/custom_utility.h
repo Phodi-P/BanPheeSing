@@ -11,6 +11,8 @@ const int WindowHeight = 1080;
 const int RoomWidth = 1920;
 const int RoomHeight = 1080;
 
+float deltaTime = 0.0f;
+
 namespace CUt //CUt is short for Custom Utility
 {
 	//***[Note] This function returns sign of value (-1,0,1) [Note]***
