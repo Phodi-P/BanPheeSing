@@ -33,7 +33,7 @@ protected:
 	float minStamina = 50.0f; //[Editable]
 	float curStamina = maxStamina;
 
-	float staminaRegenRate = 7.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
+	float staminaRegenRate = 30.6f; //[Editable] //How much stamina will Regen/Drain in 1 second
 	float staminaDrainRate = 30.5f; //[Editable]
 
 };
@@ -106,28 +106,11 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint, flo
 	if (Sprint && canSprint)
 	{
 		spd = sprintSpeed;
-		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
-		{
-			staminaClock.restart();
-			isSprinting = true;
-			if(xMovement != 0 || yMovement != 0) curStamina--;
-			if (curStamina <= 0)
-			{
-				curStamina = 0;
-				canSprint = false;
-			}
-		}
 	}
 	else
 	{
 		isSprinting = false;
 		spd = speed;
-		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaRegenRate)
-		{
-			staminaClock.restart();
-			curStamina++;
-			if (curStamina > maxStamina) curStamina = maxStamina;
-		}
 	}
 
 	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue

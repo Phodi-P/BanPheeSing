@@ -10,6 +10,13 @@
 #include "npc.h"
 #include "tilemap.h"
 
+const std::string tilesetPath = ".\\textures\\test_tileset.png";
+const sf::Vector2u tilesetSize = sf::Vector2u(32, 132);
+const unsigned int tilesetRow = 1;
+const unsigned int tilesetCol = 4;
+
+int maxTileIdx = (tilesetCol*tilesetRow) - 1;
+
 void resizeView(const sf::RenderWindow &window, sf::View &view)
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
@@ -26,7 +33,11 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-
+	Obj tilePreview;
+	tilePreview.setupAnim(tilesetPath, tilesetSize.x, tilesetSize.y, 16, 16);
+	tilePreview.setScale(4.0f, 4.0f);
+	tilePreview.getObj().setFillColor(sf::Color(255, 255, 255, 0));
+	
 
 	//Font loading
 	sf::Font mainFont;
@@ -53,7 +64,7 @@ int main()
 	};
 
 	TileMap map;
-	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+	map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
 	map.setScale(sf::Vector2f(4, 4));
 
 	sf::Clock clock;
@@ -65,6 +76,7 @@ int main()
 	startRect.x = -1, startRect.y = -1;
 	endRect.x = -1, endRect.y = -1;
 	bool isRected = false;
+
 	
 
 	std::ofstream fwrite;
@@ -136,7 +148,7 @@ int main()
 						endRect.y = posY;
 
 						for (int i = startRect.y; i <= endRect.y; i++) for (int j = startRect.x; j <= endRect.x; j++) level[(i * 16) + j] = selectedTileset;
-						map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+						map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
 						startRect.x = -1;
 						startRect.y = -1;
 						endRect.x = -1;
@@ -149,14 +161,21 @@ int main()
 				//std::cout << (int)(mousePosition.y / 32) << " " << (int)(mousePosition.x / 32) << std::endl;
 				//
 				level[pos] = selectedTileset;
-				map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+				map.load(tilesetPath, sf::Vector2u(32, 32), level, 16, 8);
+				break;
+
+			case sf::Event::MouseWheelScrolled:
+				selectedTileset += CUt::sign(evnt.mouseWheelScroll.delta);
+				//if (selectedTileset >= (tilesetRow*tilesetCol)) selectedTileset = 0;
+				if (selectedTileset > maxTileIdx) selectedTileset = 0;
+				if (selectedTileset < 0) selectedTileset = maxTileIdx;
 				break;
 
 			case sf::Event::MouseMoved:
-				mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+				break;
 			}
 		}
-
+		mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
 
 		//Player controls
@@ -169,10 +188,12 @@ int main()
 		Player.control(Right, Left, Down, Up, Sprint, deltaTime);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 
+		tilePreview.animate(selectedTileset, 0);
+		tilePreview.setPos(mousePosition);
 
 
 		//FPS and deltaTime
-		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+"\ndeltaTime: "+std::to_string(deltaTime));
+		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+"\ndeltaTime: "+std::to_string(deltaTime)+"\nselectedTile: "+std::to_string(selectedTileset));
 		FPS.setPosition(getViewOffset(view));
 		clock.restart();
 
@@ -182,6 +203,7 @@ int main()
 		window.draw(map);
 		window.setView(view);
 		Player.draw(window);
+		tilePreview.draw(window);
 
 		window.draw(FPS);
 
