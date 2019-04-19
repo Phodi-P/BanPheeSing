@@ -130,13 +130,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="collision.h" />
-    <ClInclude Include="custom_utility.h" />
-    <ClInclude Include="ghost.h" />
-    <ClInclude Include="npc.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="text_box.h" />
     <ClInclude Include="tilemap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

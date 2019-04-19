@@ -23,25 +23,10 @@
     <ClInclude Include="player.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="npc.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="custom_utility.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="object.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="text_box.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="tilemap.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="collision.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ghost.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

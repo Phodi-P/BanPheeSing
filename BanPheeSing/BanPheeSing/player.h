@@ -22,8 +22,8 @@ protected:
 
 	//Game Mechanics
 
-	float speed = 60.0f;
-	float sprintSpeed = 40.0f;
+	float speed = 1.5f;
+	float sprintSpeed = 12.0f;
 
 	sf::Clock staminaClock;
 
@@ -131,7 +131,7 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint, flo
 	}
 
 	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707, yMovement*spd*0.707)); //Fix diagnal movement speed issue
-	else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
+	else moveDir(sf::Vector2f(xMovement*spd, yMovement*spd));
 
 	
 }

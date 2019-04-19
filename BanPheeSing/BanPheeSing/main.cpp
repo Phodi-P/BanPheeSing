@@ -7,8 +7,6 @@
 
 #include "player.h"
 #include "npc.h"
-#include "ghost.h"
-#include "text_box.h"
 #include "tilemap.h"
 
 void resizeView(const sf::RenderWindow &window, sf::View &view)
@@ -16,11 +14,6 @@ void resizeView(const sf::RenderWindow &window, sf::View &view)
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
 	view.setSize(sf::Vector2f(float(WindowHeight)*aspectRatio, float(WindowHeight)));
 }
-
-
-//Global Variables
-std::vector<Obj*> allObjPtr;
-
 
 int main()
 	{
@@ -32,10 +25,6 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
-	Ghost Ghost(sf::Vector2f(0.0f,0.0f), ".\\textures\\ghost_sprite.png",96 ,192 ,4 ,3);
-	Ghost.setScale(1.0f, 1.0f);
-	Ghost.setSpd(3.0f);
-	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 
 	//Font loading
@@ -47,15 +36,7 @@ int main()
 
 	sf::Text FPS;
 	FPS.setFont(mainFont);
-	//FPS.setColor(sf::Color::Blue);
 
-	TextBox testText;
-	testText.setFont(mainFont);
-	testText.setStrings("Claudette Morel", "Oh shit!!\nHe saw me.");
-	testText.setImg(".\\textures\\test_portrait.png");
-	testText.setColor(sf::Color::Magenta);
-	testText.isDisplay = true;
-	testText.setView(view);
 
 	// define the level with an array of tile indices
 	const int level[] =
@@ -78,7 +59,6 @@ int main()
 
 	while (window.isOpen())
 	{
-		testText.checkContinue();
 		float deltaTime = clock.getElapsedTime().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
@@ -95,8 +75,7 @@ int main()
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				break;
 			case sf::Event::MouseButtonPressed:
-				//NPCTarget = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-				//Ghost.vec_moveToQueue.push_back(NPCTarget);
+				//When mouse button is Pressed
 				break;
 			}
 		}
@@ -113,17 +92,9 @@ int main()
 		Player.control(Right, Left, Down, Up, Sprint, deltaTime);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			Ghost.chase({ 0,0 }, { 0,300 }, Player.getPos());
-		}
-		//NPC test
-		//Ghost.moveToQueue();
-		//Ghost.walkingAnimate();
 
 
-		testText.updatePosition();
-
+		//FPS and deltaTime
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+"\ndeltaTime: "+std::to_string(deltaTime));
 		FPS.setPosition(getViewOffset(view));
 		clock.restart();
@@ -134,9 +105,6 @@ int main()
 		window.draw(map);
 		window.setView(view);
 		Player.draw(window);
-		Ghost.draw(window);
-		testText.draw(window);
-		Ghost.drawDist(window);
 
 		window.draw(FPS);
 
