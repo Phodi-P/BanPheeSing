@@ -21,6 +21,7 @@ void resizeView(const sf::RenderWindow &window, sf::View &view)
 
 //Global Variables
 std::vector<Obj*> allObjPtr;
+sf::Vector2f mousePosition = { 0,0 };
 
 
 int main()
@@ -56,18 +57,22 @@ int main()
 	//testText.addDialogue(TextDiaglogue("Claudette", "Oh shit!!!\nHe saw me!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
 	//testText.addDialogue(TextDiaglogue("Some random guy", "Don't worry\nI'll help you.", ".//textures//test_portrait2.png", mainFont, sf::Color::Black));
 	//testText.addDialogue(TextDiaglogue("Claudette", "Run you fool!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
-
+	
+	TileSet light(".\\textures\\test_tileset4.png", { 16,16 });
+	TileSet dark(".\\textures\\test_tileset4_dark.png", { 16,16 });
+	
 	Level level;
-	level.readFile(".\\maps\\test_map.txt");
+	level.setScale(sf::Vector2f(4, 4));
+	level.setTileset(light);
+	level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
+	level.update();
 
-	TileMap map;
-	map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level);
-	map.setScale(sf::Vector2f(4, 4));
 
 	sf::Clock clock;
 
 	while (window.isOpen())
 	{
+		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
@@ -84,10 +89,21 @@ int main()
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				break;
 			case sf::Event::MouseButtonPressed:
-				//NPCTarget = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				testText.Continue();
-
+			case sf::Event::MouseWheelScrolled:
+				if (evnt.mouseWheelScroll.delta > 0)
+				{
+					level.setTileset(light);
+					level.update();
+					std::cout << "Light\n";
+				}
+				else
+				{
+					level.setTileset(dark);
+					level.update();
+					std::cout << "Dark\n";
+				}
 				break;
 			}
 		}
@@ -106,7 +122,7 @@ int main()
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			Ghost.chase({ 0,0 }, { 0,300 }, Player.getPos());
+			Ghost.chase({ 1024,200 }, { 0,400 }, Player.getPos());
 		}
 		//NPC test
 		//Ghost.moveToQueue();
@@ -115,14 +131,17 @@ int main()
 
 		testText.updatePosition();
 
-		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+"\ndeltaTime: "+std::to_string(deltaTime));
+		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
+						"\ndeltaTime: "+std::to_string(deltaTime)+
+						"\n mouseX: "+std::to_string(mousePosition.x)+
+						"\n mouseY: "+std::to_string(mousePosition.y));
 		FPS.setPosition(getViewOffset(view));
 		clock.restart();
 
 		//Rendering
 		window.clear();
 
-		window.draw(map);
+		level.draw(window);
 		window.setView(view);
 		Player.draw(window);
 		Ghost.draw(window);
