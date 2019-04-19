@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
@@ -39,11 +40,11 @@ int main()
 
 
 	// define the level with an array of tile indices
-	const int level[] =
+	/*const*/ int level[] =
 	{
-		0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-		1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
+		0, 1, 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		2, 3, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
+		0, 1, 2, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
 		0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
 		0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
 		0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
@@ -56,6 +57,17 @@ int main()
 	map.setScale(sf::Vector2f(4, 4));
 
 	sf::Clock clock;
+
+	int selectedTileset = 0;
+	int pos,posX,posY;
+	sf::Vector2f mousePosition;
+	sf::Vector2i startRect,endRect;
+	startRect.x = -1, startRect.y = -1;
+	endRect.x = -1, endRect.y = -1;
+	bool isRected = false;
+	
+
+	std::ofstream fwrite;
 
 	while (window.isOpen())
 	{
@@ -73,10 +85,75 @@ int main()
 				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
+				switch (evnt.key.code) {
+				case sf::Keyboard::Num0:
+					selectedTileset = 0;
+					break;
+
+				case sf::Keyboard::Num1:
+					selectedTileset = 1;
+					break;
+
+				case sf::Keyboard::Num2:
+					selectedTileset = 2;
+					break;
+
+				case sf::Keyboard::Num3:
+					selectedTileset = 3;
+					break;
+
+				case sf::Keyboard::R:
+					isRected = !isRected;
+					break;
+				//Print selectedTileset
+				/*case sf::Keyboard::P:
+					std::cout << selectedTileset << std::endl;
+					break;*/
+				case sf::Keyboard::P:
+					fwrite.open(".\\maps\\test_map.txt");
+					fwrite << 8 << std::endl << 16 << std::endl;
+					for (int i = 0; i < 8; i++) {
+						for (int j = 0; j < 16; j++) fwrite << level[(i * 16) + j];
+						fwrite << std::endl;
+					} 
+					fwrite.close();
+					break;
+				}
+
 				break;
 			case sf::Event::MouseButtonPressed:
 				//When mouse button is Pressed
+				posX = (int)((mousePosition.x / 4) / 32);
+				posY = (int)((mousePosition.y / 4) / 32);
+				pos = (posY * 16) + posX;
+				if (isRected) {
+					if (startRect.x == -1 && startRect.y == -1) {
+						startRect.x = posX;
+						startRect.y = posY;
+					}
+					else if (endRect.x == -1 && endRect.y == -1) {
+						endRect.x = posX;
+						endRect.y = posY;
+
+						for (int i = startRect.y; i <= endRect.y; i++) for (int j = startRect.x; j <= endRect.x; j++) level[(i * 16) + j] = selectedTileset;
+						map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
+						startRect.x = -1;
+						startRect.y = -1;
+						endRect.x = -1;
+						endRect.y = -1;
+					}
+					break;
+				}
+				// Debug map position
+				//std::cout << level[pos] << std::endl;
+				//std::cout << (int)(mousePosition.y / 32) << " " << (int)(mousePosition.x / 32) << std::endl;
+				//
+				level[pos] = selectedTileset;
+				map.load(".\\textures\\test_tileset.png", sf::Vector2u(32, 32), level, 16, 8);
 				break;
+
+			case sf::Event::MouseMoved:
+				mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			}
 		}
 
@@ -101,7 +178,7 @@ int main()
 
 		//Rendering
 		window.clear();
-
+		
 		window.draw(map);
 		window.setView(view);
 		Player.draw(window);
