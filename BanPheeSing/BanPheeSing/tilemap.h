@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "custom_utility.h"
 #include <vector>
+#include<sstream>
 
 class TileMap : public sf::Drawable, public sf::Transformable
 {

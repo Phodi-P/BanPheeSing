@@ -59,7 +59,7 @@ int main()
 
 	TileMap map;
 	map.load(tilesetPath, sf::Vector2u(32, 32), level, mapSize.x, mapSize.y);
-	map.setScale(sf::Vector2f(2, 2));
+	map.setScale(sf::Vector2f(4.0f, 4.0f));
 
 	sf::Clock clock;
 
