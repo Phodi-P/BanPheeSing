@@ -11,6 +11,7 @@ public:
 
 	int walkingAnimate(int, int, int);
 	int getCurrentFrame();
+	void drawStamina(sf::RenderWindow &);
 
 	bool isSprinting = false;
 
@@ -18,12 +19,12 @@ public:
 protected:
 
 	std::string name = "A";
-
+	sf::RectangleShape staminaBar;
 
 	//Game Mechanics
 
 	float speed = 300.0f;
-	float sprintSpeed = 700.0f;
+	float sprintSpeed = 1800.0f;
 
 	sf::Clock staminaClock;
 
@@ -35,6 +36,8 @@ protected:
 
 	float staminaRegenRate = 7.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
 	float staminaDrainRate = 30.5f; //[Editable]
+
+	float staminaBarMaxWidth = 100.0f;
 
 };
 
@@ -50,6 +53,8 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 	ImgDir = ImgDirI;
 
 	setMyTexture(ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
+
+	staminaBar.setFillColor(sf::Color::Green);
 }
 
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
@@ -130,8 +135,28 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		}
 	}
 
-	if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707*deltaTime, yMovement*spd*0.707*deltaTime)); //Fix diagnal movement speed issue
-	else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
+
+	float len = std::sqrt(xMovement*xMovement + yMovement * yMovement);
+
+	(len != 0) ? xMovement /= len : 0;
+	(len != 0) ? yMovement /= len : 0;
+
+	moveDir(sf::Vector2f(xMovement * spd * deltaTime, yMovement * spd * deltaTime));
+
+	float staminaBarCurWidth = staminaBarMaxWidth * (curStamina / maxStamina);
+	if (curStamina < maxStamina) staminaBar.setSize(sf::Vector2f(staminaBarCurWidth, 10.0f));
+	else staminaBar.setSize(sf::Vector2f(0, 0));
+	staminaBar.setPosition(getPos()+sf::Vector2f(-(staminaBarCurWidth/2),-80.0f));
+
+	//moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
+
+	//if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707*deltaTime, yMovement*spd*0.707*deltaTime)); //Fix diagnal movement speed issue
+	//else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
 
 	
+}
+
+void Player::drawStamina(sf::RenderWindow &window)
+{
+	window.draw(staminaBar);
 }

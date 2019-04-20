@@ -31,7 +31,7 @@ int main()
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
 
 	//Create Objects here
-	Player Player(".\\textures\\a_sprite.png", 32, 32, 4, 3);
+	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
 	Ghost Ghost(sf::Vector2f(0.0f,0.0f), ".\\textures\\ghost_sprite.png",96 ,192 ,4 ,3);
@@ -92,18 +92,6 @@ int main()
 				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				testText.Continue();
 			case sf::Event::MouseWheelScrolled:
-				if (evnt.mouseWheelScroll.delta > 0)
-				{
-					level.setTileset(light);
-					level.update();
-					std::cout << "Light\n";
-				}
-				else
-				{
-					level.setTileset(dark);
-					level.update();
-					std::cout << "Dark\n";
-				}
 				break;
 			}
 		}
@@ -144,6 +132,7 @@ int main()
 		level.draw(window);
 		window.setView(view);
 		Player.draw(window);
+		Player.drawStamina(window);
 		Ghost.draw(window);
 		testText.draw(window);
 		Ghost.drawDist(window);

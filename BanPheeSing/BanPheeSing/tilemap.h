@@ -29,17 +29,19 @@ class TileMapData
 {
 public:
 	std::vector<int> mapData;
+	std::string layer;
 	unsigned int mapWidth;
 	unsigned int mapHeight;
 	TileMapData();
-	TileMapData(std::vector<int>, int, int);
+	TileMapData(std::string, std::vector<int>, int, int);
 };
 TileMapData::TileMapData()
 {
 	//Default
 }
-TileMapData::TileMapData(std::vector<int> mapData, int mapWidth, int mapHeight)
+TileMapData::TileMapData(std::string layer, std::vector<int> mapData, int mapWidth, int mapHeight)
 {
+	this->layer = layer;
 	this->mapData = mapData;
 	this->mapWidth = mapWidth;
 	this->mapHeight = mapHeight;
@@ -56,9 +58,9 @@ public:
 		sf::Vector2u tileSize = tilesetTexture.tileSize;
 		unsigned int width = mapData.mapWidth;
 		unsigned int height = mapData.mapHeight;
+
 		// load the tileset texture
-		if (!m_tileset.loadFromFile(tileset))
-			return false;
+		if (!m_tileset.loadFromFile(tileset)) return false;
 
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);

@@ -27,7 +27,7 @@ private:
 	float runTime = 2.5f;
 	float slowTime = 6.0f;
 	float timeBeforeRun = 12.0f;
-	float killDist = 1.5f;
+	float killDist = 50.0f;
 
 	QuickText showDist;
 
@@ -80,7 +80,10 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 			curState = running;
 		}
 		if (dist > 1200 || dist < 500) curState = running;
-		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		if (dist < killDist)
+		{
+			if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		}
 		if (dist > 1500) curState = lost;
 		break;
 	case running:
@@ -91,7 +94,10 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 			curState = slow;
 			runClock.restart();
 		}
-		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		if (dist < killDist)
+		{
+			if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		}
 		break;
 	case slow:
 		setSpd(0.8f);
@@ -101,7 +107,10 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 			curState = walking;
 			runClock.restart();
 		}
-		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		if (dist < killDist)
+		{
+			if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		}
 		break;
 	case kill:
 		std::cout << "Killed at dist = " << dist << "\n";
