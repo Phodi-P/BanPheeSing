@@ -219,17 +219,14 @@ void TextBox::calculateString()
 void TextBox::setMargin(int margin)
 {
 	textboxMargin = margin;
-	updateSetting();
 }
 void TextBox::setHeight(int height)
 {
 	textboxHeight = height;
-	updateSetting();
 }
 void TextBox::setFont(sf::Font FontIn)
 {
 	font = FontIn;
-	updateSetting();
 }
 
 void TextBox::addDialogue(TextDiaglogue diag)

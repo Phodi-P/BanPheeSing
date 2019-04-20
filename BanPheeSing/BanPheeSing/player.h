@@ -1,7 +1,7 @@
 #pragma once
 
 #include "object.h"
-#include <cmath>
+
 
 class Player : public Obj
 {
@@ -14,6 +14,9 @@ public:
 	void drawStamina(sf::RenderWindow &);
 
 	bool isSprinting = false;
+	bool canWalk = true;
+
+	sf::Vector2f nonZeroSpd;
 
 
 protected:
@@ -23,7 +26,7 @@ protected:
 
 	//Game Mechanics
 
-	float speed = 300.0f;
+	float speed = 450.0f;
 	float sprintSpeed = 1800.0f;
 
 	sf::Clock staminaClock;
@@ -100,59 +103,64 @@ int Player::getCurrentFrame()
 
 void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 {
-	float xMovement = float(Right - Left);
-	float yMovement = float(Down - Up);
+	if (canWalk)
+	{
+		float xMovement = float(Right - Left);
+		float yMovement = float(Down - Up);
 
-	float spd;
-	if (!canSprint && curStamina >= minStamina)
-	{
-		canSprint = true;
-	}
-	if (Sprint && canSprint)
-	{
-		spd = sprintSpeed;
-		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
+		float spd;
+		if (!canSprint && curStamina >= minStamina)
 		{
-			staminaClock.restart();
-			isSprinting = true;
-			if(xMovement != 0 || yMovement != 0) curStamina--;
-			if (curStamina <= 0)
+			canSprint = true;
+		}
+		if (Sprint && canSprint)
+		{
+			spd = sprintSpeed;
+			if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaDrainRate)
 			{
-				curStamina = 0;
-				canSprint = false;
+				staminaClock.restart();
+				isSprinting = true;
+				if (xMovement != 0 || yMovement != 0) curStamina--;
+				if (curStamina <= 0)
+				{
+					curStamina = 0;
+					canSprint = false;
+				}
 			}
 		}
-	}
-	else
-	{
-		isSprinting = false;
-		spd = speed;
-		if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaRegenRate)
+		else
 		{
-			staminaClock.restart();
-			curStamina++;
-			if (curStamina > maxStamina) curStamina = maxStamina;
+			isSprinting = false;
+			spd = speed;
+			if (staminaClock.getElapsedTime().asSeconds() > 1.0f / staminaRegenRate)
+			{
+				staminaClock.restart();
+				curStamina++;
+				if (curStamina > maxStamina) curStamina = maxStamina;
+			}
 		}
+
+
+		float len = std::sqrt(xMovement*xMovement + yMovement * yMovement);
+
+		(len != 0) ? xMovement /= len : 0;
+		(len != 0) ? yMovement /= len : 0;
+
+		moveDir(sf::Vector2f(xMovement * spd * deltaTime, yMovement * spd * deltaTime));
+
+		if (getSpd().x != 0 || getSpd().y != 0) nonZeroSpd = getSpd();
+
+		float staminaBarCurWidth = staminaBarMaxWidth * (curStamina / maxStamina);
+		if (curStamina < maxStamina) staminaBar.setSize(sf::Vector2f(staminaBarCurWidth, 10.0f));
+		else staminaBar.setSize(sf::Vector2f(0, 0));
+		staminaBar.setPosition(getPos() + sf::Vector2f(-(staminaBarCurWidth / 2), -80.0f));
+
+		//moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
+
+		//if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707*deltaTime, yMovement*spd*0.707*deltaTime)); //Fix diagnal movement speed issue
+		//else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
+
 	}
-
-
-	float len = std::sqrt(xMovement*xMovement + yMovement * yMovement);
-
-	(len != 0) ? xMovement /= len : 0;
-	(len != 0) ? yMovement /= len : 0;
-
-	moveDir(sf::Vector2f(xMovement * spd * deltaTime, yMovement * spd * deltaTime));
-
-	float staminaBarCurWidth = staminaBarMaxWidth * (curStamina / maxStamina);
-	if (curStamina < maxStamina) staminaBar.setSize(sf::Vector2f(staminaBarCurWidth, 10.0f));
-	else staminaBar.setSize(sf::Vector2f(0, 0));
-	staminaBar.setPosition(getPos()+sf::Vector2f(-(staminaBarCurWidth/2),-80.0f));
-
-	//moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
-
-	//if(xMovement != 0 && yMovement != 0) moveDir(sf::Vector2f(xMovement*spd*0.707*deltaTime, yMovement*spd*0.707*deltaTime)); //Fix diagnal movement speed issue
-	//else moveDir(sf::Vector2f(xMovement*spd*deltaTime, yMovement*spd*deltaTime));
-
 	
 }
 

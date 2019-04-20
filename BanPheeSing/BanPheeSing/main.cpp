@@ -1,8 +1,5 @@
 
-#include <iostream>
-#include <vector>
-#include <SFML/Graphics.hpp>
-#include <fstream>
+
 
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 
@@ -11,6 +8,7 @@
 #include "ghost.h"
 #include "text_box.h"
 #include "tilemap.h"
+#include "solid_obj.h"
 
 void resizeView(const sf::RenderWindow &window, sf::View &view)
 {
@@ -20,7 +18,6 @@ void resizeView(const sf::RenderWindow &window, sf::View &view)
 
 
 //Global Variables
-std::vector<Obj*> allObjPtr;
 sf::Vector2f mousePosition = { 0,0 };
 
 
@@ -34,8 +31,22 @@ int main()
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 
+	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "แดง");
+	Red.setScale(4.0f, 4.0f);
+
+	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เขียว");
+	Green.setScale(4.0f, 4.0f);
+
+	Npc Koy({ 300,100 }, ".\\textures\\koy_sprite.png", 32, 32, 4, 3, "ก้อย");
+	Koy.setScale(4.0f, 4.0f);
+
+	std::vector<Npc*> NPCs;
+	NPCs.push_back(&Red);
+	NPCs.push_back(&Green);
+	NPCs.push_back(&Koy);
+
 	Ghost Ghost(sf::Vector2f(0.0f,0.0f), ".\\textures\\ghost_sprite.png",96 ,192 ,4 ,3);
-	Ghost.setScale(1.0f, 1.0f);
+	Ghost.setScale(1.5f, 1.5f);
 	Ghost.setSpd(3.0f);
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
@@ -52,11 +63,14 @@ int main()
 	//FPS.setColor(sf::Color::Blue);
 
 	TextBox testText;
+	testText.setMargin(35);
 	testText.setView(view);
 	testText.isDisplay = true;
-	//testText.addDialogue(TextDiaglogue("Claudette", "Oh shit!!!\nHe saw me!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
-	//testText.addDialogue(TextDiaglogue("Some random guy", "Don't worry\nI'll help you.", ".//textures//test_portrait2.png", mainFont, sf::Color::Black));
-	//testText.addDialogue(TextDiaglogue("Claudette", "Run you fool!!!", ".//textures//test_portrait.png", mainFont, sf::Color::Magenta));
+	testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", ".//textures//portraits//koy.png", mainFont, sf::Color::Magenta));
+	testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", ".//textures//portraits//green.png", mainFont, sf::Color::Green));
+	testText.addDialogue(TextDiaglogue("เอิร์ธ", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", ".//textures//portraits//red.png", mainFont, sf::Color::Red));
+	testText.addDialogue(TextDiaglogue("เจมส์", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", ".//textures//portraits//a.png", mainFont, sf::Color::Blue));
+
 	
 	TileSet light(".\\textures\\test_tileset4.png", { 16,16 });
 	TileSet dark(".\\textures\\test_tileset4_dark.png", { 16,16 });
@@ -67,13 +81,13 @@ int main()
 	level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
 
+	//solidObj solid({ 100,0 }, { 50,700 }, true);
 
 	sf::Clock clock;
 
 	while (window.isOpen())
 	{
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-		deltaTime = clock.getElapsedTime().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -108,11 +122,20 @@ int main()
 		Player.control(Right, Left, Down, Up, Sprint);
 		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		//solid.collide(Player);
+		//solid.collide(Ghost);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 		{
 			Ghost.chase({ 1024,200 }, { 0,400 }, Player);
 		}
+
 		//NPC test
+		for (int i = 0; i < NPCs.size(); i++)
+		{
+			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
+			NPCs[i]->walkingAnimate();
+		}
 		//Ghost.moveToQueue();
 		//Ghost.walkingAnimate();
 
@@ -124,6 +147,7 @@ int main()
 						"\n mouseX: "+std::to_string(mousePosition.x)+
 						"\n mouseY: "+std::to_string(mousePosition.y));
 		FPS.setPosition(getViewOffset(view));
+		deltaTime = clock.getElapsedTime().asSeconds();
 		clock.restart();
 
 		//Rendering
@@ -131,11 +155,21 @@ int main()
 
 		level.draw(window);
 		window.setView(view);
+
+		Red.draw(window);
+		Green.draw(window);
+		Koy.draw(window);
+
 		Player.draw(window);
 		Player.drawStamina(window);
+
+		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window);
+
 		Ghost.draw(window);
 		testText.draw(window);
 		Ghost.drawDist(window);
+
+		//window.draw(solid.obj);
 
 		window.draw(FPS);
 
