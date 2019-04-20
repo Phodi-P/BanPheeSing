@@ -5,7 +5,7 @@
 #include<sstream>
 #include<cstdlib>
 
-// #include"tilemap.h"
+#include"tilemap.h"
 
 namespace mp {
   void parseMap(std::string path,Level level){
@@ -56,18 +56,16 @@ namespace mp {
         // }
         //
 
-        //Uncompilable
-        // TileMapData *p;
-        // switch(layer){
-        //   case "bot": p=&level.botData;break;
-        //   case "mid": p=&level.midData;break;
-        //   case "top": p=&level.topData;break;
-        // }
-        // p->mapData = datas;
-        // p->layer = layer;
-        // p->mapWidth = w;
-        // p->mapHeight = h;
-        //
+        TileMapData *p;
+		std::string strLayer = layer;
+        if (strLayer == "bot") p = &level.botData;
+		if (strLayer == "mid") p = &level.midData;
+		if (strLayer == "top") p = &level.topData;
+
+         p->mapData = datas;
+         p->layer = layer;
+         p->mapWidth = w;
+         p->mapHeight = h;
       }
     }
     fr.close();

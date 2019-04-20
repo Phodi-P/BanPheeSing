@@ -50,5 +50,8 @@
     <ClInclude Include="solid_obj.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="map_parser.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
