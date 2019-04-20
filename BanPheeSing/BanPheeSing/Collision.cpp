@@ -140,7 +140,7 @@ namespace Collision
 		OrientedBoundingBox(const sf::RectangleShape& Object) // Calculate the four points of the OBB from a transformed (scaled, rotated...) sprite
 		{
 			sf::Transform trans = Object.getTransform();
-			sf::IntRect local = Object.getTextureRect();
+			sf::IntRect local = sf::IntRect(Object.getLocalBounds());
 			Points[0] = trans.transformPoint(0.f, 0.f);
 			Points[1] = trans.transformPoint(local.width, 0.f);
 			Points[2] = trans.transformPoint(local.width, local.height);

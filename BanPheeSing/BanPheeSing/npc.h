@@ -24,6 +24,7 @@ Npc::Npc(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int fram
 	obj.setSize(sf::Vector2f(frameW, frameH));
 	obj.setOrigin(sf::Vector2f(frameW / 2, frameH / 2));
 	setupAnim(ImgIDir, frameW, frameH, frameRow, frameCol);
+	setSpd(2.6f);
 }
 
 int Npc::walkingAnimate(int fps = 6)

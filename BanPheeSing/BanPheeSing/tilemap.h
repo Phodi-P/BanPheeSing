@@ -1,11 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <SFML/Graphics.hpp>
+
 #include "custom_utility.h"
-#include <vector>
-#include <sstream>
+
 
 class TileSet
 {

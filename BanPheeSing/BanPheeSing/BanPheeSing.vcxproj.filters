@@ -47,5 +47,8 @@
     <ClInclude Include="Collision.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="solid_obj.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

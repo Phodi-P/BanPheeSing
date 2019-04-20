@@ -1,9 +1,7 @@
 #pragma once
-#include <iostream>
-#include <string>
-#include <SFML/Graphics.hpp>
+
 #include "custom_utility.h"
-#include <vector>
+
 #include "Collision.hpp"
 
 
@@ -318,3 +316,4 @@ int Obj::animate(int setFrame = -1, int fps = 1)
 		return -69;
 	}
 }
+

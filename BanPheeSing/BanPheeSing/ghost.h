@@ -10,6 +10,9 @@ public:
 
 	void drawDist(sf::RenderWindow &);
 
+	bool canWalk = true;
+	sf::Vector2f nonZeroSpd;
+
 private:
 	enum state
 	{
@@ -72,8 +75,8 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		runClock.restart();
 		break;
 	case walking:
-		setSpd(1.7f);
-		moveTo(target.getPos());
+		setSpd(2.7f);
+		if(canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= timeBeforeRun)
 		{
 			runClock.restart();
@@ -88,7 +91,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	case running:
 		setSpd(5.9f);
-		moveTo(target.getPos());
+		if (canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= runTime)
 		{
 			curState = slow;
@@ -101,7 +104,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	case slow:
 		setSpd(0.8f);
-		moveTo(target.getPos());
+		if (canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= slowTime)
 		{
 			curState = walking;
@@ -126,6 +129,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	}
 	walkingAnimate();
+	if (getSpd().x != 0 || getSpd().y != 0) nonZeroSpd = getSpd();
 	return 0;
 }
 

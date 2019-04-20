@@ -1,8 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <sstream>
 #include <cmath>
+#include <vector>
 #include <SFML/Graphics.hpp>
 
 //Global setting variables
