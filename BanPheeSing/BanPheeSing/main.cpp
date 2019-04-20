@@ -31,7 +31,7 @@ int main()
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
 
 	//Create Objects here
-	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
+	Player Player(".\\textures\\a_sprite.png", 32, 32, 4, 3);
 	Player.setScale(4.0f, 4.0f);
 
 	Ghost Ghost(sf::Vector2f(0.0f,0.0f), ".\\textures\\ghost_sprite.png",96 ,192 ,4 ,3);
@@ -122,7 +122,7 @@ int main()
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			Ghost.chase({ 1024,200 }, { 0,400 }, Player.getPos());
+			Ghost.chase({ 1024,200 }, { 0,400 }, Player);
 		}
 		//NPC test
 		//Ghost.moveToQueue();

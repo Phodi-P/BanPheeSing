@@ -127,10 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="collision.h" />
+    <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="npc.h" />

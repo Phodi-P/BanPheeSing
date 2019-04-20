@@ -6,7 +6,7 @@ class Ghost :public Npc
 {
 public:
 	Ghost(sf::Vector2f, std::string, int, int, int, int);
-	int chase(sf::Vector2f, sf::Vector2f, sf::Vector2f);
+	int chase(sf::Vector2f, sf::Vector2f, Player);
 
 	void drawDist(sf::RenderWindow &);
 
@@ -52,10 +52,10 @@ Ghost::Ghost(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int 
 //returns 0 while chasing
 //returns 1 when target get away
 //reuturns 2 when target is caught
-int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, sf::Vector2f targetPos)
+int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 {
-	float distX = targetPos.x - getPos().x;
-	float distY = targetPos.y - getPos().y;
+	float distX = target.getPos().x - getPos().x;
+	float distY = target.getPos().y - getPos().y;
 	float dist = std::sqrtf(distX*distX + distY * distY);
 	showDist.setPos(getPos());
 	showDist.setString(std::to_string(dist));
@@ -73,45 +73,48 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, sf::Vector2f targ
 		break;
 	case walking:
 		setSpd(1.7f);
-		moveTo(targetPos);
+		moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= timeBeforeRun)
 		{
 			runClock.restart();
 			curState = running;
 		}
 		if (dist > 1200 || dist < 500) curState = running;
-		if (dist <= killDist) curState = kill;
+		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
 		if (dist > 1500) curState = lost;
 		break;
 	case running:
 		setSpd(5.9f);
-		moveTo(targetPos);
+		moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= runTime)
 		{
 			curState = slow;
 			runClock.restart();
 		}
-		if (dist <= killDist) curState = kill;
+		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
 		break;
 	case slow:
 		setSpd(0.8f);
-		moveTo(targetPos);
+		moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= slowTime)
 		{
 			curState = walking;
 			runClock.restart();
 		}
-		if (dist <= killDist) curState = kill;
+		if (Collision::BoundingBoxTestRect(getObj(), target.getObj())) curState = kill;
+		break;
 	case kill:
 		std::cout << "Killed at dist = " << dist << "\n";
 		setVisibility(false);
 		curState = spawn;
 		return 2;
+		break;
 	case lost:
 		std::cout << "Lost at dist = " << dist << "\n";
 		setVisibility(false);
 		curState = spawn;
 		return 1;
+		break;
 	}
 	walkingAnimate();
 	return 0;

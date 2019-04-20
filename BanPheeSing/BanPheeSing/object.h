@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "custom_utility.h"
 #include <vector>
+#include "Collision.hpp"
 
 
 class Obj

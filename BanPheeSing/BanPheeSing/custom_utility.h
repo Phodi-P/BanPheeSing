@@ -13,6 +13,7 @@ const int RoomHeight = 1080;
 
 float deltaTime = 0.0f;
 
+
 namespace CUt //CUt is short for Custom Utility
 {
 	//***[Note] This function returns sign of value (-1,0,1) [Note]***
