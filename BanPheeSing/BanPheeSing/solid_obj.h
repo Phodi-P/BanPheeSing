@@ -4,8 +4,9 @@
 class solidObj
 {
 public:
-	solidObj(sf::Vector2f, sf::Vector2f, bool);
+	solidObj(sf::Vector2f, sf::Vector2f, float, bool);
 	bool collide(Player &);
+	bool collide(Npc &);
 	bool collide(Ghost &);
 	sf::RectangleShape obj;
 
@@ -14,10 +15,10 @@ private:
 
 };
 
-solidObj::solidObj(sf::Vector2f pos, sf::Vector2f size, bool moveAble = false)
+solidObj::solidObj(sf::Vector2f pos, sf::Vector2f size, float scale = 4.0f, bool moveAble = false)
 {
-	obj.setPosition(pos);
-	obj.setSize(size);
+	obj.setPosition({ pos.x*scale,pos.y*scale });
+	obj.setSize({ size.x*scale,size.y*scale });
 	this->moveAble = moveAble;
 }
 
@@ -26,8 +27,24 @@ bool solidObj::collide(Player &target)
 	if (Collision::BoundingBoxTestRect(obj, target.getObj()))
 	{
 		target.canWalk = false;
-		target.moveDir(sf::Vector2f(-target.nonZeroSpd.x*10000*deltaTime,-target.nonZeroSpd.y*10000*deltaTime));
-		if (moveAble) obj.move(sf::Vector2f(target.nonZeroSpd.x * 10000 * deltaTime, target.nonZeroSpd.y * 10000 * deltaTime));
+		target.moveDir(sf::Vector2f(-target.nonZeroSpd.x*1.05*deltaTime,-target.nonZeroSpd.y*1.05*deltaTime));
+		if (moveAble) obj.move(sf::Vector2f(target.nonZeroSpd.x * 1.05 * deltaTime, target.nonZeroSpd.y * 1.05 * deltaTime));
+		return true;
+	}
+	else
+	{
+		target.canWalk = true;
+		return false;
+	}
+}
+
+bool solidObj::collide(Npc &target)
+{
+	if (Collision::BoundingBoxTestRect(obj, target.getObj()))
+	{
+		//target.getSpd
+		target.moveDir(sf::Vector2f(-target.getSpd().x*1.05*deltaTime, -target.getSpd().y*1.05*deltaTime));
+		if (moveAble) obj.move(sf::Vector2f(target.getSpd().x * 1.05 * deltaTime, target.getSpd().y * 1.05 * deltaTime));
 		return true;
 	}
 	else
@@ -39,10 +56,10 @@ bool solidObj::collide(Player &target)
 
 bool solidObj::collide(Ghost &target)
 {
-	if (Collision::BoundingBoxTestRect(obj, target.getObj()))
+	if (Collision::BoundingBoxTestRect(obj, target.getObj()) && target.canCollide)
 	{
 		//target.canWalk = false;
-		target.moveDir(sf::Vector2f(-target.nonZeroSpd.x * 100000 * deltaTime, -target.nonZeroSpd.y * 100000 * deltaTime));
+		target.moveDir(sf::Vector2f(-target.nonZeroSpd.x * 1.05 * deltaTime, -target.nonZeroSpd.y * 1.05 * deltaTime));
 		return true;
 	}
 	else

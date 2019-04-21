@@ -22,6 +22,26 @@ TileSet::TileSet(std::string tilePath, sf::Vector2u tileSize)
 	this->tileSize = tileSize;
 }
 
+class ObjSpawnData
+{
+public:
+	std::string type;
+	sf::Vector2f pos;
+	sf::Vector2f size;
+	ObjSpawnData();
+	ObjSpawnData(std::string, sf::Vector2f, sf::Vector2f);
+};
+ObjSpawnData::ObjSpawnData()
+{
+	//Default	
+}
+ObjSpawnData::ObjSpawnData(std::string type, sf::Vector2f pos, sf::Vector2f size)
+{
+	this->type = type;
+	this->pos = pos;
+	this->size = size;
+}
+
 class TileMapData
 {
 public:
@@ -124,6 +144,8 @@ public:
 	TileMap bot;
 	TileMap mid;
 	TileMap top;
+
+	std::vector<ObjSpawnData> objData;
 
 	sf::Vector2f scale;
 

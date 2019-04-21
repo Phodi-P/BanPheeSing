@@ -104,9 +104,10 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 	updateSetting();
 
 	ContinueText.setFont(font);
-	ContinueText.setString(speakerName);
+	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
 	ContinueText.setCharacterSize(72);
-	ContinueText.setFillColor(sf::Color(255,255,255,125));
+	//ContinueText.setFillColor(sf::Color(0,0,0,125));
+	ContinueText.setFillColor(sf::Color::Black);
 
 	isDisplay = true;
 }
@@ -196,6 +197,8 @@ void TextBox::updatePosition()
 	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120);
 	Img.setPosition(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight - 700);
 	text_speaker.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
+
+	ContinueText.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
 }
 
 void TextBox::calculateString()
@@ -259,6 +262,7 @@ void TextBox::draw(sf::RenderWindow &window)
 		window.draw(box);
 		window.draw(text_speaker);
 		window.draw(text);
+		window.draw(ContinueText);
 	}
 
 }

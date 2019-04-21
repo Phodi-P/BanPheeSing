@@ -11,6 +11,7 @@ public:
 	void drawDist(sf::RenderWindow &);
 
 	bool canWalk = true;
+	bool canCollide = true;
 	sf::Vector2f nonZeroSpd;
 
 private:
@@ -27,8 +28,8 @@ private:
 	};
 	state curState;
 	sf::Clock runClock;
-	float runTime = 2.5f;
-	float slowTime = 6.0f;
+	float runTime = 3.5f;
+	float slowTime = 5.0f;
 	float timeBeforeRun = 12.0f;
 	float killDist = 50.0f;
 
@@ -65,17 +66,20 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 	switch(curState)
 	{
 	case spawn:
+		canCollide = false;
 		setVisibility(true);
 		setPos(startPos);
 		curState = startComingOut;
 		break;
 	case startComingOut:
+		canCollide = false;
 		setSpd(1.0f);
 		if (moveTo(startPos + startDir)) curState = walking;
 		runClock.restart();
 		break;
 	case walking:
-		setSpd(2.7f);
+		canCollide = true;
+		setSpd(7.8f + (1.0f - (dist / 1500.0f))*5.0f);
 		if(canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= timeBeforeRun)
 		{
@@ -90,7 +94,8 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		if (dist > 1500) curState = lost;
 		break;
 	case running:
-		setSpd(5.9f);
+		canCollide = true;
+		setSpd(11.0f+(1.0f-(dist/1500.0f))*8.0f);
 		if (canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= runTime)
 		{
@@ -103,7 +108,8 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		}
 		break;
 	case slow:
-		setSpd(0.8f);
+		canCollide = true;
+		setSpd(2.5f);
 		if (canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= slowTime)
 		{
@@ -116,12 +122,14 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		}
 		break;
 	case kill:
+		canCollide = false;
 		std::cout << "Killed at dist = " << dist << "\n";
 		setVisibility(false);
 		curState = spawn;
 		return 2;
 		break;
 	case lost:
+		canCollide = false;
 		std::cout << "Lost at dist = " << dist << "\n";
 		setVisibility(false);
 		curState = spawn;

@@ -2,6 +2,7 @@
 
 
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
+#include "Kairos/Timestep.hpp"
 
 #include "player.h"
 #include "npc.h"
@@ -9,6 +10,7 @@
 #include "text_box.h"
 #include "tilemap.h"
 #include "solid_obj.h"
+#include "map_parser.h"
 
 void resizeView(const sf::RenderWindow &window, sf::View &view)
 {
@@ -26,19 +28,26 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
+	window.setVerticalSyncEnabled(true);
+	//window.setFramerateLimit(30);
+	kairos::Timestep timestep;
 
 	//Create Objects here
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
+	Player.setPos({ 710,865 });
 
 	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "แดง");
 	Red.setScale(4.0f, 4.0f);
+	Red.setPos(Player.getPos());
 
 	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เขียว");
 	Green.setScale(4.0f, 4.0f);
+	Green.setPos(Player.getPos());
 
 	Npc Koy({ 300,100 }, ".\\textures\\koy_sprite.png", 32, 32, 4, 3, "ก้อย");
 	Koy.setScale(4.0f, 4.0f);
+	Koy.setPos(Player.getPos());
 
 	std::vector<Npc*> NPCs;
 	NPCs.push_back(&Red);
@@ -78,10 +87,20 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
+	mp::parseMap(".\\maps\\export.mMap", level);
+	//level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
 
 	//solidObj solid({ 100,0 }, { 50,700 }, true);
+	std::cout << level.objData.size();
+	std::vector<solidObj> solids;
+	for (int i = 0; i < level.objData.size(); i++)
+	{
+		if (level.objData[i].type == "solid")
+		{
+			solids.push_back(solidObj(level.objData[i].pos, level.objData[i].size, 4.0f, false));
+		}
+	}
 
 	sf::Clock clock;
 
@@ -101,46 +120,67 @@ int main()
 				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
+				if (evnt.key.code == sf::Keyboard::P)
+				{
+					gamePause = !gamePause;
+				}
 				break;
 			case sf::Event::MouseButtonPressed:
 				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				testText.Continue();
+				testText.updatePosition();
 			case sf::Event::MouseWheelScrolled:
 				break;
 			}
 		}
+		timestep.addFrame();
+		if (gamePause) timestep.pause();
+		else timestep.unpause();
 
-		view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
-
-		//Player controls
-		bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-		bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-		bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-		bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-
-		Player.control(Right, Left, Down, Up, Sprint);
-		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
-
-		//solid.collide(Player);
-		//solid.collide(Ghost);
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		while (timestep.isUpdateRequired())
 		{
-			Ghost.chase({ 1024,200 }, { 0,400 }, Player);
+			//deltaTime = timestep.getStepAsFloat();
+			view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
+
+			//Player controls
+			bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+			bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+			bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+			bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+			bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+			Player.control(Right, Left, Down, Up, Sprint);
+			Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+
+			//solid.collide(Player);
+			//solid.collide(Ghost);
+			for (int i = 0; i < solids.size(); i++)
+			{
+				solids[i].collide(Player);
+				for (int j = 0; j < NPCs.size(); j++)
+				{
+					solids[i].collide(*NPCs[j]);
+				}
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				Ghost.chase({ 1024,200 }, { 0,400 }, Player);
+			}
+
+			//NPC test
+			for (int i = 0; i < NPCs.size(); i++)
+			{
+				NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
+				NPCs[i]->walkingAnimate();
+			}
+			//Ghost.moveToQueue();
+			//Ghost.walkingAnimate();
+			testText.updatePosition();
+
+			
 		}
-
-		//NPC test
-		for (int i = 0; i < NPCs.size(); i++)
-		{
-			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
-			NPCs[i]->walkingAnimate();
-		}
-		//Ghost.moveToQueue();
-		//Ghost.walkingAnimate();
-
-
-		testText.updatePosition();
+		
 
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+
@@ -148,6 +188,7 @@ int main()
 						"\n mouseY: "+std::to_string(mousePosition.y));
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
+		deltaTime = 1.0f;
 		clock.restart();
 
 		//Rendering
@@ -170,6 +211,7 @@ int main()
 		Ghost.drawDist(window);
 
 		//window.draw(solid.obj);
+		//for (int i = 0; i < solids.size(); i++) window.draw(solids[i].obj);
 
 		window.draw(FPS);
 

@@ -7,6 +7,7 @@ class Npc : public Obj
 public:
 	Npc();
 	Npc(sf::Vector2f, std::string, int, int, int, int, std::string);
+	bool canWalk = true;
 	int walkingAnimate(int);
 private:
 
@@ -24,7 +25,7 @@ Npc::Npc(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int fram
 	obj.setSize(sf::Vector2f(frameW, frameH));
 	obj.setOrigin(sf::Vector2f(frameW / 2, frameH / 2));
 	setupAnim(ImgIDir, frameW, frameH, frameRow, frameCol);
-	setSpd(2.6f);
+	setSpd(4.5f);
 }
 
 int Npc::walkingAnimate(int fps = 6)
