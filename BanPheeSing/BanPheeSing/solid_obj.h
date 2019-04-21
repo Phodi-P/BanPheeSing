@@ -42,6 +42,7 @@ bool solidObj::collide(Npc &target)
 {
 	if (Collision::BoundingBoxTestRect(obj, target.getObj()))
 	{
+		//target.getSpd
 		target.moveDir(sf::Vector2f(-target.getSpd().x*1.05*deltaTime, -target.getSpd().y*1.05*deltaTime));
 		if (moveAble) obj.move(sf::Vector2f(target.getSpd().x * 1.05 * deltaTime, target.getSpd().y * 1.05 * deltaTime));
 		return true;

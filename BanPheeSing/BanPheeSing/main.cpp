@@ -39,12 +39,15 @@ int main()
 
 	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "แดง");
 	Red.setScale(4.0f, 4.0f);
+	Red.setPos(Player.getPos());
 
 	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เขียว");
 	Green.setScale(4.0f, 4.0f);
+	Green.setPos(Player.getPos());
 
 	Npc Koy({ 300,100 }, ".\\textures\\koy_sprite.png", 32, 32, 4, 3, "ก้อย");
 	Koy.setScale(4.0f, 4.0f);
+	Koy.setPos(Player.getPos());
 
 	std::vector<Npc*> NPCs;
 	NPCs.push_back(&Red);
@@ -117,15 +120,22 @@ int main()
 				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
+				if (evnt.key.code == sf::Keyboard::P)
+				{
+					gamePause = !gamePause;
+				}
 				break;
 			case sf::Event::MouseButtonPressed:
 				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				testText.Continue();
+				testText.updatePosition();
 			case sf::Event::MouseWheelScrolled:
 				break;
 			}
 		}
 		timestep.addFrame();
+		if (gamePause) timestep.pause();
+		else timestep.unpause();
 
 		while (timestep.isUpdateRequired())
 		{
@@ -166,11 +176,11 @@ int main()
 			}
 			//Ghost.moveToQueue();
 			//Ghost.walkingAnimate();
-
-
 			testText.updatePosition();
-		}
 
+			
+		}
+		
 
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+

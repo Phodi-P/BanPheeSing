@@ -16,6 +16,8 @@ const int RoomHeight = 1080;
 
 float deltaTime = 0.0f;
 
+bool gamePause = false;
+
 
 namespace CUt //CUt is short for Custom Utility
 {
