@@ -157,7 +157,7 @@ bool Obj::moveTo(sf::Vector2f dest)
 	{
 		isMoving = true;
 
-		if ((std::abs(dest.x - getPos().x) <= 1) && (std::abs(dest.y - getPos().y) <= 1))
+		if ((std::abs(dest.x - getPos().x) <= 2) && (std::abs(dest.y - getPos().y) <= 2))
 		{
 			setPos(dest); //Stop when distanct to target is 1
 			tempX = 0;

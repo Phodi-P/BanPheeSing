@@ -128,12 +128,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Kairos\Absorel.cpp" />
+    <ClCompile Include="Kairos\BasicClock.cpp" />
+    <ClCompile Include="Kairos\Continuum.cpp" />
+    <ClCompile Include="Kairos\Duration.cpp" />
+    <ClCompile Include="Kairos\FpsLite.cpp" />
+    <ClCompile Include="Kairos\Stopwatch.cpp" />
+    <ClCompile Include="Kairos\Timer.cpp" />
+    <ClCompile Include="Kairos\Timestep.cpp" />
+    <ClCompile Include="Kairos\TimestepLite.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
     <ClInclude Include="ghost.h" />
+    <ClInclude Include="Kairos\Absorel.hpp" />
+    <ClInclude Include="Kairos\all.hpp" />
+    <ClInclude Include="Kairos\BasicClock.hpp" />
+    <ClInclude Include="Kairos\Continuum.hpp" />
+    <ClInclude Include="Kairos\Duration.hpp" />
+    <ClInclude Include="Kairos\FpsLite.hpp" />
+    <ClInclude Include="Kairos\Stopwatch.hpp" />
+    <ClInclude Include="Kairos\Timer.hpp" />
+    <ClInclude Include="Kairos\Timestep.hpp" />
+    <ClInclude Include="Kairos\TimestepLite.hpp" />
+    <ClInclude Include="Kairos\Yalpes.hpp" />
     <ClInclude Include="map_parser.h" />
     <ClInclude Include="npc.h" />
     <ClInclude Include="object.h" />
@@ -141,6 +161,10 @@
     <ClInclude Include="solid_obj.h" />
     <ClInclude Include="text_box.h" />
     <ClInclude Include="tilemap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Kairos\Absorel.inl" />
+    <None Include="Kairos\Yalpes.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

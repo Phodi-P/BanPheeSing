@@ -26,8 +26,8 @@ protected:
 
 	//Game Mechanics
 
-	float speed = 450.0f;
-	float sprintSpeed = 1800.0f;
+	float speed = 5.0f;
+	float sprintSpeed = 12.0f;
 
 	sf::Clock staminaClock;
 
