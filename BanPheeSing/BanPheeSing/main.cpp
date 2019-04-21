@@ -2,6 +2,7 @@
 
 
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
+#include "Kairos/Timestep.hpp"
 
 #include "player.h"
 #include "npc.h"
@@ -9,6 +10,7 @@
 #include "text_box.h"
 #include "tilemap.h"
 #include "solid_obj.h"
+//#include "map_parser.h"
 
 void resizeView(const sf::RenderWindow &window, sf::View &view)
 {
@@ -26,6 +28,9 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
+	//window.setVerticalSyncEnabled(true);
+	//window.setFramerateLimit(30);
+	kairos::Timestep timestep;
 
 	//Create Objects here
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
@@ -78,6 +83,7 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
+	//mp::parseMap("", level);
 	level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
 
@@ -109,45 +115,51 @@ int main()
 				break;
 			}
 		}
+		timestep.addFrame();
 
-		view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
-
-		//Player controls
-		bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-		bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-		bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-		bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-		bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-
-		Player.control(Right, Left, Down, Up, Sprint);
-		Player.walkingAnimate(Right-Left,Down-Up,Player.isSprinting ? 12 : 6);
-
-		//solid.collide(Player);
-		//solid.collide(Ghost);
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		while (timestep.isUpdateRequired())
 		{
-			Ghost.chase({ 1024,200 }, { 0,400 }, Player);
+			view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
+
+			//Player controls
+			bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+			bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+			bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+			bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+			bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+			Player.control(Right, Left, Down, Up, Sprint);
+			Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+
+			//solid.collide(Player);
+			//solid.collide(Ghost);
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				Ghost.chase({ 1024,200 }, { 0,400 }, Player);
+			}
+
+			//NPC test
+			for (int i = 0; i < NPCs.size(); i++)
+			{
+				NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
+				NPCs[i]->walkingAnimate();
+			}
+			//Ghost.moveToQueue();
+			//Ghost.walkingAnimate();
+
+
+			testText.updatePosition();
 		}
 
-		//NPC test
-		for (int i = 0; i < NPCs.size(); i++)
-		{
-			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
-			NPCs[i]->walkingAnimate();
-		}
-		//Ghost.moveToQueue();
-		//Ghost.walkingAnimate();
-
-
-		testText.updatePosition();
 
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+
 						"\n mouseX: "+std::to_string(mousePosition.x)+
 						"\n mouseY: "+std::to_string(mousePosition.y));
 		FPS.setPosition(getViewOffset(view));
-		deltaTime = clock.getElapsedTime().asSeconds();
+		//deltaTime = clock.getElapsedTime().asSeconds();
+		deltaTime = 1.0f;
 		clock.restart();
 
 		//Rendering
