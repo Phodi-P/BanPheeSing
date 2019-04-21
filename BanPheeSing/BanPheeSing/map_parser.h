@@ -13,6 +13,7 @@ namespace mp {
     fr.open(path.c_str());
     std::string line;
     int mode;
+	bool mapReadComplete = false;
     while(getline(fr,line)){
       //Mode
       if(line == "Object") {mode = 1; continue;}
@@ -89,11 +90,10 @@ namespace mp {
           std::string data;
             for(int j=0;j<w;j++) {
               getline(lineStream,data,',');
-			  int curData = std::stoi(data);
-			  datas.push_back(curData);
-              //datas.push_back(std::stoi(data));
+              datas.push_back(std::stoi(data));
             }
         }
+		mapReadComplete = true;
         //print map data
 		/*
          for(int i=0;i<h;i++){
@@ -107,7 +107,9 @@ namespace mp {
 		//if (layer == "mid") p = &level.midData;
 		//if (layer == "top") p = &level.topData;
 		//p->mapData = datas;
-		 if (layer == "bot")
+
+
+		 if (layer == "bot" && mapReadComplete)
 		 {
 			 std::cout << "This is bot\n";
 			 level.botData.mapData = datas;
@@ -115,7 +117,8 @@ namespace mp {
 			 level.botData.mapWidth = w;
 			 level.botData.mapHeight = h;
 		 }
-		 if (layer == "mid")
+
+		 if (layer == "mid" && mapReadComplete)
 		 {
 			 std::cout << "This is mid\n";
 			 level.midData.mapData = datas;
@@ -124,7 +127,8 @@ namespace mp {
 			 level.midData.mapHeight = h;
 		 }
 
-		 if (layer == "top")
+
+		 if (layer == "top" && mapReadComplete)
 		 {
 			 std::cout << "This is top\n";
 			 level.topData.mapData = datas;

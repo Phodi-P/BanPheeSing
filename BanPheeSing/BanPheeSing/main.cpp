@@ -25,9 +25,9 @@ sf::Vector2f mousePosition = { 0,0 };
 
 int main()
 	{
-	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
-	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
+	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
 	window.setVerticalSyncEnabled(true);
 	//window.setFramerateLimit(30);
 	kairos::Timestep timestep;
@@ -84,7 +84,7 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	mp::parseMap(".\\maps\\test_mMap.txt", level);
+	mp::parseMap(".\\maps\\export.mMap", level);
 	//level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
 
@@ -93,7 +93,7 @@ int main()
 	std::vector<solidObj> solids;
 	for (int i = 0; i < level.objData.size(); i++)
 	{
-		if (level.objData[i].type == "collision")
+		if (level.objData[i].type == "solid")
 		{
 			solids.push_back(solidObj(level.objData[i].pos, level.objData[i].size, 4.0f, false));
 		}
