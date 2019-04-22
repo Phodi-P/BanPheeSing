@@ -87,12 +87,22 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	mp::parseMap(".\\maps\\export.mMap", level);
+	mp::parseMap(".\\maps\\test_case.mMap", level);
 	//level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
+	//debug 
+	//std::cout << "size of td " << level.tileData.size() << "\n";
+	/*
+	for (int i = 0; i < level.tileData.size(); i++) {
+		std::cout << level.tileData[i].layer << "\n" << level.tileData[i].mapHeight << " "<<level.tileData[i].mapWidth << "\n";
+		for (int j = 0; j < level.tileData[i].mapHeight; j++) {
+			for (int k = 0; k < level.tileData[i].mapWidth; k++)std::cout << level.tileData[i].mapData[(j*level.tileData[i].mapWidth) + k] << " ";
+			std::cout << "\n";
+		}
+	} */
 
 	//solidObj solid({ 100,0 }, { 50,700 }, true);
-	std::cout << level.objData.size();
+	//std::cout << level.objData.size();
 	std::vector<solidObj> solids;
 	for (int i = 0; i < level.objData.size(); i++)
 	{
