@@ -137,13 +137,19 @@ public:
 	std::vector<int> tileMap;
 	TileSet tileset;
 
+	std::vector<TileMap> tileLayers;
+
+	/*
 	TileMapData topData;
 	TileMapData midData;
-	TileMapData botData;
+	TileMapData botData;*/
 
+	std::vector<TileMapData> tileData;
+
+	/*
 	TileMap bot;
 	TileMap mid;
-	TileMap top;
+	TileMap top;*/
 
 	std::vector<ObjSpawnData> objData;
 
@@ -153,7 +159,6 @@ public:
 	std::vector<sf::Vector2f> objSize;
 	std::vector<int> objType;
 
-	void readFile(std::string, std::string, std::string);
 	void readMapData(std::string, TileMapData &);
 	void setTileset(TileSet);
 	void setScale(sf::Vector2f);
@@ -194,12 +199,6 @@ void Level::readMapData(std::string filePath, TileMapData &output)
 	}
 	return;
 }
-void Level::readFile(std::string botPath, std::string midPath, std::string topPath)
-{
-	readMapData(botPath, botData);
-	readMapData(midPath, midData);
-	readMapData(topPath, topData);
-}
 void Level::setTileset(TileSet tileset)
 {
 	this->tileset = tileset;
@@ -207,6 +206,7 @@ void Level::setTileset(TileSet tileset)
 
 void Level::update()
 {
+	/*
 	bot.load(tileset, botData);
 	mid.load(tileset, midData);
 	top.load(tileset, topData);
@@ -214,11 +214,18 @@ void Level::update()
 	bot.setScale(scale);
 	mid.setScale(scale);
 	top.setScale(scale);
+	*/
+
+		for (int i = 0; i < tileData.size(); i++) {
+			tileLayers.push_back(TileMap());
+			tileLayers[i].load(tileset, tileData[i]);
+			tileLayers[i].setScale(scale);
+		}
 }
 
 void Level::draw(sf::RenderWindow &window)
 {
-	window.draw(bot);
-	window.draw(mid);
-	window.draw(top);
+	for (int i = 0; i < tileLayers.size(); i++) {
+	window.draw(tileLayers[i]);
+	}
 }

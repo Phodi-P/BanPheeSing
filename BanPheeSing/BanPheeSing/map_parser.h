@@ -18,7 +18,7 @@ namespace mp {
       //Mode
       if(line == "Object") {mode = 1; continue;}
       else if(line == "Map") {mode = 2; continue;}
-
+	  
       //Read File with format
       if(mode == 1){
         if(line[0] == '*') continue;
@@ -27,25 +27,25 @@ namespace mp {
 
 		getline(sObj, curObj, ',');
 		std::string type = curObj;
-		std::cout << curObj << " ";
+		//std::cout << curObj << " ";
 
 		getline(sObj, curObj, ',');
 		int x = std::stoi(curObj);
-		std::cout << curObj << " ";
+		//std::cout << curObj << " ";
 
 		getline(sObj, curObj, ',');
 		int y = std::stoi(curObj);
-		std::cout << curObj << " ";
+		//std::cout << curObj << " ";
 
 		getline(sObj, curObj, ',');
 		int w = std::stoi(curObj);
-		std::cout << curObj << " ";
+		//std::cout << curObj << " ";
 
 		getline(sObj, curObj, ',');
 		int h = std::stoi(curObj);
-		std::cout << curObj << " ";
+		//std::cout << curObj << " ";
 
-		std::cout << std::endl;
+		//std::cout << std::endl;
 
         //sscanf_s(line.c_str(),"%[^,],%f,%f,%f,%f",type,sizeof(type),&x,&y,&w,&h);
 		//sscanf_s(line.c_str(), "%[^,],%f,%f,%f,%f", type, &x, &y, &w, &h);
@@ -65,17 +65,17 @@ namespace mp {
         
 		getline(sMap, curMap, ',');
 		std::string layer = curMap;
-		std::cout << curMap << " ";
+		//std::cout << curMap << " ";
 
 		getline(sMap, curMap, ',');
 		int w = std::stoi(curMap);
-		std::cout << curMap << " ";
+		//std::cout << curMap << " ";
 
 		getline(sMap, curMap, ',');
 		int h = std::stoi(curMap);
-		std::cout << curMap << " ";
+		//std::cout << curMap << " ";
 
-		std::cout << std::endl;
+		//std::cout << std::endl;
         //sscanf_s(line.c_str(),"%[^,],%d,%d",layer,sizeof(layer),&w,&h);
 		//sscanf_s(line.c_str(), "%[^,],%d,%d", layer, sizeof(layer), &w, &h);
         //print layer detail
@@ -108,7 +108,32 @@ namespace mp {
 		//if (layer == "top") p = &level.topData;
 		//p->mapData = datas;
 
+		/*for (int i = 0; i < level.tileData.size(); i++) { 
+			std::cout << "This is "<< layer << "\n";
+			level.tileData[i].mapData = datas;
+			level.tileData[i].layer = layer;
+			level.tileData[i].mapWidth = w;
+			level.tileData[i].mapHeight = h;
+		}*/
+		if (mapReadComplete) {
+			//std::cout << "This is " << layer << "\n";
+			/*
+			level.tileData[i].mapData = datas;
+			level.tileData[i].layer = layer;
+			level.tileData[i].mapWidth = w;
+			level.tileData[i].mapHeight = h;
+			*/
+			/*
+			TileMapData td;
+			td.mapData = datas;
+			td.layer = layer;
+			td.mapWidth = w;
+			td.mapHeight = h;*/
 
+			//level.tileData.push_back(td);
+			level.tileData.push_back(TileMapData(layer, datas, w, h));
+		}
+		/*
 		 if (layer == "bot" && mapReadComplete)
 		 {
 			 std::cout << "This is bot\n";
@@ -136,6 +161,7 @@ namespace mp {
 			 level.topData.mapWidth = w;
 			 level.topData.mapHeight = h;
 		 }
+		 */
       }
     }
     fr.close();

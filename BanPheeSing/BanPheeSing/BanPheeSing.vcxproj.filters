@@ -116,6 +116,9 @@
     <ClInclude Include="Kairos\Yalpes.hpp">
       <Filter>Source Files\Kairos</Filter>
     </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kairos\Absorel.inl">

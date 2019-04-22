@@ -140,6 +140,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="button.h" />
     <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
     <ClInclude Include="ghost.h" />
