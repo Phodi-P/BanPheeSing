@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Kairos">
       <UniqueIdentifier>{f5fda8d4-08b8-45b6-91eb-185f2ae78851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\sfml">
+      <UniqueIdentifier>{7b3b3ecd-cde1-4a6c-a524-cede9dcf2754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -117,6 +120,7 @@
       <Filter>Source Files\Kairos</Filter>
     </ClInclude>
     <ClInclude Include="button.h">
+    <ClInclude Include="door.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -127,5 +131,127 @@
     <None Include="Kairos\Yalpes.inl">
       <Filter>Source Files\Kairos</Filter>
     </None>
+    <None Include="..\sfml\lib\sfml-audio-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-audio-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-main-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-window-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-window-s-d.pdb">
+      <Filter>Source Files\sfml</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\sfml\lib\flac.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\freetype.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\ogg.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\openal32.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-audio.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-audio-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-audio-s.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-audio-s-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-graphics.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-graphics-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-graphics-s.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-graphics-s-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-main.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-main-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-network.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-network-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-network-s.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-network-s-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-system.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-system-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-system-s.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-system-s-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-window.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-window-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-window-s.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\sfml-window-s-d.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\vorbis.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\vorbisenc.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\vorbisfile.lib">
+      <Filter>Source Files\sfml</Filter>
+    </Library>
   </ItemGroup>
 </Project>

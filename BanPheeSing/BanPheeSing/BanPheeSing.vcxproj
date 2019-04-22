@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -93,7 +93,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\TAN\source\repos\Phodi-P\BanPheeSing\sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\TAN\source\repos\Phodi-P\BanPheeSing\sfml\lib\cmake;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -103,12 +108,12 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SourceDir)\BanPheeSing\sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SourceDir)\BanPheeSing\sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -143,6 +148,7 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
+    <ClInclude Include="door.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="Kairos\Absorel.hpp" />
     <ClInclude Include="Kairos\all.hpp" />
@@ -164,8 +170,50 @@
     <ClInclude Include="tilemap.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\sfml\lib\sfml-audio-d.pdb" />
+    <None Include="..\sfml\lib\sfml-audio-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-graphics-d.pdb" />
+    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-main-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-network-d.pdb" />
+    <None Include="..\sfml\lib\sfml-network-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-system-d.pdb" />
+    <None Include="..\sfml\lib\sfml-system-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-window-d.pdb" />
+    <None Include="..\sfml\lib\sfml-window-s-d.pdb" />
     <None Include="Kairos\Absorel.inl" />
     <None Include="Kairos\Yalpes.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\sfml\lib\flac.lib" />
+    <Library Include="..\sfml\lib\freetype.lib" />
+    <Library Include="..\sfml\lib\ogg.lib" />
+    <Library Include="..\sfml\lib\openal32.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-d.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-s.lib" />
+    <Library Include="..\sfml\lib\sfml-audio.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-d.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-s.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics.lib" />
+    <Library Include="..\sfml\lib\sfml-main-d.lib" />
+    <Library Include="..\sfml\lib\sfml-main.lib" />
+    <Library Include="..\sfml\lib\sfml-network-d.lib" />
+    <Library Include="..\sfml\lib\sfml-network-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-network-s.lib" />
+    <Library Include="..\sfml\lib\sfml-network.lib" />
+    <Library Include="..\sfml\lib\sfml-system-d.lib" />
+    <Library Include="..\sfml\lib\sfml-system-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-system-s.lib" />
+    <Library Include="..\sfml\lib\sfml-system.lib" />
+    <Library Include="..\sfml\lib\sfml-window-d.lib" />
+    <Library Include="..\sfml\lib\sfml-window-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-window-s.lib" />
+    <Library Include="..\sfml\lib\sfml-window.lib" />
+    <Library Include="..\sfml\lib\vorbis.lib" />
+    <Library Include="..\sfml\lib\vorbisenc.lib" />
+    <Library Include="..\sfml\lib\vorbisfile.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

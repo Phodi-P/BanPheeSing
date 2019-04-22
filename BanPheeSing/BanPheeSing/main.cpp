@@ -1,9 +1,7 @@
-
-
-
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
 
+#include "door.h"
 #include "player.h"
 #include "npc.h"
 #include "ghost.h"
@@ -25,6 +23,8 @@ sf::Vector2f mousePosition = { 0,0 };
 
 int main()
 	{
+	//Door x(500,500);
+	//x.setDoor(true);
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
@@ -222,9 +222,8 @@ int main()
 
 		//window.draw(solid.obj);
 		//for (int i = 0; i < solids.size(); i++) window.draw(solids[i].obj);
-
+		//x.draw(window);
 		window.draw(FPS);
-
 		window.display();
 	}
 
