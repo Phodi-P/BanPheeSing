@@ -1,8 +1,6 @@
-
-
-
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
+
 #include "door.h"
 #include "player.h"
 #include "npc.h"
