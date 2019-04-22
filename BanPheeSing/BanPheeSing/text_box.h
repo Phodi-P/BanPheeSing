@@ -92,6 +92,12 @@ private:
 TextBox::TextBox()
 {
 	isDisplay = false;
+
+	ContinueText.setFont(font);
+	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
+	ContinueText.setCharacterSize(53);
+	//ContinueText.setFillColor(sf::Color(0,0,0,125));
+	ContinueText.setFillColor(sf::Color::Black);
 }
 
 TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInput, sf::Font fontInput)
@@ -105,7 +111,7 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
-	ContinueText.setCharacterSize(72);
+	ContinueText.setCharacterSize(53);
 	//ContinueText.setFillColor(sf::Color(0,0,0,125));
 	ContinueText.setFillColor(sf::Color::Black);
 
@@ -198,7 +204,8 @@ void TextBox::updatePosition()
 	Img.setPosition(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight - 700);
 	text_speaker.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
 
-	ContinueText.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
+	ContinueText.setPosition(Offset.x - WindowWidth / 2 + textboxMargin+1250, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin+250);
+
 }
 
 void TextBox::calculateString()
