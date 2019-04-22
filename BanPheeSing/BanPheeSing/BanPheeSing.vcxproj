@@ -169,8 +169,50 @@
     <ClInclude Include="tilemap.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\sfml\lib\sfml-audio-d.pdb" />
+    <None Include="..\sfml\lib\sfml-audio-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-graphics-d.pdb" />
+    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-main-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-network-d.pdb" />
+    <None Include="..\sfml\lib\sfml-network-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-system-d.pdb" />
+    <None Include="..\sfml\lib\sfml-system-s-d.pdb" />
+    <None Include="..\sfml\lib\sfml-window-d.pdb" />
+    <None Include="..\sfml\lib\sfml-window-s-d.pdb" />
     <None Include="Kairos\Absorel.inl" />
     <None Include="Kairos\Yalpes.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\sfml\lib\flac.lib" />
+    <Library Include="..\sfml\lib\freetype.lib" />
+    <Library Include="..\sfml\lib\ogg.lib" />
+    <Library Include="..\sfml\lib\openal32.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-d.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-audio-s.lib" />
+    <Library Include="..\sfml\lib\sfml-audio.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-d.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics-s.lib" />
+    <Library Include="..\sfml\lib\sfml-graphics.lib" />
+    <Library Include="..\sfml\lib\sfml-main-d.lib" />
+    <Library Include="..\sfml\lib\sfml-main.lib" />
+    <Library Include="..\sfml\lib\sfml-network-d.lib" />
+    <Library Include="..\sfml\lib\sfml-network-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-network-s.lib" />
+    <Library Include="..\sfml\lib\sfml-network.lib" />
+    <Library Include="..\sfml\lib\sfml-system-d.lib" />
+    <Library Include="..\sfml\lib\sfml-system-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-system-s.lib" />
+    <Library Include="..\sfml\lib\sfml-system.lib" />
+    <Library Include="..\sfml\lib\sfml-window-d.lib" />
+    <Library Include="..\sfml\lib\sfml-window-s-d.lib" />
+    <Library Include="..\sfml\lib\sfml-window-s.lib" />
+    <Library Include="..\sfml\lib\sfml-window.lib" />
+    <Library Include="..\sfml\lib\vorbis.lib" />
+    <Library Include="..\sfml\lib\vorbisenc.lib" />
+    <Library Include="..\sfml\lib\vorbisfile.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
