@@ -21,6 +21,7 @@ Event::Event()
 void Event::triggerEvent(std::string id)
 {
 	this->id.push_back(id);
+	//Need unique function to check if event id is already inside the list
 }
 
 bool Event::checkEvent(std::string id)

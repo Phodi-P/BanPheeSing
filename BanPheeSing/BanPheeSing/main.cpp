@@ -23,13 +23,13 @@ sf::Vector2f mousePosition = { 0,0 };
 
 int main()
 	{
-	//Door x(500,500);
-	//x.setDoor(true);
+
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
 	window.setVerticalSyncEnabled(true);
-	//window.setFramerateLimit(30);
+
+	//Create timestep object
 	kairos::Timestep timestep;
 
 	//Create Objects here
@@ -66,15 +66,17 @@ int main()
 	{
 		std::cerr << "ERROR: Cannot load font\n";
 	}
-
+	//Setup FPS indicator
 	sf::Text FPS;
 	FPS.setFont(mainFont);
-	//FPS.setColor(sf::Color::Blue);
+	sf::Clock clock; //FPS clock
 
+	//Setup chat object
 	TextBox testText;
 	testText.setMargin(35);
 	testText.setView(view);
 
+	//Setup tileset and level
 	TileSet light(".\\textures\\test_tileset4.png", { 16,16 });
 	TileSet dark(".\\textures\\test_tileset4_dark.png", { 16,16 });
 	
@@ -82,21 +84,9 @@ int main()
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
 	mp::parseMap(".\\maps\\test_case.mMap", level);
-	//level.readFile(".\\maps\\demo_bot.txt", ".\\maps\\demo_mid.txt", ".\\maps\\demo_top.txt");
 	level.update();
-	//debug 
-	//std::cout << "size of td " << level.tileData.size() << "\n";
-	/*
-	for (int i = 0; i < level.tileData.size(); i++) {
-		std::cout << level.tileData[i].layer << "\n" << level.tileData[i].mapHeight << " "<<level.tileData[i].mapWidth << "\n";
-		for (int j = 0; j < level.tileData[i].mapHeight; j++) {
-			for (int k = 0; k < level.tileData[i].mapWidth; k++)std::cout << level.tileData[i].mapData[(j*level.tileData[i].mapWidth) + k] << " ";
-			std::cout << "\n";
-		}
-	} */
 
-	//solidObj solid({ 100,0 }, { 50,700 }, true);
-	//std::cout << level.objData.size();
+	//Spawn all obj in level
 	std::vector<solidObj> solids;
 	for (int i = 0; i < level.objData.size(); i++)
 	{
@@ -106,11 +96,9 @@ int main()
 		}
 	}
 
-	sf::Clock clock;
-
 	while (window.isOpen())
 	{
-		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -122,9 +110,16 @@ int main()
 			case sf::Event::Resized:
 				resizeView(window, view);
 				break;
-			case sf::Event::KeyPressed:
+			case sf::Event::KeyPressed: //Keyboard interfaces
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
+
+				//chat system related
+				if (evnt.key.code == sf::Keyboard::Space)
+				{
+					testText.Continue();
+					testText.updatePosition();
+				}
 				if (evnt.key.code == sf::Keyboard::F1) testEvent.triggerEvent("chat1");
 				if (evnt.key.code == sf::Keyboard::F2) testEvent.triggerEvent("chat2");
 				break;
@@ -143,21 +138,23 @@ int main()
 		//Chat event handle
 		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
 		{
+			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในรูปบานนี้ด้วยเถิด", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
+			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
 			testText.isDisplay = true;
+			testText.Continue();
+		}
+		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
+		{
 			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
 			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", mainFont));
 			testText.addDialogue(TextDiaglogue("เอ", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
-		}
-		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
-		{
 			testText.isDisplay = true;
-			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในแก้วนี้แล้วไปที่คำว่า\n\"ใช่\"ด้วยเถิด", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
-			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
+			testText.Continue();
 		}
-
+		std::cout << "testText.diagQueue.size() =" << testText.diagQueue.size() << "\n";
 		while (timestep.isUpdateRequired())
 		{
 			//deltaTime = timestep.getStepAsFloat();

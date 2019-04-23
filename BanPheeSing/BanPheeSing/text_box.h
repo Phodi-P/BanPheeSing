@@ -80,10 +80,12 @@ public:
 
 	void setDialogue(TextDiaglogue);
 	void addDialogue(TextDiaglogue);
+	std::vector<TextDiaglogue> diagQueue;
 
 
 	void Continue();
 
+	void updateSetting();
 	void updatePosition();
 	void draw(sf::RenderWindow &window);
 
@@ -94,7 +96,7 @@ private:
 
 	bool hasView = false;
 
-	std::vector<TextDiaglogue> diagQueue;
+	//std::vector<TextDiaglogue> diagQueue;
 
 	sf::Font font;
 	std::string speakerName;
@@ -114,7 +116,6 @@ private:
 
 	sf::Vector2f Offset = sf::Vector2f(0,0);
 
-	void updateSetting();
 	void calculateString();
 };
 
@@ -125,7 +126,6 @@ TextBox::TextBox()
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
 	ContinueText.setCharacterSize(53);
-	//ContinueText.setFillColor(sf::Color(0,0,0,125));
 	ContinueText.setFillColor(sf::Color::Black);
 }
 
@@ -141,7 +141,6 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
 	ContinueText.setCharacterSize(53);
-	//ContinueText.setFillColor(sf::Color(0,0,0,125));
 	ContinueText.setFillColor(sf::Color::Black);
 
 	isDisplay = true;
@@ -275,19 +274,16 @@ void TextBox::addDialogue(TextDiaglogue diag)
 
 void TextBox::Continue()
 {
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+	if (diagQueue.size() > 0)
 	{
-		if (diagQueue.size() > 0)
-		{
-			isDisplay = true;
-			setDialogue(diagQueue[0]);
-			diagQueue.erase(diagQueue.begin());
-		}
-		else
-		{
-			diagQueue.clear();
-			isDisplay = false;
-		}
+		isDisplay = true;
+		setDialogue(diagQueue[0]);
+		diagQueue.erase(diagQueue.begin());
+	}
+	else
+	{
+		//diagQueue.clear();
+		isDisplay = false;
 	}
 }
 
