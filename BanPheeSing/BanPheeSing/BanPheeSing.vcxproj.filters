@@ -1,257 +1,219 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Kairos">
-      <UniqueIdentifier>{f5fda8d4-08b8-45b6-91eb-185f2ae78851}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\sfml">
-      <UniqueIdentifier>{7b3b3ecd-cde1-4a6c-a524-cede9dcf2754}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Kairos\Absorel.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\BasicClock.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\Continuum.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\Duration.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\FpsLite.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\Stopwatch.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\Timer.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\Timestep.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
     <ClCompile Include="Kairos\TimestepLite.cpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="player.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="npc.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="custom_utility.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="text_box.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tilemap.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ghost.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="solid_obj.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="map_parser.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+    <ClInclude Include="button.h" />
+    <ClInclude Include="Collision.hpp" />
+    <ClInclude Include="custom_utility.h" />
+    <ClInclude Include="door.h" />
+    <ClInclude Include="ghost.h" />
+    <ClInclude Include="map_parser.h" />
+    <ClInclude Include="npc.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="solid_obj.h" />
+    <ClInclude Include="text_box.h" />
+    <ClInclude Include="tilemap.h" />
     <ClInclude Include="Kairos\Absorel.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\all.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\BasicClock.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Continuum.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Duration.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\FpsLite.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Stopwatch.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Timer.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Timestep.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\TimestepLite.hpp">
-      <Filter>Source Files\Kairos</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="Kairos\Yalpes.hpp">
-      <Filter>Source Files\Kairos</Filter>
-    </ClInclude>
-    <ClInclude Include="button.h">
-    <ClInclude Include="door.h">
-      <Filter>Source Files</Filter>
+      <Filter>Kairos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Kairos\Absorel.inl">
-      <Filter>Source Files\Kairos</Filter>
-    </None>
-    <None Include="Kairos\Yalpes.inl">
-      <Filter>Source Files\Kairos</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-audio-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-audio-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-graphics-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-main-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-network-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-network-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-system-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-system-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-window-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-window-s-d.pdb">
-      <Filter>Source Files\sfml</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\sfml\lib\flac.lib">
-      <Filter>Source Files\sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\freetype.lib">
-      <Filter>Source Files\sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\ogg.lib">
-      <Filter>Source Files\sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\openal32.lib">
-      <Filter>Source Files\sfml</Filter>
-    </Library>
     <Library Include="..\sfml\lib\sfml-audio.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-audio-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-audio-s.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-audio-s-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-graphics.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-graphics-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-graphics-s.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-graphics-s-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-main.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-main-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-network.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-network-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-network-s.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-network-s-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-system.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-system-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-system-s.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-system-s-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-window.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-window-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-window-s.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\sfml-window-s-d.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
-    <Library Include="..\sfml\lib\vorbis.lib">
-      <Filter>Source Files\sfml</Filter>
+    <Library Include="..\sfml\lib\openal32.lib">
+      <Filter>sfml</Filter>
     </Library>
-    <Library Include="..\sfml\lib\vorbisenc.lib">
-      <Filter>Source Files\sfml</Filter>
+    <Library Include="..\sfml\lib\ogg.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\freetype.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\flac.lib">
+      <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\vorbisfile.lib">
-      <Filter>Source Files\sfml</Filter>
+      <Filter>sfml</Filter>
     </Library>
+    <Library Include="..\sfml\lib\vorbisenc.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\vorbis.lib">
+      <Filter>sfml</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sfml\lib\sfml-window-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-audio-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-audio-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-main-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-window-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="Kairos\Absorel.inl">
+      <Filter>Kairos</Filter>
+    </None>
+    <None Include="Kairos\Yalpes.inl">
+      <Filter>Kairos</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="sfml">
+      <UniqueIdentifier>{aef52939-2927-431c-a740-239079c76aa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kairos">
+      <UniqueIdentifier>{60792373-ba4a-43a3-9b0f-138ed6e8f163}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
