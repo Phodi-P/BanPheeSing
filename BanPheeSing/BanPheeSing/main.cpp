@@ -74,13 +74,7 @@ int main()
 	TextBox testText;
 	testText.setMargin(35);
 	testText.setView(view);
-	testText.isDisplay = true;
-	testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", ".//textures//portraits//koy.png", mainFont, sf::Color::Magenta));
-	testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", ".//textures//portraits//green.png", mainFont, sf::Color::Green));
-	testText.addDialogue(TextDiaglogue("เอิร์ธ", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", ".//textures//portraits//red.png", mainFont, sf::Color::Red));
-	testText.addDialogue(TextDiaglogue("เจมส์", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", ".//textures//portraits//a.png", mainFont, sf::Color::Blue));
 
-	
 	TileSet light(".\\textures\\test_tileset4.png", { 16,16 });
 	TileSet dark(".\\textures\\test_tileset4_dark.png", { 16,16 });
 	
@@ -131,17 +125,38 @@ int main()
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
+				if (evnt.key.code == sf::Keyboard::F1) testEvent.triggerEvent("chat1");
+				if (evnt.key.code == sf::Keyboard::F2) testEvent.triggerEvent("chat2");
 				break;
 			case sf::Event::MouseButtonPressed:
 				testText.Continue();
 				testText.updatePosition();
 			case sf::Event::MouseWheelScrolled:
+				
 				break;
 			}
 		}
 		timestep.addFrame();
 		if (gamePause) timestep.pause();
 		else timestep.unpause();
+
+		//Chat event handle
+		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
+		{
+			testText.isDisplay = true;
+			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
+			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", mainFont));
+			testText.addDialogue(TextDiaglogue("เอ", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
+		}
+		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
+		{
+			testText.isDisplay = true;
+			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในแก้วนี้แล้วไปที่คำว่า\n\"ใช่\"ด้วยเถิด", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
+			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
+		}
 
 		while (timestep.isUpdateRequired())
 		{
@@ -186,7 +201,6 @@ int main()
 
 			
 		}
-		
 
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+

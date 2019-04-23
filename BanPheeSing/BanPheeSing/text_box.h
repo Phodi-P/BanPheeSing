@@ -16,6 +16,7 @@ public:
 	sf::Color speakerColor;
 
 	TextDiaglogue(std::string, std::string, std::string, sf::Font, sf::Color);
+	TextDiaglogue(std::string, std::string, sf::Font);
 	TextDiaglogue();
 };
 
@@ -30,6 +31,34 @@ TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, s
 	this->ImgDir = ImgDir;
 	this->font = font;
 	this->speakerColor = speakerColor;
+}
+
+TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, sf::Font font)
+{
+	this->speakerName = speakerName;
+	this->inputString = inputString;
+	this->font = font;
+	//Characters specific
+	if (speakerName == "เอ")
+	{
+		this->ImgDir = ".//textures//portraits//a.png";
+		this->speakerColor = sf::Color::Blue;
+	}
+	if (speakerName == "เขียว")
+	{
+		this->ImgDir = ".//textures//portraits//green.png";
+		this->speakerColor = sf::Color::Green;
+	}
+	if (speakerName == "แดง")
+	{
+		this->ImgDir = ".//textures//portraits//red.png";
+		this->speakerColor = sf::Color::Red;
+	}
+	if (speakerName == "ก้อย")
+	{
+		this->ImgDir = ".//textures//portraits//koy.png";
+		this->speakerColor = sf::Color::Magenta;
+	}
 }
 
 
@@ -256,6 +285,7 @@ void TextBox::Continue()
 		}
 		else
 		{
+			diagQueue.clear();
 			isDisplay = false;
 		}
 	}

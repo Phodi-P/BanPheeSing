@@ -8,6 +8,8 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
+#include "event.h"
+
 //Global setting variables
 const int WindowWidth = 1920;
 const int WindowHeight = 1080;
@@ -18,6 +20,7 @@ float deltaTime = 0.0f;
 
 bool gamePause = false;
 
+Event testEvent;
 
 namespace CUt //CUt is short for Custom Utility
 {
