@@ -131,6 +131,7 @@ int main()
 				break;
 			}
 		}
+		//Timestep control and game pausing
 		timestep.addFrame();
 		if (gamePause) timestep.pause();
 		else timestep.unpause();
@@ -144,6 +145,7 @@ int main()
 			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
+			testText.updatePosition();
 		}
 		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
 		{
@@ -153,6 +155,7 @@ int main()
 			testText.addDialogue(TextDiaglogue("เอ", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
+			testText.updatePosition();
 		}
 		std::cout << "testText.diagQueue.size() =" << testText.diagQueue.size() << "\n";
 		while (timestep.isUpdateRequired())
