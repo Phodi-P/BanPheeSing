@@ -130,13 +130,9 @@ int main()
 				break;
 			case sf::Event::KeyPressed:
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
-				if (evnt.key.code == sf::Keyboard::P)
-				{
-					gamePause = !gamePause;
-				}
+				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
 				break;
 			case sf::Event::MouseButtonPressed:
-				//Ghost.vec_moveToQueue.push_back(NPCTarget);
 				testText.Continue();
 				testText.updatePosition();
 			case sf::Event::MouseWheelScrolled:
