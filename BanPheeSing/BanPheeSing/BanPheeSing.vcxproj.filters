@@ -77,6 +77,8 @@
     <ClInclude Include="Kairos\Yalpes.hpp">
       <Filter>Kairos</Filter>
     </ClInclude>
+    <ClInclude Include="event.h" />
+    <ClInclude Include="trigger_obj.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\sfml\lib\sfml-audio.lib">
