@@ -1,5 +1,8 @@
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
+#include "Kairos/Timer.hpp"
+#include <mutex>
+#include "SFML/Audio.hpp"
 
 #include "door.h"
 #include "player.h"
@@ -11,20 +14,31 @@
 #include "trigger_obj.h"
 #include "map_parser.h"
 
+//Global Variables
+std::once_flag onceFlag;
 enum npcFormation
 {
 	front_line = 0,
 	back_line = 1,
 	follow_line = 2
 };
+sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 }, viewTarget = { 0,0 }, curViewTarget = { 0,0 };
+npcFormation npcFormat = back_line;
+
+float viewCoeffDefault = 10.0f;
+
+float viewCoeff = viewCoeffDefault;
+float curViewCoeff = viewCoeffDefault;
+
+bool isDark = false;
+bool isBlack = false;
 
 //Functions prototype
 void resizeView(const sf::RenderWindow &, sf::View &);
+void retargetView(sf::Vector2f, Player &, float, bool);
 void npcsMove(std::vector<Npc*> &, Player &, npcFormation);
 
-//Global Variables
-sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 }, viewTarget = { 0,0 };
-npcFormation npcFormat = follow_line;
+
 
 
 
@@ -38,6 +52,10 @@ int main()
 
 	//Create timestep object
 	kairos::Timestep timestep;
+	kairos::Duration defaultTimer;
+	defaultTimer.setFromSeconds(1);
+	kairos::Timer timer;
+	timer.setTime(defaultTimer);
 
 	//Create NPCs and Player Objects
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
@@ -66,6 +84,42 @@ int main()
 	Ghost.setSpd(3.0f);
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
+	//Dark overlay
+	sf::Texture darkOverlay;
+	darkOverlay.loadFromFile(".\\textures\\dark_overlay.png");
+	sf::RectangleShape rectDark;
+	rectDark.setTexture(&darkOverlay);
+	rectDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+
+	//Normal overlay
+	sf::Texture normalOverlay;
+	normalOverlay.loadFromFile(".\\textures\\normal_overlay.png");
+	sf::RectangleShape rectNormal;
+	rectNormal.setTexture(&normalOverlay);
+	rectNormal.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+	
+	//Black rect
+	sf::RectangleShape rect;
+	rect.setFillColor(sf::Color::Black);
+	rectNormal.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+
+
+	//Sound
+	sf::SoundBuffer spooky,switc,scream;
+	spooky.loadFromFile(".//sounds//spooky.wav");
+	switc.loadFromFile(".//sounds//switch.wav");
+	scream.loadFromFile(".//sounds//scream1.wav");
+	
+	sf::Sound sound,sound2;
+	sound.setLoop(false);
+	sound.setBuffer(spooky);
+	sound2.setLoop(false);
+	sound2.setBuffer(switc);
+
+	sf::Music music_children;
+	music_children.openFromFile(".//sounds//children_room.wav");
+	music_children.setLoop(true);
+	music_children.play();
 
 	//Font loading
 	sf::Font mainFont;
@@ -92,7 +146,7 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	mp::parseMap(".\\maps\\demo_event-type.mMap", level);
+	mp::parseMap(".\\maps\\demo.mMap", level);
 	level.update();
 
 	//Spawn all obj in level
@@ -111,14 +165,16 @@ int main()
 		if (level.objData[i].type == "player_spawn") Player.setPos({ level.objData[i].pos.x*4 , level.objData[i].pos.y *4 });
 		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "red_spawn") Red.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
-		if (level.objData[i].type == "koi_spawn") Koy.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
+		if (level.objData[i].type == "koy_spawn") Koy.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
 	//Game loop
 	while (window.isOpen())
 	{
+		//std::call_once(onceFlag, [] {std::cout << "I run only once\n"; });
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
+
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -168,17 +224,33 @@ int main()
 			triggers[i].collide(Player);
 		}
 
-		//Manage view target
-		viewTarget = Player.getPos();
+		//Other event
+		if (testEvent.checkEvent("die"))
+		{
+			kairos::Duration wait;
+			wait.setFromSeconds(2);
+			timer.setTime(wait);
+			timer.start();
+			sound.stop();
+			isBlack = true;
+			if (sound.getStatus() != sf::SoundSource::Status::Playing)
+			{
+				sound.resetBuffer();
+				sound.setBuffer(scream);
+				sound.play();
+			}
+		}
 
 		//Chat event handle
 
 		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
 		{
 			npcFormat = front_line;
+			curViewTarget = Player.getPos();
+			curViewCoeff = viewCoeffDefault;
 			Player.moveDir({ 0,0 });
 			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในรูปบานนี้ด้วยเถิด", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้\nออกมาให้เราสัมผัส ให้เราได้รับรู้ด้วยเถิดด", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
 			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
 			testText.isDisplay = true;
@@ -188,27 +260,46 @@ int main()
 		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
 		{
 			npcFormat = front_line;
+			curViewTarget = sf::Vector2f(36 * (4 * 4 * 4), 6 * (4 * 4 * 4)); //Points view to picture
+			curViewCoeff = 150.0f; //Slow down view
 			Player.moveDir({ 0,0 });
 			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
-			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", mainFont));
-			testText.addDialogue(TextDiaglogue("เอ", "แต่ฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
+			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nนั่นมันก็แค่คลาบโคลนแหละน่า คิดมากไปได้", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย\nฉันว่าเรากลับกันเถอะ", mainFont));
+			testText.addDialogue(TextDiaglogue("เอ", "เดี๋ยวก่อนนะ\nฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
 			testText.updatePosition();
+
+		}
+
+		if(!testText.isDisplay)
+		{
+			if (testEvent.checkTriggeredEvent("chat2")) //Run once
+			{
+				kairos::Duration duration;
+				duration.setFromSeconds(0.77);
+				timer.setTime(duration);
+				timer.start();
+				music_children.stop();
+				sound2.play();
+			}
+			
 		}
 
 		gamePause = testText.isDisplay; //Pause game when chat is being displayed
 
 
-		//Game pausing
-		//if (gamePause) timestep.pause();
-		//else timestep.unpause();
+		//Manage view target
+		retargetView(curViewTarget, Player, curViewCoeff, testText.isDisplay);
 
 		//Timestep loop
 		while (timestep.isUpdateRequired())
 		{
-			view.setCenter(view.getCenter() + (viewTarget - view.getCenter()) / 10.0f);
+			view.setCenter(view.getCenter() + (viewTarget - view.getCenter()) / viewCoeff);
+			rectDark.setPosition(getViewOffset(view));
+			rectNormal.setPosition(getViewOffset(view));
+			rect.setPosition(getViewOffset(view));
 			
 			//Pausable
 			if (!gamePause)
@@ -233,7 +324,7 @@ int main()
 					Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
 				}
 
-				if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
+				//if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
 
 				//Player solids collision
 				for (int i = 0; i < solids.size(); i++)
@@ -245,9 +336,22 @@ int main()
 			}
 
 			//Ghost chasing
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+			//if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+			if (timer.isDone())
 			{
-				Ghost.chase(ghostPos, { 0,400 }, Player);
+				if (Ghost.chase(ghostPos, { 0,200 }, Player) == 2)
+				{
+					testEvent.triggerEvent("die");
+				}
+				isDark = true;
+				if (sound.getStatus() != sf::SoundSource::Status::Playing)
+				{
+					sound.play();
+				}
+				if (testEvent.checkTriggeredEvent("die")) //Run once
+				{
+					window.close();
+				}
 			}
 
 			//NPCs moving
@@ -263,8 +367,10 @@ int main()
 		//FPS Debugging
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+
-						"\n mouseX: "+std::to_string(mousePosition.x)+
-						"\n mouseY: "+std::to_string(mousePosition.y));
+						"\nmouseX: "+std::to_string(mousePosition.x)+
+						"\nmouseY: "+std::to_string(mousePosition.y)+
+						"\n\ntimer: "+std::to_string(timer.getTime().asSeconds())+
+						"\ntimerDone: "+std::to_string(timer.isDone()));
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		deltaTime = 1.0f;
@@ -284,6 +390,11 @@ int main()
 
 		Ghost.draw(window);
 		//Ghost.drawDist(window);
+
+		if(isDark) window.draw(rectDark, sf::BlendMultiply);
+		else window.draw(rectNormal, sf::BlendMultiply);
+
+		if (isBlack) window.draw(rect);
 
 		testText.draw(window);
 		
@@ -328,5 +439,19 @@ void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
 			}
 		}
 		NPCs[i]->walkingAnimate();
+	}
+}
+
+void retargetView(sf::Vector2f target, Player &Player, float coeff = viewCoeffDefault, bool active = false)
+{
+	if (active)
+	{
+		viewTarget = target;
+		viewCoeff = coeff;
+	}
+	else
+	{
+		viewTarget = Player.getPos();
+		viewCoeff = viewCoeffDefault;
 	}
 }

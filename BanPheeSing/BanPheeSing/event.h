@@ -8,10 +8,17 @@ class Event
 public:
 	Event();
 
-	std::set<std::string> id;
 	void triggerEvent(std::string);
 	bool checkEvent(std::string);
+	bool checkTriggeredEvent(std::string);
+
+	std::string getLastEvent();
 	void clearEvent();
+
+private:
+	std::set<std::string> id;
+	std::set<std::string> id_triggered;
+	std::string lastEvent;
 };
 Event::Event()
 {
@@ -30,11 +37,32 @@ bool Event::checkEvent(std::string id)
 	{
 		if (*i == id)
 		{
+			lastEvent = *i;
+			this->id_triggered.insert(*i);
 			this->id.erase(i);
 			return true;
 		}
 	}
 	return false;
+}
+
+bool Event::checkTriggeredEvent(std::string id)
+{
+	std::set<std::string>::iterator i;
+	for (i = this->id_triggered.begin(); i != this->id_triggered.end(); ++i)
+	{
+		if (*i == id)
+		{
+			this->id_triggered.erase(i);
+			return true;
+		}
+	}
+	return false;
+}
+
+std::string Event::getLastEvent()
+{
+	return lastEvent;
 }
 
 void Event::clearEvent()

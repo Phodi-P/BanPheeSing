@@ -78,7 +78,7 @@ int Player::walkingAnimate(int DirX = 0, int DirY = 0, int fps = 4)
 {
 	if (isAuto == false)
 	{
-		std::cout << "Running\n";
+		//std::cout << "Running\n";
 		if (DirX == 0 && DirY == 0)
 		{
 			animate(1); //Idle

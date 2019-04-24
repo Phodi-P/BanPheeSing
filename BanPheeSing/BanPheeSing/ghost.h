@@ -73,7 +73,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	case startComingOut:
 		canCollide = false;
-		setSpd(1.0f);
+		setSpd(2.0f);
 		if (moveTo(startPos + startDir)) curState = walking;
 		runClock.restart();
 		break;
