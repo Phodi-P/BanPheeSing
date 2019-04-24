@@ -23,7 +23,7 @@ void resizeView(const sf::RenderWindow &, sf::View &);
 void npcsMove(std::vector<Npc*> &, Player &, npcFormation);
 
 //Global Variables
-sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 };
+sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 }, viewTarget = { 0,0 };
 npcFormation npcFormat = follow_line;
 
 
@@ -168,6 +168,9 @@ int main()
 			triggers[i].collide(Player);
 		}
 
+		//Manage view target
+		viewTarget = Player.getPos();
+
 		//Chat event handle
 
 		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
@@ -197,43 +200,48 @@ int main()
 
 		gamePause = testText.isDisplay; //Pause game when chat is being displayed
 
+
 		//Game pausing
-		if (gamePause) timestep.pause();
-		else timestep.unpause();
+		//if (gamePause) timestep.pause();
+		//else timestep.unpause();
 
 		//Timestep loop
 		while (timestep.isUpdateRequired())
 		{
-			view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
-
-			//Player controls
-			bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-			bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-			bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-			bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-			bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+			view.setCenter(view.getCenter() + (viewTarget - view.getCenter()) / 10.0f);
+			
+			//Pausable
+			if (!gamePause)
 			{
-				Player.isAuto = true;
-				Player.moveTo(mousePosition);
-				Player.walkingAnimateAuto();
-			}
-			else
-			{
-				Player.isAuto = false;
-				Player.control(Right, Left, Down, Up, Sprint);
-				Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
-			}
+				//Player controls
+				bool Right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+				bool Left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+				bool Down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+				bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+				bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-			if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+				{
+					Player.isAuto = true;
+					Player.moveTo(mousePosition);
+					Player.walkingAnimateAuto();
+				}
+				else
+				{
+					Player.isAuto = false;
+					Player.control(Right, Left, Down, Up, Sprint);
+					Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+				}
 
-			//Player solids collision
-			for (int i = 0; i < solids.size(); i++)
-			{
-				solids[i].collide(Player);
-				//for (int j = 0; j < NPCs.size(); j++) solids[i].collide(*NPCs[j]); //NPCs collision
-		
+				if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
+
+				//Player solids collision
+				for (int i = 0; i < solids.size(); i++)
+				{
+					solids[i].collide(Player);
+					//for (int j = 0; j < NPCs.size(); j++) solids[i].collide(*NPCs[j]); //NPCs collision
+
+				}
 			}
 
 			//Ghost chasing
@@ -250,6 +258,7 @@ int main()
 
 			
 		}
+
 
 		//FPS Debugging
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
