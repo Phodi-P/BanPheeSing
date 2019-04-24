@@ -31,6 +31,7 @@ namespace CUt //CUt is short for Custom Utility
 		return (T(0) < input) - (input < T(0));
 	}
 
+	//***[Note] This function returns distance between two position [Note]***
 	float dist(sf::Vector2f pos1, sf::Vector2f pos2)
 	{
 		return sqrt((pos1.x - pos2.x)*(pos1.x - pos2.x) + (pos1.y - pos2.y)*(pos1.y - pos2.y));
@@ -43,7 +44,7 @@ sf::Vector2f getViewOffset(sf::View &view)
 }
  
 
-
+/*
 class QuickText {
 public:
 	QuickText();
@@ -97,4 +98,4 @@ void QuickText::setColor(sf::Color color)
 void QuickText::draw(sf::RenderWindow &window)
 {
 	window.draw(text);
-}
+}*/

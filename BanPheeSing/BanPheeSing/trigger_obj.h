@@ -16,7 +16,13 @@ public:
 	bool moveAble;
 	bool triggered = false;
 	Event *evnt;
-	std::string id,type;
+	std::string id;
+
+	//Types of event
+	// once -> only activate once , can be manually reactivate with .triggered = false;
+	// semi-once -> activate once , can be activate again when not collided
+	// continuous -> activate continuously when collided
+	std::string type;
 private:
 
 };
@@ -36,7 +42,7 @@ bool triggerObj::collide(Player &target)
 	if (Collision::BoundingBoxTestRect(obj, target.getObj()))
 	{
 		//std::cout << "event: " << id << " is being triggered\n";
-		if (type == "Once")
+		if (type == "once" || type == "semi-once")
 		{
 			if (!triggered)
 			{
@@ -53,7 +59,7 @@ bool triggerObj::collide(Player &target)
 	}
 	else
 	{
-		if (type == "Once")
+		if (type == "once")
 		{
 
 		}

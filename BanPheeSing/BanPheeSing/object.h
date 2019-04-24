@@ -28,6 +28,8 @@ public:
 	
 	//Movement
 
+	bool destinationReached = true;
+
 	void setPos(sf::Vector2f);
 	sf::Vector2f getPos();
 	void setSpd(float);
@@ -49,7 +51,7 @@ protected:
 	sf::RectangleShape obj;
 	sf::Texture texture;
 
-	sf::CircleShape CenterPoint;
+	//sf::CircleShape CenterPoint;
 
 	//Movement config
 
@@ -87,8 +89,8 @@ Obj::Obj()
 	//Default
 	obj.setSize(sf::Vector2f(32, 32));
 	obj.setOrigin(sf::Vector2f(16, 16));
-	CenterPoint.setRadius(5.0f);
-	CenterPoint.setFillColor(sf::Color::Red);
+	//CenterPoint.setRadius(5.0f);
+	//CenterPoint.setFillColor(sf::Color::Red);
 }
 
 void Obj::setSpd(float spd)
@@ -122,7 +124,7 @@ void Obj::draw(sf::RenderWindow &window)
 	if (isVisible)
 	{
 		window.draw(obj);
-		window.draw(CenterPoint);
+		//window.draw(CenterPoint);
 	}
 }
 
@@ -138,7 +140,7 @@ void Obj::moveDir(sf::Vector2f spd)
 	}
 
 	obj.move(spd);
-	CenterPoint.setPosition(getPos());
+	//CenterPoint.setPosition(getPos());
 
 }
 
@@ -156,6 +158,7 @@ bool Obj::moveTo(sf::Vector2f dest)
 	if (dest != getPos())
 	{
 		isMoving = true;
+		destinationReached = false;
 
 		if ((std::abs(dest.x - getPos().x) <= 2) && (std::abs(dest.y - getPos().y) <= 2))
 		{
@@ -190,6 +193,7 @@ bool Obj::moveTo(sf::Vector2f dest)
 		tempX = 0;
 		tempY = 0;
 		moveDir(sf::Vector2f(0, 0));
+		destinationReached = true;
 		return true; //Return true when destination is reached
 	}
 

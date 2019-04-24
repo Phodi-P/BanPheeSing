@@ -11,13 +11,6 @@
 #include "trigger_obj.h"
 #include "map_parser.h"
 
-
-void resizeView(const sf::RenderWindow &window, sf::View &view)
-{
-	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-	view.setSize(sf::Vector2f(float(WindowHeight)*aspectRatio, float(WindowHeight)));
-}
-
 enum npcFormation
 {
 	front_line = 0,
@@ -25,41 +18,19 @@ enum npcFormation
 	follow_line = 2
 };
 
-void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
-{
-	for (int i = 0; i < NPCs.size(); i++)
-	{
-		if (format == front_line)
-		{
-			NPCs[i]->setVisibility(true);
-			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
-		}
-		if (format == back_line)
-		{
-			NPCs[i]->setVisibility(true);
-			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), 150));
-		}
-		if (format == follow_line)
-		{
-			if (NPCs[i]->moveTo(Player.getPos())) { NPCs[i]->setVisibility(false); }
-			if (CUt::dist(NPCs[i]->getPos(), Player.getPos()) > 500)
-			{
-				NPCs[i]->setPos(Player.getPos());
-			}
-		}
-		NPCs[i]->walkingAnimate();
-	}
-}
-
+//Functions prototype
+void resizeView(const sf::RenderWindow &, sf::View &);
+void npcsMove(std::vector<Npc*> &, Player &, npcFormation);
 
 //Global Variables
-sf::Vector2f mousePosition = { 0,0 };
+sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 };
 npcFormation npcFormat = follow_line;
+
 
 
 int main()
 	{
-
+	//Create windows and view
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
 	//sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha");
@@ -68,7 +39,7 @@ int main()
 	//Create timestep object
 	kairos::Timestep timestep;
 
-	//Create Objects here
+	//Create NPCs and Player Objects
 	Player Player(".\\textures\\a_sprite.png",32,32,4,3);
 	Player.setScale(4.0f, 4.0f);
 	Player.setPos({ 710,865 });
@@ -112,14 +83,16 @@ int main()
 	testText.setMargin(35);
 	testText.setView(view);
 
-	//Setup tileset and level
+	//Setup tileset
 	TileSet light(".\\textures\\test_tileset4.png", { 16,16 });
 	TileSet dark(".\\textures\\test_tileset4_dark.png", { 16,16 });
 	
+
+	//Setup level
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	mp::parseMap(".\\maps\\test_event.mMap", level);
+	mp::parseMap(".\\maps\\demo_event-type.mMap", level);
 	level.update();
 
 	//Spawn all obj in level
@@ -139,8 +112,10 @@ int main()
 		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "red_spawn") Red.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "koi_spawn") Koy.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
+		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
+	//Game loop
 	while (window.isOpen())
 	{
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
@@ -152,9 +127,11 @@ int main()
 			case sf::Event::Closed:
 				window.close();
 				break;
+
 			case sf::Event::Resized:
 				resizeView(window, view);
 				break;
+
 			case sf::Event::KeyPressed: //Keyboard interfaces
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
@@ -168,30 +145,35 @@ int main()
 				if (evnt.key.code == sf::Keyboard::F1) testEvent.triggerEvent("chat1");
 				if (evnt.key.code == sf::Keyboard::F2) testEvent.triggerEvent("chat2");
 				break;
+
 			case sf::Event::MouseButtonPressed:
-				testText.Continue();
-				testText.updatePosition();
+				if (evnt.key.code == sf::Mouse::Left)
+				{
+					testText.Continue();
+					testText.updatePosition();
+				}
+				break;
+
 			case sf::Event::MouseWheelScrolled:
-				
+
 				break;
 			}
 		}
-		//Timestep control and game pausing
+		//Timestep control
 		timestep.addFrame();
-		if (gamePause) timestep.pause();
-		else timestep.unpause();
 
 		//Collision for triggers
 		for (int i = 0; i < triggers.size(); i++)
 		{
 			triggers[i].collide(Player);
 		}
-		std::cout << "testEvent.checkEvent(chat_pic) =" <<  testEvent.checkEvent("chat_pic") << "\n";
+
 		//Chat event handle
 
 		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
 		{
 			npcFormat = front_line;
+			Player.moveDir({ 0,0 });
 			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในรูปบานนี้ด้วยเถิด", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
@@ -203,6 +185,7 @@ int main()
 		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
 		{
 			npcFormat = front_line;
+			Player.moveDir({ 0,0 });
 			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
 			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", mainFont));
@@ -211,10 +194,16 @@ int main()
 			testText.Continue();
 			testText.updatePosition();
 		}
-		//std::cout << "testText.diagQueue.size() =" << testText.diagQueue.size() << "\n";
+
+		gamePause = testText.isDisplay; //Pause game when chat is being displayed
+
+		//Game pausing
+		if (gamePause) timestep.pause();
+		else timestep.unpause();
+
+		//Timestep loop
 		while (timestep.isUpdateRequired())
 		{
-			//deltaTime = timestep.getStepAsFloat();
 			view.setCenter(view.getCenter() + (Player.getPos() - view.getCenter()) / 10.0f);
 
 			//Player controls
@@ -224,35 +213,45 @@ int main()
 			bool Up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 			bool Sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-			Player.control(Right, Left, Down, Up, Sprint);
-			Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+			{
+				Player.isAuto = true;
+				Player.moveTo(mousePosition);
+				Player.walkingAnimateAuto();
+			}
+			else
+			{
+				Player.isAuto = false;
+				Player.control(Right, Left, Down, Up, Sprint);
+				Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+			}
+
 			if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
 
-			//solid.collide(Player);
-			//solid.collide(Ghost);
-			//Collision for solids
+			//Player solids collision
 			for (int i = 0; i < solids.size(); i++)
 			{
 				solids[i].collide(Player);
-				for (int j = 0; j < NPCs.size(); j++)
-				{
-					solids[i].collide(*NPCs[j]);
-				}
+				//for (int j = 0; j < NPCs.size(); j++) solids[i].collide(*NPCs[j]); //NPCs collision
+		
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			//Ghost chasing
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
 			{
-				Ghost.chase({ 1024,200 }, { 0,400 }, Player);
+				Ghost.chase(ghostPos, { 0,400 }, Player);
 			}
-			//NPC test
+
+			//NPCs moving
 			npcsMove(NPCs, Player, npcFormat);
-			//Ghost.moveToQueue();
-			//Ghost.walkingAnimate();
+
+			//Update chat position
 			testText.updatePosition();
 
 			
 		}
 
+		//FPS Debugging
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+
 						"\n mouseX: "+std::to_string(mousePosition.x)+
@@ -260,34 +259,65 @@ int main()
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		deltaTime = 1.0f;
-		clock.restart();
+		clock.restart(); //Reset FPS clock
 
 		//Rendering
 		window.clear();
 
-		level.draw(window);
 		window.setView(view);
 
-		Red.draw(window);
-		Green.draw(window);
-		Koy.draw(window);
+		level.draw(window);
 
-
-		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window);
+		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window); //Draw NPCs
 
 		Player.draw(window);
 		Player.drawStamina(window);
 
 		Ghost.draw(window);
-		testText.draw(window);
-		Ghost.drawDist(window);
+		//Ghost.drawDist(window);
 
-		//window.draw(solid.obj);
-		for (int i = 0; i < triggers.size(); i++) window.draw(triggers[i].obj);
-		//x.draw(window);
+		testText.draw(window);
+		
 		window.draw(FPS);
+
 		window.display();
 	}
 
 	return 0;
+}
+
+//Functions definition
+
+void resizeView(const sf::RenderWindow &window, sf::View &view)
+{
+	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+	view.setSize(sf::Vector2f(float(WindowHeight)*aspectRatio, float(WindowHeight)));
+}
+
+
+
+void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
+{
+	for (int i = 0; i < NPCs.size(); i++)
+	{
+		if (format == front_line)
+		{
+			NPCs[i]->setVisibility(true);
+			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
+		}
+		if (format == back_line)
+		{
+			NPCs[i]->setVisibility(true);
+			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), 150));
+		}
+		if (format == follow_line)
+		{
+			if (NPCs[i]->moveTo(Player.getPos())) { NPCs[i]->setVisibility(false); }
+			if (CUt::dist(NPCs[i]->getPos(), Player.getPos()) > 500)
+			{
+				NPCs[i]->setPos(Player.getPos());
+			}
+		}
+		NPCs[i]->walkingAnimate();
+	}
 }

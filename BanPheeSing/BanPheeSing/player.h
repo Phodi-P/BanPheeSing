@@ -10,9 +10,11 @@ public:
 	void control(bool, bool, bool, bool, bool);
 
 	int walkingAnimate(int, int, int);
+	int walkingAnimateAuto(int);
 	int getCurrentFrame();
 	void drawStamina(sf::RenderWindow &);
 
+	bool isAuto = false;
 	bool isSprinting = false;
 	bool canWalk = true;
 
@@ -64,6 +66,8 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 
 	staminaBar.setFillColor(sf::Color::Green);
 
+	setSpd(this->speed);
+
 	trailPos.push_back({ 0,0 });
 	trailPos.push_back({ 0,0 });
 	trailPos.push_back({ 0,0 });
@@ -72,37 +76,86 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
 int Player::walkingAnimate(int DirX = 0, int DirY = 0, int fps = 4)
 {
-	if (DirX == 0 && DirY == 0)
+	if (isAuto == false)
 	{
-		animate(1); //Idle
-	}
-	if (DirX == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
-	{
-		animationClock.restart();
-		if (curFrame < 6 || curFrame > 8) animate(6);
-		if (animate(-1, 0) > 8) animate(6);
+		std::cout << "Running\n";
+		if (DirX == 0 && DirY == 0)
+		{
+			animate(1); //Idle
+		}
+		if (DirX == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 6 || curFrame > 8) animate(6);
+			if (animate(-1, 0) > 8) animate(6);
 
-	}
-	if (DirX == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
-	{
-		animationClock.restart();
-		if (curFrame < 3 || curFrame > 5) animate(3);
-		if (animate(-1, 0) > 5) animate(3);
-	}
-	if (DirY == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
-	{
-		animationClock.restart();
-		if (curFrame < 0 || curFrame > 2) animate(0);
-		if (animate(-1, 0) > 2) animate(0);
+		}
+		if (DirX == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 3 || curFrame > 5) animate(3);
+			if (animate(-1, 0) > 5) animate(3);
+		}
+		if (DirY == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 0 || curFrame > 2) animate(0);
+			if (animate(-1, 0) > 2) animate(0);
 
+		}
+		if (DirY == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 9 || curFrame >= 11) animate(9);
+			if (animate(-1, 0) >= 11) animate(9);
+		}
+		return curFrame;
 	}
-	if (DirY == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+	return 0;
+}
+
+int Player::walkingAnimateAuto(int fps = 6)
+{
+	if (isAuto == true)
 	{
-		animationClock.restart();
-		if (curFrame < 9 || curFrame >= 11) animate(9);
-		if (animate(-1, 0) >= 11) animate(9);
+		int DirX = 0;
+		int DirY = 0;
+
+		DirX = CUt::sign(getSpd().x);
+		DirY = CUt::sign(getSpd().y);
+
+		if (DirX == 0 && DirY == 0)
+		{
+			animate(1); //Idle
+		}
+		if (DirX == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 6 || curFrame > 8) animate(6);
+			if (animate(-1, 0) > 8) animate(6);
+
+		}
+		if (DirX == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 3 || curFrame > 5) animate(3);
+			if (animate(-1, 0) > 5) animate(3);
+		}
+		if (DirY == 1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 0 || curFrame > 2) animate(0);
+			if (animate(-1, 0) > 2) animate(0);
+
+		}
+		if (DirY == -1 && animationClock.getElapsedTime().asSeconds() > 1.0f / fps)
+		{
+			animationClock.restart();
+			if (curFrame < 9 || curFrame >= 11) animate(9);
+			if (animate(-1, 0) >= 11) animate(9);
+		}
+		return curFrame;
 	}
-	return curFrame;
 }
 
 int Player::getCurrentFrame()

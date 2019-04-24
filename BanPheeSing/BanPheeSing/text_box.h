@@ -83,6 +83,8 @@ public:
 	std::vector<TextDiaglogue> diagQueue;
 
 
+
+
 	void Continue();
 
 	void updateSetting();
