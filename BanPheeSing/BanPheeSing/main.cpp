@@ -8,7 +8,9 @@
 #include "text_box.h"
 #include "tilemap.h"
 #include "solid_obj.h"
+#include "trigger_obj.h"
 #include "map_parser.h"
+
 
 void resizeView(const sf::RenderWindow &window, sf::View &view)
 {
@@ -16,9 +18,43 @@ void resizeView(const sf::RenderWindow &window, sf::View &view)
 	view.setSize(sf::Vector2f(float(WindowHeight)*aspectRatio, float(WindowHeight)));
 }
 
+enum npcFormation
+{
+	front_line = 0,
+	back_line = 1,
+	follow_line = 2
+};
+
+void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
+{
+	for (int i = 0; i < NPCs.size(); i++)
+	{
+		if (format == front_line)
+		{
+			NPCs[i]->setVisibility(true);
+			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
+		}
+		if (format == back_line)
+		{
+			NPCs[i]->setVisibility(true);
+			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), 150));
+		}
+		if (format == follow_line)
+		{
+			if (NPCs[i]->moveTo(Player.getPos())) { NPCs[i]->setVisibility(false); }
+			if (CUt::dist(NPCs[i]->getPos(), Player.getPos()) > 500)
+			{
+				NPCs[i]->setPos(Player.getPos());
+			}
+		}
+		NPCs[i]->walkingAnimate();
+	}
+}
+
 
 //Global Variables
 sf::Vector2f mousePosition = { 0,0 };
+npcFormation npcFormat = follow_line;
 
 
 int main()
@@ -83,17 +119,26 @@ int main()
 	Level level;
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
-	mp::parseMap(".\\maps\\test_case.mMap", level);
+	mp::parseMap(".\\maps\\test_event.mMap", level);
 	level.update();
 
 	//Spawn all obj in level
 	std::vector<solidObj> solids;
+	std::vector<triggerObj> triggers;
 	for (int i = 0; i < level.objData.size(); i++)
 	{
 		if (level.objData[i].type == "solid")
 		{
 			solids.push_back(solidObj(level.objData[i].pos, level.objData[i].size, 4.0f, false));
 		}
+		if (level.objData[i].type == "event")
+		{
+			triggers.push_back(triggerObj(&testEvent, level.objData[i].event_id, level.objData[i].event_type, level.objData[i].pos, level.objData[i].size, 4.0f));
+		}
+		if (level.objData[i].type == "player_spawn") Player.setPos({ level.objData[i].pos.x*4 , level.objData[i].pos.y *4 });
+		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
+		if (level.objData[i].type == "red_spawn") Red.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
+		if (level.objData[i].type == "koi_spawn") Koy.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 	}
 
 	while (window.isOpen())
@@ -136,9 +181,17 @@ int main()
 		if (gamePause) timestep.pause();
 		else timestep.unpause();
 
+		//Collision for triggers
+		for (int i = 0; i < triggers.size(); i++)
+		{
+			triggers[i].collide(Player);
+		}
+		std::cout << "testEvent.checkEvent(chat_pic) =" <<  testEvent.checkEvent("chat_pic") << "\n";
 		//Chat event handle
+
 		if (testEvent.checkEvent("chat1") && !testText.isDisplay)
 		{
+			npcFormat = front_line;
 			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้มาสิงสถิตในรูปบานนี้ด้วยเถิด", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
@@ -149,6 +202,7 @@ int main()
 		}
 		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
 		{
+			npcFormat = front_line;
 			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
 			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nเธอตาฝาดไปเองรึเปล่า มันจะเป็นไปได้อย่างไง", mainFont));
 			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย", mainFont));
@@ -157,7 +211,7 @@ int main()
 			testText.Continue();
 			testText.updatePosition();
 		}
-		std::cout << "testText.diagQueue.size() =" << testText.diagQueue.size() << "\n";
+		//std::cout << "testText.diagQueue.size() =" << testText.diagQueue.size() << "\n";
 		while (timestep.isUpdateRequired())
 		{
 			//deltaTime = timestep.getStepAsFloat();
@@ -172,9 +226,11 @@ int main()
 
 			Player.control(Right, Left, Down, Up, Sprint);
 			Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
+			if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
 
 			//solid.collide(Player);
 			//solid.collide(Ghost);
+			//Collision for solids
 			for (int i = 0; i < solids.size(); i++)
 			{
 				solids[i].collide(Player);
@@ -188,13 +244,8 @@ int main()
 			{
 				Ghost.chase({ 1024,200 }, { 0,400 }, Player);
 			}
-
 			//NPC test
-			for (int i = 0; i < NPCs.size(); i++)
-			{
-				NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
-				NPCs[i]->walkingAnimate();
-			}
+			npcsMove(NPCs, Player, npcFormat);
 			//Ghost.moveToQueue();
 			//Ghost.walkingAnimate();
 			testText.updatePosition();
@@ -221,17 +272,18 @@ int main()
 		Green.draw(window);
 		Koy.draw(window);
 
-		Player.draw(window);
-		Player.drawStamina(window);
 
 		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window);
+
+		Player.draw(window);
+		Player.drawStamina(window);
 
 		Ghost.draw(window);
 		testText.draw(window);
 		Ghost.drawDist(window);
 
 		//window.draw(solid.obj);
-		//for (int i = 0; i < solids.size(); i++) window.draw(solids[i].obj);
+		for (int i = 0; i < triggers.size(); i++) window.draw(triggers[i].obj);
 		//x.draw(window);
 		window.draw(FPS);
 		window.display();

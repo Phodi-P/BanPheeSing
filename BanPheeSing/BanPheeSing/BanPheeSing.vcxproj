@@ -169,6 +169,7 @@
     <ClInclude Include="solid_obj.h" />
     <ClInclude Include="text_box.h" />
     <ClInclude Include="tilemap.h" />
+    <ClInclude Include="trigger_obj.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\sfml\lib\sfml-audio-d.pdb" />

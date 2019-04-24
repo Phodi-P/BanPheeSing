@@ -16,6 +16,11 @@ public:
 	bool isSprinting = false;
 	bool canWalk = true;
 
+	std::vector<sf::Vector2f> trailPos;
+	int trailCount = 0;
+	float trailTime = 0;
+	float trailTimeDist = 40;
+
 	sf::Vector2f nonZeroSpd;
 
 
@@ -58,6 +63,10 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 	setMyTexture(ImgDir, sf::IntRect(0,0,frameWidth,frameHeight));
 
 	staminaBar.setFillColor(sf::Color::Green);
+
+	trailPos.push_back({ 0,0 });
+	trailPos.push_back({ 0,0 });
+	trailPos.push_back({ 0,0 });
 }
 
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
@@ -107,6 +116,18 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 	{
 		float xMovement = float(Right - Left);
 		float yMovement = float(Down - Up);
+
+		if (xMovement != 0 || yMovement != 0)
+		{
+			trailTime += deltaTime;
+			if (trailTime > trailTimeDist)
+			{
+				trailTime = 0;
+				trailPos[trailCount] = getPos();
+				trailCount++;
+				if (trailCount > 2) trailCount = 0;
+			}
+		}
 
 		float spd;
 		if (!canSprint && curStamina >= minStamina)
