@@ -47,7 +47,8 @@ TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, s
 	if (speakerName == "เขียว")
 	{
 		this->ImgDir = ".//textures//portraits//green.png";
-		this->speakerColor = sf::Color::Green;
+		//this->speakerColor = sf::Color::Green;
+		this->speakerColor = sf::Color(35, 135, 5 , 255);
 	}
 	if (speakerName == "แดง")
 	{
@@ -57,7 +58,8 @@ TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, s
 	if (speakerName == "ก้อย")
 	{
 		this->ImgDir = ".//textures//portraits//koy.png";
-		this->speakerColor = sf::Color::Magenta;
+		//this->speakerColor = sf::Color::Magenta;
+		this->speakerColor = sf::Color(127, 0, 255, 255);
 	}
 }
 
@@ -212,8 +214,8 @@ void TextBox::updateSetting()
 	calculateString();
 
 	text.setCharacterSize(48);
-	//text.setFillColor(sf::Color::Black);
-	text.setFillColor(sf::Color::White);
+	text.setFillColor(sf::Color::Black);
+	//text.setFillColor(sf::Color::White);
 
 	text.setPosition(Offset.x+textboxMargin, Offset.y+WindowHeight - textboxHeight + 120);
 
@@ -237,11 +239,11 @@ void TextBox::updatePosition()
 	else Offset = sf::Vector2f(0, 0);
 
 	box.setPosition(sf::Vector2f(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight));
-	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120);
+	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120 + 15);
 	Img.setPosition(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight - 700);
 	text_speaker.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
 
-	ContinueText.setPosition(Offset.x - WindowWidth / 2 + textboxMargin+1250, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin+250);
+	ContinueText.setPosition(Offset.x - WindowWidth / 2 + textboxMargin+1250-100, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin+250);
 
 }
 
