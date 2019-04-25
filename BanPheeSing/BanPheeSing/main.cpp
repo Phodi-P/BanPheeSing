@@ -1,10 +1,11 @@
 #include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
 #include "Kairos/Timer.hpp"
-#include <mutex>
 #include "SFML/Audio.hpp"
 
 #include "door.h"
+#include "door_vertical.h"
+
 #include "player.h"
 #include "npc.h"
 #include "ghost.h"
@@ -15,7 +16,6 @@
 #include "map_parser.h"
 
 //Global Variables
-std::once_flag onceFlag;
 enum npcFormation
 {
 	front_line = 0,
@@ -31,7 +31,8 @@ float viewCoeff = viewCoeffDefault;
 float curViewCoeff = viewCoeffDefault;
 
 bool isDark = false;
-bool isBlack = false;
+bool isDarker = true;
+bool showDeath = false;
 
 //Functions prototype
 void resizeView(const sf::RenderWindow &, sf::View &);
@@ -91,6 +92,13 @@ int main()
 	rectDark.setTexture(&darkOverlay);
 	rectDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
+	//semi-dark overlay
+	sf::Texture semidarkOverlay;
+	semidarkOverlay.loadFromFile(".\\textures\\semi_dark_overlay.png");
+	sf::RectangleShape rectsemiDark;
+	rectsemiDark.setTexture(&semidarkOverlay);
+	rectsemiDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+
 	//Normal overlay
 	sf::Texture normalOverlay;
 	normalOverlay.loadFromFile(".\\textures\\normal_overlay.png");
@@ -101,7 +109,7 @@ int main()
 	//Black rect
 	sf::RectangleShape rect;
 	rect.setFillColor(sf::Color::Black);
-	rectNormal.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+	rect.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
 
 	//Sound
@@ -169,10 +177,11 @@ int main()
 		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
+	DoorVertical testDoor({2000,1100},"door",false);
+
 	//Game loop
 	while (window.isOpen())
 	{
-		//std::call_once(onceFlag, [] {std::cout << "I run only once\n"; });
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
 
 		sf::Event evnt;
@@ -192,14 +201,13 @@ int main()
 				if (evnt.key.code == sf::Keyboard::Escape) window.close();
 				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
 
+
 				//chat system related
 				if (evnt.key.code == sf::Keyboard::Space)
 				{
 					testText.Continue();
 					testText.updatePosition();
 				}
-				if (evnt.key.code == sf::Keyboard::F1) testEvent.triggerEvent("chat1");
-				if (evnt.key.code == sf::Keyboard::F2) testEvent.triggerEvent("chat2");
 				break;
 
 			case sf::Event::MouseButtonPressed:
@@ -223,6 +231,7 @@ int main()
 		{
 			triggers[i].collide(Player);
 		}
+		testDoor.update(testEvent, Player);
 
 		//Other event
 		if (testEvent.checkEvent("die"))
@@ -232,7 +241,7 @@ int main()
 			timer.setTime(wait);
 			timer.start();
 			sound.stop();
-			isBlack = true;
+			showDeath = true;
 			if (sound.getStatus() != sf::SoundSource::Status::Playing)
 			{
 				sound.resetBuffer();
@@ -297,9 +306,17 @@ int main()
 		while (timestep.isUpdateRequired())
 		{
 			view.setCenter(view.getCenter() + (viewTarget - view.getCenter()) / viewCoeff);
-			rectDark.setPosition(getViewOffset(view));
+			if (isDark)
+			{
+				rectDark.setPosition(getViewOffset(view));
+				rectsemiDark.setPosition(getViewOffset(view));
+				if ((rand() % 101) <= 5) isDarker = true;
+				else isDarker = false;
+			}
+			
 			rectNormal.setPosition(getViewOffset(view));
 			rect.setPosition(getViewOffset(view));
+			
 			
 			//Pausable
 			if (!gamePause)
@@ -363,14 +380,15 @@ int main()
 			
 		}
 
-
 		//FPS Debugging
 		FPS.setString("FPS: "+std::to_string(1.0f / clock.getElapsedTime().asSeconds())+
 						"\ndeltaTime: "+std::to_string(deltaTime)+
 						"\nmouseX: "+std::to_string(mousePosition.x)+
 						"\nmouseY: "+std::to_string(mousePosition.y)+
 						"\n\ntimer: "+std::to_string(timer.getTime().asSeconds())+
-						"\ntimerDone: "+std::to_string(timer.isDone()));
+						"\ntimerDone: "+std::to_string(timer.isDone())+
+						"\nisDark: "+std::to_string(isDark)+
+						"\n\nLastestEvent: "+testEvent.getLastEvent());
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		deltaTime = 1.0f;
@@ -383,6 +401,8 @@ int main()
 
 		level.draw(window);
 
+		testDoor.draw(window);
+
 		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window); //Draw NPCs
 
 		Player.draw(window);
@@ -391,10 +411,13 @@ int main()
 		Ghost.draw(window);
 		//Ghost.drawDist(window);
 
-		if(isDark) window.draw(rectDark, sf::BlendMultiply);
+		if (isDark) {
+			if(isDarker) window.draw(rectsemiDark, sf::BlendMultiply);
+			else window.draw(rectDark, sf::BlendMultiply);
+		}
 		else window.draw(rectNormal, sf::BlendMultiply);
 
-		if (isBlack) window.draw(rect);
+		if (showDeath) window.draw(rect);
 
 		testText.draw(window);
 		
