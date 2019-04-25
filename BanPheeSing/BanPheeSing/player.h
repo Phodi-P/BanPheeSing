@@ -41,11 +41,11 @@ protected:
 	bool canSprint = true; 
 
 	float maxStamina = 100.0f; //[Editable]
-	float minStamina = 50.0f; //[Editable]
+	float minStamina = 30.0f; //[Editable]
 	float curStamina = maxStamina;
 
-	float staminaRegenRate = 7.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
-	float staminaDrainRate = 30.5f; //[Editable]
+	float staminaRegenRate = 8.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
+	float staminaDrainRate = 30.0f; //[Editable]
 
 	float staminaBarMaxWidth = 100.0f;
 

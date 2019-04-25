@@ -240,6 +240,7 @@ namespace mp {
 		  level.objData.push_back(ObjSpawnData(type, sf::Vector2f(x, y), sf::Vector2f(w, h), event_id, event_type));
 
 	  }
+	  
 	  else if (mode == 4) {
 	  if (line[0] == '*') continue;
 	  std::stringstream sObj(line);

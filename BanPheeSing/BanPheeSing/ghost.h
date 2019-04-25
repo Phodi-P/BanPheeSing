@@ -95,7 +95,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	case running:
 		canCollide = true;
-		setSpd(11.0f+(1.0f-(dist/1500.0f))*8.0f);
+		setSpd(9.7f+(1.0f-(dist/1500.0f))*8.0f);
 		if (canWalk) moveTo(target.getPos());
 		if (runClock.getElapsedTime().asSeconds() >= runTime)
 		{
