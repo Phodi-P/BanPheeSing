@@ -167,6 +167,7 @@
     <ClInclude Include="object.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="solid_obj.h" />
+    <ClInclude Include="start_menu.h" />
     <ClInclude Include="text_box.h" />
     <ClInclude Include="tilemap.h" />
     <ClInclude Include="trigger_obj.h" />

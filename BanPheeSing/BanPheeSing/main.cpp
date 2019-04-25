@@ -1,7 +1,9 @@
-#include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
+๏ปฟ#include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
 #include "Kairos/Timer.hpp"
 #include "SFML/Audio.hpp"
+
+#include <locale>
 
 #include "door.h"
 
@@ -13,6 +15,7 @@
 #include "solid_obj.h"
 #include "trigger_obj.h"
 #include "map_parser.h"
+#include "start_menu.h"
 
 //Global Variables
 enum npcFormation
@@ -44,6 +47,7 @@ void npcsMove(std::vector<Npc*> &, Player &, npcFormation);
 
 int main()
 	{
+	std::locale::global(std::locale(""));
 	//Create windows and view
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
@@ -62,15 +66,15 @@ int main()
 	Player.setScale(4.0f, 4.0f);
 	Player.setPos({ 710,865 });
 
-	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "แดง");
+	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "เนเธ”เธ");
 	Red.setScale(4.0f, 4.0f);
 	Red.setPos(Player.getPos());
 
-	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เขียว");
+	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เน€เธเธตเธขเธง");
 	Green.setScale(4.0f, 4.0f);
 	Green.setPos(Player.getPos());
 
-	Npc Koy({ 300,100 }, ".\\textures\\koy_sprite.png", 32, 32, 4, 3, "ก้อย");
+	Npc Koy({ 300,100 }, ".\\textures\\koy_sprite.png", 32, 32, 4, 3, "ยกรฉรร");
 	Koy.setScale(4.0f, 4.0f);
 	Koy.setPos(Player.getPos());
 
@@ -181,12 +185,44 @@ int main()
 		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
-
-	//Game loop
+	//
+	StartMenu menu((float)RoomWidth, (float)RoomHeight, ".\\textures\\MainBGwithLogo.png",mainFont);
+	bool isGameStart = false;
+	//
+	
 	while (window.isOpen())
 	{
-		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
+		// Start Menu
+		while (!isGameStart) {
+			//mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			sf::Event evnt;
+			while (window.pollEvent(evnt))
+			{
+				switch (evnt.type)
+				{
+				case sf::Event::Closed:
+					window.close();
+					break;
+				case sf::Event::KeyPressed:
+					if (evnt.key.code == sf::Keyboard::Escape) window.close();
+					break;
+				case sf::Event::KeyReleased:
+					switch (evnt.key.code) {
+					case sf::Keyboard::Up: menu.moveUp(); break;
+					case sf::Keyboard::Down: menu.moveDown(); break;
+					case sf::Keyboard::Enter: isGameStart = true; break;
+					}
+					break;
+				//case sf::Event::MouseMoved: std::cout << mousePosition.x << "\n";
+				}
 
+			}
+			window.clear();
+			if(!isGameStart) menu.draw(window);
+			window.display();
+		}
+		//
+		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -266,10 +302,7 @@ int main()
 			curViewTarget = Player.getPos();
 			curViewCoeff = viewCoeffDefault;
 			Player.moveDir({ 0,0 });
-			testText.addDialogue(TextDiaglogue("แดง", "เอาล่ะ มาเริ่มกันเลย", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "เราขออัญเชิญดวงวิญญาณ ณ ที่แห่งนี้\nออกมาให้เราสัมผัส ให้เราได้รับรู้ด้วยเถิดด", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "ไม่มีอะไรเกิดขึ้นเลยวะ สงสัยผีแม่งกลัวเราว่ะ  5555", mainFont));
-			testText.addDialogue(TextDiaglogue("เขียว", "โถ่น่าเสียดายว่ะ ผีแม่งไม่มีอยู่จริงแน่ๆเลย 55555", mainFont));
+			testText.addDialogue(TextDiaglogue("เนเธ”เธ", "เธ—เธ”เธชเธญเธ", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
 			testText.updatePosition();
@@ -280,10 +313,6 @@ int main()
 			curViewTarget = sf::Vector2f(36 * (4 * 4 * 4), 6 * (4 * 4 * 4)); //Points view to picture
 			curViewCoeff = 150.0f; //Slow down view
 			Player.moveDir({ 0,0 });
-			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
-			testText.addDialogue(TextDiaglogue("เขียว", "เธอจะบ้ารึไงก้อย\nนั่นมันก็แค่คลาบโคลนแหละน่า คิดมากไปได้", mainFont));
-			testText.addDialogue(TextDiaglogue("แดง", "หึหึ พวกนายน่ะคิดไปเองทั้งนั้นแหละ บ้านหลังนี้ไม่เห็นจะมีอะไรเลย\nฉันว่าเรากลับกันเถอะ", mainFont));
-			testText.addDialogue(TextDiaglogue("เอ", "เดี๋ยวก่อนนะ\nฉันว่ารูปนั่นเหมือนกับว่ามันขยับได้เลยนะ", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
 			testText.updatePosition();
@@ -438,7 +467,7 @@ int main()
 
 		window.display();
 	}
-
+	
 	return 0;
 }
 
