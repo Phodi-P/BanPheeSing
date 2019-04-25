@@ -1,6 +1,7 @@
 #pragma once
 #include"custom_utility.h"
 #include"button.h"
+#include "event.h"
 
 #define MAX_NUMBER_OF_ITEMS 2
 
@@ -11,6 +12,9 @@ class StartMenu {
 		void draw(sf::RenderWindow &);
 		void moveUp();
 		void moveDown();
+		void update(sf::Vector2f&);
+		int getSelectedIndex();
+		Button* getSelectedButton();
 
 		bool drawButtons = false;
 	private:
@@ -56,4 +60,27 @@ void StartMenu::moveDown() {
 		selectedItemIndex++;
 		menu[selectedItemIndex].select();
 	}
+}
+
+void StartMenu::update(sf::Vector2f &mousePos)
+{
+	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
+	{
+		if (menu[i].mouseCheck(mousePos))
+		{
+			menu[selectedItemIndex].unselect();
+			selectedItemIndex = i;
+			menu[selectedItemIndex].select();
+		}
+	}
+}
+
+int StartMenu::getSelectedIndex()
+{
+	return selectedItemIndex;
+}
+
+Button* StartMenu::getSelectedButton()
+{
+	return &menu[selectedItemIndex];
 }

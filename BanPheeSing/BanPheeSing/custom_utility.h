@@ -19,6 +19,7 @@ const int RoomHeight = 1080;
 float deltaTime = 0.0f;
 
 bool gamePause = false;
+sf::Vector2f mousePosition = { 0,0 };
 
 Event testEvent;
 

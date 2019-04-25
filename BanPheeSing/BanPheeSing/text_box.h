@@ -127,7 +127,7 @@ TextBox::TextBox()
 {
 	isDisplay = false;
 
-	texture.loadFromFile(".//textures//textbox.png");
+	texture.loadFromFile(".//textures//ui//textbox.png");
 	box.setTexture(&texture);
 
 	ContinueText.setFont(font);

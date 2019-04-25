@@ -4,6 +4,7 @@ class Button
 {
 public:
 	Button(std::string, std::string, sf::Vector2f, sf::Font &);
+	bool mouseCheck(sf::Vector2f&);
 	void select();
 	void unselect();
 	void drawButton(sf::RenderWindow &);
@@ -40,6 +41,14 @@ Button::Button(std::string name, std::string id, sf::Vector2f position, sf::Font
 	border.setFillColor(sf::Color::Black);
 }
 
+bool Button::mouseCheck(sf::Vector2f &mousePos)
+{
+	//perform updates for user mouse interactions
+	bool mouseInButton = border.getGlobalBounds().contains(mousePosition);
+	//std::cout << button.getString().toAnsiString() << "=" << mouseInButton << "\n";
+	return mouseInButton;
+}
+
 void Button::select() {
 	button.setFillColor(sf::Color::Red);
 }
@@ -49,6 +58,6 @@ void Button::unselect() {
 }
 
 void Button::drawButton(sf::RenderWindow &window) {
-	window.draw(border);
+	//window.draw(border);
 	window.draw(button);
 }

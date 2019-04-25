@@ -24,7 +24,7 @@ enum npcFormation
 	back_line = 1,
 	follow_line = 2
 };
-sf::Vector2f mousePosition = { 0,0 }, ghostPos = { 0,0 }, viewTarget = { 0,0 }, curViewTarget = { 0,0 };
+sf::Vector2f ghostPos = { 0,0 }, viewTarget = { 0,0 }, curViewTarget = { 0,0 };
 npcFormation npcFormat = back_line;
 
 float viewCoeffDefault = 10.0f;
@@ -89,21 +89,21 @@ int main()
 
 	//Dark overlay
 	sf::Texture darkOverlay;
-	darkOverlay.loadFromFile(".\\textures\\dark_overlay.png");
+	darkOverlay.loadFromFile(".\\textures\\overlays\\dark_overlay.png");
 	sf::RectangleShape rectDark;
 	rectDark.setTexture(&darkOverlay);
 	rectDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
 	//semi-dark overlay
 	sf::Texture semidarkOverlay;
-	semidarkOverlay.loadFromFile(".\\textures\\semi_dark_overlay.png");
+	semidarkOverlay.loadFromFile(".\\textures\\overlays\\semi_dark_overlay.png");
 	sf::RectangleShape rectsemiDark;
 	rectsemiDark.setTexture(&semidarkOverlay);
 	rectsemiDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
 	//Normal overlay
 	sf::Texture normalOverlay;
-	normalOverlay.loadFromFile(".\\textures\\normal_overlay.png");
+	normalOverlay.loadFromFile(".\\textures\\overlays\\normal_overlay.png");
 	sf::RectangleShape rectNormal;
 	rectNormal.setTexture(&normalOverlay);
 	rectNormal.setSize(sf::Vector2f(WindowWidth, WindowHeight));
@@ -177,7 +177,11 @@ int main()
 		{
 			doors.push_back(Door(level.objData[i].pos, level.objData[i].size, level.objData[i].event_id, 4.0f));
 		}
-		if (level.objData[i].type == "player_spawn") Player.setPos({ level.objData[i].pos.x*4 , level.objData[i].pos.y *4 });
+		if (level.objData[i].type == "player_spawn")
+		{
+			Player.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
+			view.setCenter(Player.getPos());
+		}
 		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "red_spawn") Red.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "koy_spawn") Koy.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
@@ -186,18 +190,31 @@ int main()
 
 
 	//Game loop
-	//
-	StartMenu menu((float)RoomWidth, (float)RoomHeight, ".\\textures\\MainBGwithLogo.png", mainFont);
-	menu.drawButtons = true;
+
+	//Start menu
+	StartMenu menu((float)WindowWidth, (float)WindowHeight, ".\\textures\\ui\\MainBG.png", mainFont);
+	menu.drawButtons = false;
 	bool isGameStart = false;
+	bool isTitleFinished = false;
+
+	sf::Texture titleTexture;
+	titleTexture.loadFromFile(".\\textures\\ui\\Title.png");
+
+	sf::Sprite title;
+	title.setTexture(titleTexture);
+	title.setScale({5,5});
+	float titleAlpha = 0;
 	//
 
 	while (window.isOpen())
 	{
+
 		// Start Menu
 		while (!isGameStart) {
-			//mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
 			sf::Event evnt;
+
+			
 			while (window.pollEvent(evnt))
 			{
 				switch (evnt.type)
@@ -206,26 +223,65 @@ int main()
 					window.close();
 					break;
 				case sf::Event::KeyPressed:
+					titleAlpha = 1;
 					if (evnt.key.code == sf::Keyboard::Escape) window.close();
 					break;
 				case sf::Event::KeyReleased:
 					switch (evnt.key.code) {
 					case sf::Keyboard::Up: menu.moveUp(); break;
 					case sf::Keyboard::Down: menu.moveDown(); break;
-					case sf::Keyboard::Enter: isGameStart = true; break;
+					case sf::Keyboard::Enter: {
+						if (menu.getSelectedIndex() == 0) isGameStart = true;
+						break;
+					}
+
 					}
 					break;
+				case sf::Event::MouseButtonPressed:
+					//std::cout << "Mouse responded\n";
+					titleAlpha = 1;
+					if (evnt.key.code == sf::Mouse::Left)
+					{
+						//std::cout << "Mouse left\n";
+						if (menu.getSelectedButton()->mouseCheck(mousePosition))
+						{
+							//std::cout << "menu.getSelectedIndex() =" << menu.getSelectedIndex() << "\n";
+							if (menu.getSelectedIndex() == 0) isGameStart = true;
+							else window.close();
+						}
+					}
 					//case sf::Event::MouseMoved: std::cout << mousePosition.x << "\n";
 				}
-
+			}
+			if (isTitleFinished)
+			{
+				menu.update(mousePosition);
+			}
+			else
+			{
+				timestep.addFrame();
+				while (timestep.isUpdateRequired())
+				{
+					titleAlpha += 0.002;
+					//std::cout << "titleAlpha =" << titleAlpha << "\n";
+					if (titleAlpha >= 1)
+					{
+						titleAlpha = 1;
+						menu.drawButtons = true;
+						isTitleFinished = true;
+					}
+					title.setScale({1+(4 * (1 - titleAlpha)),1 + (4 * (1 - titleAlpha)) });
+					title.setPosition({(WindowWidth/2)-title.getGlobalBounds().width/2,100});
+					title.setColor(sf::Color(255, 255, 255, titleAlpha * 255));
+				}
 			}
 			window.clear();
 			if (!isGameStart) menu.draw(window);
+			window.draw(title);
 			window.display();
 		}
 		//
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
-
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
