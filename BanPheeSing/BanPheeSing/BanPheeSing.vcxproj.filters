@@ -79,7 +79,6 @@
     </ClInclude>
     <ClInclude Include="event.h" />
     <ClInclude Include="trigger_obj.h" />
-    <ClInclude Include="door_vertical.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\sfml\lib\sfml-audio.lib">

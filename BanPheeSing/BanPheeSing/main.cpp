@@ -4,7 +4,6 @@
 #include "SFML/Audio.hpp"
 
 #include "door.h"
-#include "door_vertical.h"
 
 #include "player.h"
 #include "npc.h"
@@ -170,6 +169,10 @@ int main()
 		{
 			triggers.push_back(triggerObj(&testEvent, level.objData[i].event_id, level.objData[i].event_type, level.objData[i].pos, level.objData[i].size, 4.0f));
 		}
+		if (level.objData[i].type == "door")
+		{
+			triggers.push_back(triggerObj(&testEvent, level.objData[i].event_id, level.objData[i].event_type, level.objData[i].pos, level.objData[i].size, 4.0f));
+		}
 		if (level.objData[i].type == "player_spawn") Player.setPos({ level.objData[i].pos.x*4 , level.objData[i].pos.y *4 });
 		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
 		if (level.objData[i].type == "red_spawn") Red.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
@@ -177,7 +180,6 @@ int main()
 		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
-	DoorVertical testDoor({2000,1100},"door",false);
 
 	//Game loop
 	while (window.isOpen())
@@ -231,7 +233,6 @@ int main()
 		{
 			triggers[i].collide(Player);
 		}
-		testDoor.update(testEvent, Player);
 
 		//Other event
 		if (testEvent.checkEvent("die"))
@@ -401,7 +402,6 @@ int main()
 
 		level.draw(window);
 
-		testDoor.draw(window);
 
 		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window); //Draw NPCs
 

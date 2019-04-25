@@ -10,11 +10,13 @@ public:
 	sf::RectangleShape sq;
 	sf::RectangleShape collisionMask;
 
+	bool vertical;
+
 	sf::Vector2f pos;
 	float scale;
 	std::string door_id;
 
-	Door(sf::Vector2f, std::string, float);
+	Door(sf::Vector2f, sf::Vector2f, std::string, float);
 	void update(Event & , Player &);
 	bool collide(Player &);
 	void setDoor(bool);
@@ -23,14 +25,26 @@ public:
 private:
 	sf::Texture door;
 };
-Door::Door(sf::Vector2f pos, std::string door_id, float scale = 4.0f) {
-	sq.setPosition(pos);
-	sq.setSize(sf::Vector2f(16 * 4 * scale, 16 * 4 * scale));
+Door::Door(sf::Vector2f pos, sf::Vector2f size, std::string door_id, float scale = 4.0f)
+{
+	vertical = (size.y > size.x);
 
+	sq.setPosition(pos);
 	collisionMask.setPosition(pos);
-	collisionMask.setSize(sf::Vector2f(16 * 4 * scale, 16 * 3 * scale));
 	
-	door.loadFromFile(".\\textures\\door.png");
+	if (vertical)
+	{
+		door.loadFromFile(".\\textures\\door_vertical.png");
+		sq.setSize(sf::Vector2f(16 * 4 * scale, 16 * 4 * scale));
+		collisionMask.setSize(sf::Vector2f(16 * 1 * scale, 16 * 2 * scale));
+	}
+	else
+	{
+		door.loadFromFile(".\\textures\\door.png");
+
+		sq.setSize(sf::Vector2f(16 * 4 * scale, 16 * 4 * scale));
+		collisionMask.setSize(sf::Vector2f(16 * 4 * scale, 16 * 3 * scale));
+	}
 	sq.setTexture(&door);
 
 	this->door_id = door_id;

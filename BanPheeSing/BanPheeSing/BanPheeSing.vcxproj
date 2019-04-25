@@ -149,7 +149,6 @@
     <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
     <ClInclude Include="door.h" />
-    <ClInclude Include="door_vertical.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="Kairos\Absorel.hpp" />
