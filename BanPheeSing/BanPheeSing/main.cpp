@@ -14,6 +14,9 @@
 #include "trigger_obj.h"
 #include "map_parser.h"
 
+#include "button.h"
+#include "start_menu.h"
+
 //Global Variables
 enum npcFormation
 {
@@ -183,8 +186,44 @@ int main()
 
 
 	//Game loop
+	//
+	StartMenu menu((float)RoomWidth, (float)RoomHeight, ".\\textures\\MainBGwithLogo.png", mainFont);
+	menu.drawButtons = true;
+	bool isGameStart = false;
+	//
+
 	while (window.isOpen())
 	{
+		// Start Menu
+		while (!isGameStart) {
+			//mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			sf::Event evnt;
+			while (window.pollEvent(evnt))
+			{
+				switch (evnt.type)
+				{
+				case sf::Event::Closed:
+					window.close();
+					break;
+				case sf::Event::KeyPressed:
+					if (evnt.key.code == sf::Keyboard::Escape) window.close();
+					break;
+				case sf::Event::KeyReleased:
+					switch (evnt.key.code) {
+					case sf::Keyboard::Up: menu.moveUp(); break;
+					case sf::Keyboard::Down: menu.moveDown(); break;
+					case sf::Keyboard::Enter: isGameStart = true; break;
+					}
+					break;
+					//case sf::Event::MouseMoved: std::cout << mousePosition.x << "\n";
+				}
+
+			}
+			window.clear();
+			if (!isGameStart) menu.draw(window);
+			window.display();
+		}
+		//
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
 
 		sf::Event evnt;
