@@ -112,7 +112,7 @@ private:
 	sf::Text text_speaker;
 	sf::Text text;
 	sf::Text ContinueText;
-	sf::Texture ImgTexture;
+	sf::Texture ImgTexture,texture;
 	sf::Sprite Img;
 	sf::View *view;
 
@@ -124,6 +124,9 @@ private:
 TextBox::TextBox()
 {
 	isDisplay = false;
+
+	texture.loadFromFile(".//textures//textbox.png");
+	box.setTexture(&texture);
 
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
@@ -137,6 +140,9 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 	inputString = textInput;
 	ImgDir = ImgDirInput;
 	font = fontInput;
+
+	texture.loadFromFile(".//textures//textbox.png");
+	box.setTexture(&texture);
 
 	updateSetting();
 
