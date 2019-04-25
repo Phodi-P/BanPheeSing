@@ -212,7 +212,8 @@ void TextBox::updateSetting()
 	calculateString();
 
 	text.setCharacterSize(48);
-	text.setFillColor(sf::Color::Black);
+	//text.setFillColor(sf::Color::Black);
+	text.setFillColor(sf::Color::White);
 
 	text.setPosition(Offset.x+textboxMargin, Offset.y+WindowHeight - textboxHeight + 120);
 
@@ -257,7 +258,7 @@ void TextBox::calculateString()
 		if (curLineCount >= textPerLine)
 		{
 			curLineCount = 0;
-			displayString += '\n';
+			//displayString += '\n'; //Not using
 		}
 	}
 }

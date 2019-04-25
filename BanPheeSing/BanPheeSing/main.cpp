@@ -141,7 +141,7 @@ int main()
 
 	//Setup chat object
 	TextBox testText;
-	testText.setMargin(35);
+	testText.setMargin(60);
 	testText.setView(view);
 
 	//Setup tileset
