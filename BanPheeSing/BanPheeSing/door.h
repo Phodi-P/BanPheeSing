@@ -35,15 +35,15 @@ Door::Door(sf::Vector2f pos, sf::Vector2f size, std::string door_id, float scale
 	if (vertical)
 	{
 		door.loadFromFile(".\\textures\\door_vertical.png");
-		sq.setSize(sf::Vector2f(16 * 4 * scale, 16 * 4 * scale));
-		collisionMask.setSize(sf::Vector2f(16 * 1 * scale, 16 * 2 * scale));
+		sq.setSize(sf::Vector2f(4 * scale, 4 * scale));
+		collisionMask.setSize(sf::Vector2f(4 * scale, 3 * scale));
 	}
 	else
 	{
 		door.loadFromFile(".\\textures\\door.png");
 
-		sq.setSize(sf::Vector2f(16 * 4 * scale, 16 * 4 * scale));
-		collisionMask.setSize(sf::Vector2f(16 * 4 * scale, 16 * 3 * scale));
+		sq.setSize(sf::Vector2f(1 * scale, 4 * scale));
+		collisionMask.setSize(sf::Vector2f(1 * scale, 3 * scale));
 	}
 	sq.setTexture(&door);
 
@@ -52,16 +52,19 @@ Door::Door(sf::Vector2f pos, sf::Vector2f size, std::string door_id, float scale
 }
 bool Door::collide(Player &target)
 {
-	if (Collision::BoundingBoxTestRect(collisionMask, target.getObj()))
+	if (!open)
 	{
-		target.canWalk = false;
-		target.moveDir(sf::Vector2f(-target.nonZeroSpd.x*1.05*deltaTime, -target.nonZeroSpd.y*1.05*deltaTime));
-		return true;
-	}
-	else
-	{
-		target.canWalk = true;
-		return false;
+		if (Collision::BoundingBoxTestRect(collisionMask, target.getObj()))
+		{
+			target.canWalk = false;
+			target.moveDir(sf::Vector2f(-target.nonZeroSpd.x*1.05*deltaTime, -target.nonZeroSpd.y*1.05*deltaTime));
+			return true;
+		}
+		else
+		{
+			target.canWalk = true;
+			return false;
+		}
 	}
 }
 void Door::update(Event &event, Player &Player)
@@ -92,12 +95,6 @@ void Door::update(Event &event, Player &Player)
 	}
 
 	if (lock && open) open = false;
-
-	if (!open)
-	{
-		collide(Player);
-	}
-
 }
 void Door::draw(sf::RenderWindow &x) {
 	if (!open) x.draw(sq);

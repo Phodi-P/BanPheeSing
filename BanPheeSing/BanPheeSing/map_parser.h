@@ -19,6 +19,7 @@ namespace mp {
       if(line == "Object") {mode = 1; continue;}
       else if(line == "Map") {mode = 2; continue;}
 	  else if (line == "Event") { mode = 3; continue; }
+	  else if (line == "Door") { mode = 4; continue; }
 	  
       //Read File with format
       if(mode == 1){
@@ -237,6 +238,55 @@ namespace mp {
 
 		  //Obj data
 		  level.objData.push_back(ObjSpawnData(type, sf::Vector2f(x, y), sf::Vector2f(w, h), event_id, event_type));
+
+	  }
+	  else if (mode == 4) {
+	  if (line[0] == '*') continue;
+	  std::stringstream sObj(line);
+	  std::string curObj;
+
+	  getline(sObj, curObj, ',');
+	  std::string type = curObj;
+	  //std::cout << curObj << " ";
+
+	  getline(sObj, curObj, ',');
+	  int propertiesCount = std::stoi(curObj);
+	  //std::cout << curObj << " ";
+
+	  //Reading properties
+	  std::string door_id;
+	  for (int i = 0; i < propertiesCount; i++)
+	  {
+		  getline(sObj, curObj, ',');
+		  if (i == 0) door_id = curObj;
+	  }
+
+	  getline(sObj, curObj, ',');
+	  int x = std::stoi(curObj);
+	  //std::cout << curObj << " ";
+
+	  getline(sObj, curObj, ',');
+	  int y = std::stoi(curObj);
+	  //std::cout << curObj << " ";
+
+	  getline(sObj, curObj, ',');
+	  int w = std::stoi(curObj);
+	  //std::cout << curObj << " ";
+
+	  getline(sObj, curObj, ',');
+	  int h = std::stoi(curObj);
+	  //std::cout << curObj << " ";
+
+	  //std::cout << std::endl;
+
+	  //sscanf_s(line.c_str(),"%[^,],%f,%f,%f,%f",type,sizeof(type),&x,&y,&w,&h);
+	  //sscanf_s(line.c_str(), "%[^,],%f,%f,%f,%f", type, &x, &y, &w, &h);
+	  //print object detail
+	  // std::cout << type << x<< y << w <<h<< std::endl;
+	  //
+
+	  //Obj data
+	  level.objData.push_back(ObjSpawnData(type, sf::Vector2f(x, y), sf::Vector2f(w, h), door_id));
 
 	  }
     }

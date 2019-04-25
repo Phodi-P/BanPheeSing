@@ -159,6 +159,7 @@ int main()
 	//Spawn all obj in level
 	std::vector<solidObj> solids;
 	std::vector<triggerObj> triggers;
+	std::vector<Door> doors;
 	for (int i = 0; i < level.objData.size(); i++)
 	{
 		if (level.objData[i].type == "solid")
@@ -171,7 +172,7 @@ int main()
 		}
 		if (level.objData[i].type == "door")
 		{
-			triggers.push_back(triggerObj(&testEvent, level.objData[i].event_id, level.objData[i].event_type, level.objData[i].pos, level.objData[i].size, 4.0f));
+			doors.push_back(Door(level.objData[i].pos, level.objData[i].size, level.objData[i].event_id, 4.0f));
 		}
 		if (level.objData[i].type == "player_spawn") Player.setPos({ level.objData[i].pos.x*4 , level.objData[i].pos.y *4 });
 		if (level.objData[i].type == "green_spawn") Green.setPos({ level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 });
@@ -232,6 +233,12 @@ int main()
 		for (int i = 0; i < triggers.size(); i++)
 		{
 			triggers[i].collide(Player);
+		}
+
+		//Update for doors
+		for (int i = 0; i < doors.size(); i++)
+		{
+			doors[i].update(testEvent, Player);
 		}
 
 		//Other event
@@ -401,6 +408,12 @@ int main()
 		window.setView(view);
 
 		level.draw(window);
+
+		//draw doors
+		for (int i = 0; i < doors.size(); i++)
+		{
+			doors[i].draw(window);
+		}
 
 
 		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window); //Draw NPCs
