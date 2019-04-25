@@ -8,7 +8,7 @@ public:
 	Ghost(sf::Vector2f, std::string, int, int, int, int);
 	int chase(sf::Vector2f, sf::Vector2f, Player);
 
-	void drawDist(sf::RenderWindow &);
+	//void drawDist(sf::RenderWindow &);
 
 	bool canWalk = true;
 	bool canCollide = true;
@@ -33,7 +33,7 @@ private:
 	float timeBeforeRun = 12.0f;
 	float killDist = 50.0f;
 
-	QuickText showDist;
+	//QuickText showDist;
 
 };
 
@@ -48,8 +48,8 @@ Ghost::Ghost(sf::Vector2f pos, std::string ImgIDir, int frameW, int frameH, int 
 	setVisibility(false);
 	curState = spawn;
 
-	showDist.setColor(sf::Color::Red);
-	showDist.setSize(42);
+	//showDist.setColor(sf::Color::Red);
+	//showDist.setSize(42);
 }
 
 //Start chasing targetPos
@@ -61,8 +61,8 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 	float distX = target.getPos().x - getPos().x;
 	float distY = target.getPos().y - getPos().y;
 	float dist = std::sqrtf(distX*distX + distY * distY);
-	showDist.setPos(getPos());
-	showDist.setString(std::to_string(dist));
+	//showDist.setPos(getPos());
+	//showDist.setString(std::to_string(dist));
 	switch(curState)
 	{
 	case spawn:
@@ -73,7 +73,7 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 		break;
 	case startComingOut:
 		canCollide = false;
-		setSpd(1.0f);
+		setSpd(2.0f);
 		if (moveTo(startPos + startDir)) curState = walking;
 		runClock.restart();
 		break;
@@ -140,8 +140,8 @@ int Ghost::chase(sf::Vector2f startPos, sf::Vector2f startDir, Player target)
 	if (getSpd().x != 0 || getSpd().y != 0) nonZeroSpd = getSpd();
 	return 0;
 }
-
+/*
 void Ghost::drawDist(sf::RenderWindow &window)
 {
 	showDist.draw(window);
-}
+}*/

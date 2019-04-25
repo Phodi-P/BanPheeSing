@@ -78,8 +78,72 @@
       <Filter>Kairos</Filter>
     </ClInclude>
     <ClInclude Include="start_menu.h" />
+    <ClInclude Include="event.h" />
+    <ClInclude Include="trigger_obj.h" />
+
   </ItemGroup>
   <ItemGroup>
+    <None Include="Kairos\Absorel.inl">
+      <Filter>Kairos</Filter>
+    </None>
+    <None Include="Kairos\Yalpes.inl">
+      <Filter>Kairos</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-audio-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-audio-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-main-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-network-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-system-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-window-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+    <None Include="..\sfml\lib\sfml-window-s-d.pdb">
+      <Filter>sfml</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="sfml">
+      <UniqueIdentifier>{aef52939-2927-431c-a740-239079c76aa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kairos">
+      <UniqueIdentifier>{60792373-ba4a-43a3-9b0f-138ed6e8f163}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\sfml\lib\flac.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\freetype.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\ogg.lib">
+      <Filter>sfml</Filter>
+    </Library>
+    <Library Include="..\sfml\lib\openal32.lib">
+      <Filter>sfml</Filter>
+    </Library>
     <Library Include="..\sfml\lib\sfml-audio.lib">
       <Filter>sfml</Filter>
     </Library>
@@ -146,75 +210,14 @@
     <Library Include="..\sfml\lib\sfml-window-s-d.lib">
       <Filter>sfml</Filter>
     </Library>
-    <Library Include="..\sfml\lib\openal32.lib">
-      <Filter>sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\ogg.lib">
-      <Filter>sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\freetype.lib">
-      <Filter>sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\flac.lib">
-      <Filter>sfml</Filter>
-    </Library>
-    <Library Include="..\sfml\lib\vorbisfile.lib">
+    <Library Include="..\sfml\lib\vorbis.lib">
       <Filter>sfml</Filter>
     </Library>
     <Library Include="..\sfml\lib\vorbisenc.lib">
       <Filter>sfml</Filter>
     </Library>
-    <Library Include="..\sfml\lib\vorbis.lib">
+    <Library Include="..\sfml\lib\vorbisfile.lib">
       <Filter>sfml</Filter>
     </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\sfml\lib\sfml-window-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-audio-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-audio-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-graphics-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-graphics-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-main-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-network-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-network-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-system-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-system-s-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="..\sfml\lib\sfml-window-d.pdb">
-      <Filter>sfml</Filter>
-    </None>
-    <None Include="Kairos\Absorel.inl">
-      <Filter>Kairos</Filter>
-    </None>
-    <None Include="Kairos\Yalpes.inl">
-      <Filter>Kairos</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="sfml">
-      <UniqueIdentifier>{aef52939-2927-431c-a740-239079c76aa7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Kairos">
-      <UniqueIdentifier>{60792373-ba4a-43a3-9b0f-138ed6e8f163}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>

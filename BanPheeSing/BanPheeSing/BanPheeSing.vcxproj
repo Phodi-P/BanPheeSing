@@ -149,6 +149,7 @@
     <ClInclude Include="Collision.hpp" />
     <ClInclude Include="custom_utility.h" />
     <ClInclude Include="door.h" />
+    <ClInclude Include="event.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="Kairos\Absorel.hpp" />
     <ClInclude Include="Kairos\all.hpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="start_menu.h" />
     <ClInclude Include="text_box.h" />
     <ClInclude Include="tilemap.h" />
+    <ClInclude Include="trigger_obj.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\sfml\lib\sfml-audio-d.pdb" />

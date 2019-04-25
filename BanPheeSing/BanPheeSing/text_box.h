@@ -16,6 +16,7 @@ public:
 	sf::Color speakerColor;
 
 	TextDiaglogue(std::string, std::string, std::string, sf::Font, sf::Color);
+	TextDiaglogue(std::string, std::string, sf::Font);
 	TextDiaglogue();
 };
 
@@ -30,6 +31,34 @@ TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, s
 	this->ImgDir = ImgDir;
 	this->font = font;
 	this->speakerColor = speakerColor;
+}
+
+TextDiaglogue::TextDiaglogue(std::string speakerName, std::string inputString, sf::Font font)
+{
+	this->speakerName = speakerName;
+	this->inputString = inputString;
+	this->font = font;
+	//Characters specific
+	if (speakerName == "เอ")
+	{
+		this->ImgDir = ".//textures//portraits//a.png";
+		this->speakerColor = sf::Color::Blue;
+	}
+	if (speakerName == "เขียว")
+	{
+		this->ImgDir = ".//textures//portraits//green.png";
+		this->speakerColor = sf::Color::Green;
+	}
+	if (speakerName == "แดง")
+	{
+		this->ImgDir = ".//textures//portraits//red.png";
+		this->speakerColor = sf::Color::Red;
+	}
+	if (speakerName == "ก้อย")
+	{
+		this->ImgDir = ".//textures//portraits//koy.png";
+		this->speakerColor = sf::Color::Magenta;
+	}
 }
 
 
@@ -51,10 +80,14 @@ public:
 
 	void setDialogue(TextDiaglogue);
 	void addDialogue(TextDiaglogue);
+	std::vector<TextDiaglogue> diagQueue;
+
+
 
 
 	void Continue();
 
+	void updateSetting();
 	void updatePosition();
 	void draw(sf::RenderWindow &window);
 
@@ -65,7 +98,7 @@ private:
 
 	bool hasView = false;
 
-	std::vector<TextDiaglogue> diagQueue;
+	//std::vector<TextDiaglogue> diagQueue;
 
 	sf::Font font;
 	std::string speakerName;
@@ -79,13 +112,12 @@ private:
 	sf::Text text_speaker;
 	sf::Text text;
 	sf::Text ContinueText;
-	sf::Texture ImgTexture;
+	sf::Texture ImgTexture,texture;
 	sf::Sprite Img;
 	sf::View *view;
 
 	sf::Vector2f Offset = sf::Vector2f(0,0);
 
-	void updateSetting();
 	void calculateString();
 };
 
@@ -93,10 +125,12 @@ TextBox::TextBox()
 {
 	isDisplay = false;
 
+	texture.loadFromFile(".//textures//textbox.png");
+	box.setTexture(&texture);
+
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
 	ContinueText.setCharacterSize(53);
-	//ContinueText.setFillColor(sf::Color(0,0,0,125));
 	ContinueText.setFillColor(sf::Color::Black);
 }
 
@@ -107,12 +141,14 @@ TextBox::TextBox(std::string name, std::string textInput, std::string ImgDirInpu
 	ImgDir = ImgDirInput;
 	font = fontInput;
 
+	texture.loadFromFile(".//textures//textbox.png");
+	box.setTexture(&texture);
+
 	updateSetting();
 
 	ContinueText.setFont(font);
 	ContinueText.setString("คลิกซ้าย หรือ กดสเปสบาร์ เพื่อไปต่อ");
 	ContinueText.setCharacterSize(53);
-	//ContinueText.setFillColor(sf::Color(0,0,0,125));
 	ContinueText.setFillColor(sf::Color::Black);
 
 	isDisplay = true;
@@ -176,7 +212,8 @@ void TextBox::updateSetting()
 	calculateString();
 
 	text.setCharacterSize(48);
-	text.setFillColor(sf::Color::Black);
+	//text.setFillColor(sf::Color::Black);
+	text.setFillColor(sf::Color::White);
 
 	text.setPosition(Offset.x+textboxMargin, Offset.y+WindowHeight - textboxHeight + 120);
 
@@ -221,7 +258,7 @@ void TextBox::calculateString()
 		if (curLineCount >= textPerLine)
 		{
 			curLineCount = 0;
-			displayString += '\n';
+			//displayString += '\n'; //Not using
 		}
 	}
 }
@@ -246,18 +283,16 @@ void TextBox::addDialogue(TextDiaglogue diag)
 
 void TextBox::Continue()
 {
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+	if (diagQueue.size() > 0)
 	{
-		if (diagQueue.size() > 0)
-		{
-			isDisplay = true;
-			setDialogue(diagQueue[0]);
-			diagQueue.erase(diagQueue.begin());
-		}
-		else
-		{
-			isDisplay = false;
-		}
+		isDisplay = true;
+		setDialogue(diagQueue[0]);
+		diagQueue.erase(diagQueue.begin());
+	}
+	else
+	{
+		//diagQueue.clear();
+		isDisplay = false;
 	}
 }
 

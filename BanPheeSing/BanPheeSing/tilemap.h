@@ -28,18 +28,21 @@ public:
 	std::string type;
 	sf::Vector2f pos;
 	sf::Vector2f size;
+	std::string event_id,event_type;
 	ObjSpawnData();
-	ObjSpawnData(std::string, sf::Vector2f, sf::Vector2f);
+	ObjSpawnData(std::string, sf::Vector2f, sf::Vector2f, std::string, std::string);
 };
 ObjSpawnData::ObjSpawnData()
 {
 	//Default	
 }
-ObjSpawnData::ObjSpawnData(std::string type, sf::Vector2f pos, sf::Vector2f size)
+ObjSpawnData::ObjSpawnData(std::string type, sf::Vector2f pos, sf::Vector2f size, std::string event_id = "NULL", std::string event_type = "Continuous")
 {
 	this->type = type;
 	this->pos = pos;
 	this->size = size;
+	this->event_id = event_id;
+	this->event_type = event_type;
 }
 
 class TileMapData
