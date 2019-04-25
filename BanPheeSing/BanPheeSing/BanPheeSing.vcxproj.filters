@@ -77,10 +77,9 @@
     <ClInclude Include="Kairos\Yalpes.hpp">
       <Filter>Kairos</Filter>
     </ClInclude>
-    <ClInclude Include="start_menu.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="trigger_obj.h" />
-
+    <ClInclude Include="start_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kairos\Absorel.inl">

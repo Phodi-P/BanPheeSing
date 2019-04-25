@@ -1,7 +1,9 @@
-#include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
+﻿#include "custom_utility.h" //This header contain CUt namespace for frequently used utility functions
 #include "Kairos/Timestep.hpp"
 #include "Kairos/Timer.hpp"
 #include "SFML/Audio.hpp"
+
+#include <locale>
 
 #include "door.h"
 
@@ -45,6 +47,7 @@ void npcsMove(std::vector<Npc*> &, Player &, npcFormation);
 
 int main()
 	{
+	std::locale::global(std::locale(""));
 	//Create windows and view
 	sf::RenderWindow window(sf::VideoMode(RoomWidth, RoomHeight), "BanPheeSing: Very Alpha", sf::Style::Fullscreen);
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(WindowWidth, WindowHeight));
@@ -63,11 +66,11 @@ int main()
 	Player.setScale(4.0f, 4.0f);
 	Player.setPos({ 710,865 });
 
-	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "á´§");
+	Npc Red({ 100,100 }, ".\\textures\\red_sprite.png", 32, 32, 4, 3, "แดง");
 	Red.setScale(4.0f, 4.0f);
 	Red.setPos(Player.getPos());
 
-	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "à¢ÕÂÇ");
+	Npc Green({ 200,100 }, ".\\textures\\green_sprite.png", 32, 32, 4, 3, "เขียว");
 	Green.setScale(4.0f, 4.0f);
 	Green.setPos(Player.getPos());
 
@@ -299,10 +302,7 @@ int main()
 			curViewTarget = Player.getPos();
 			curViewCoeff = viewCoeffDefault;
 			Player.moveDir({ 0,0 });
-			testText.addDialogue(TextDiaglogue("á´§", "àÍÒÅèÐ ÁÒàÃÔèÁ¡Ñ¹àÅÂ", mainFont));
-			testText.addDialogue(TextDiaglogue("á´§", "àÃÒ¢ÍÍÑ­àªÔ­´Ç§ÇÔ­­Ò³ ³ ·ÕèáËè§¹Õé\nÍÍ¡ÁÒãËéàÃÒÊÑÁ¼ÑÊ ãËéàÃÒä´éÃÑºÃÙé´éÇÂà¶Ô´´", mainFont));
-			testText.addDialogue(TextDiaglogue("á´§", "äÁèÁÕÍÐäÃà¡Ô´¢Öé¹àÅÂÇÐ Ê§ÊÑÂ¼ÕáÁè§¡ÅÑÇàÃÒÇèÐ  5555", mainFont));
-			testText.addDialogue(TextDiaglogue("à¢ÕÂÇ", "â¶è¹èÒàÊÕÂ´ÒÂÇèÐ ¼ÕáÁè§äÁèÁÕÍÂÙè¨ÃÔ§á¹èæàÅÂ 55555", mainFont));
+			testText.addDialogue(TextDiaglogue("แดง", "ทดสอบ", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
 			testText.updatePosition();
@@ -313,10 +313,6 @@ int main()
 			curViewTarget = sf::Vector2f(36 * (4 * 4 * 4), 6 * (4 * 4 * 4)); //Points view to picture
 			curViewCoeff = 150.0f; //Slow down view
 			Player.moveDir({ 0,0 });
-			testText.addDialogue(TextDiaglogue("¡éÍÂ", "âÍé¾ÃÐà¨éÒ´Ù¹Ñè¹ÊÔ!!!\nÃÙ»¹Ñè¹ÁÑ¹ÁÕàÅ×Í´äËÅÍÍ¡ÁÒ´éÇÂÂ!!!", mainFont));
-			testText.addDialogue(TextDiaglogue("à¢ÕÂÇ", "à¸Í¨ÐºéÒÃÖä§¡éÍÂ\n¹Ñè¹ÁÑ¹¡çá¤è¤ÅÒºâ¤Å¹áËÅÐ¹èÒ ¤Ô´ÁÒ¡ä»ä´é", mainFont));
-			testText.addDialogue(TextDiaglogue("á´§", "ËÖËÖ ¾Ç¡¹ÒÂ¹èÐ¤Ô´ä»àÍ§·Ñé§¹Ñé¹áËÅÐ ºéÒ¹ËÅÑ§¹ÕéäÁèàËç¹¨ÐÁÕÍÐäÃàÅÂ\n©Ñ¹ÇèÒàÃÒ¡ÅÑº¡Ñ¹à¶ÍÐ", mainFont));
-			testText.addDialogue(TextDiaglogue("àÍ", "à´ÕëÂÇ¡èÍ¹¹Ð\n©Ñ¹ÇèÒÃÙ»¹Ñè¹àËÁ×Í¹¡ÑºÇèÒÁÑ¹¢ÂÑºä´éàÅÂ¹Ð", mainFont));
 			testText.isDisplay = true;
 			testText.Continue();
 			testText.updatePosition();
