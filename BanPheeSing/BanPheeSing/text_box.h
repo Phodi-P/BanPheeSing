@@ -237,7 +237,7 @@ void TextBox::updatePosition()
 	else Offset = sf::Vector2f(0, 0);
 
 	box.setPosition(sf::Vector2f(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight));
-	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120+15);
+	text.setPosition(Offset.x + textboxMargin - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + 120 + 15);
 	Img.setPosition(Offset.x - WindowWidth / 2, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight - 700);
 	text_speaker.setPosition(Offset.x - WindowWidth / 2 + textboxMargin, Offset.y - WindowHeight / 2 + WindowHeight - textboxHeight + textboxMargin);
 
