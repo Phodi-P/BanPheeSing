@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 #include <SFML/Graphics.hpp>
-
+#include <algorithm>
 #include "event.h"
 
 //Global setting variables

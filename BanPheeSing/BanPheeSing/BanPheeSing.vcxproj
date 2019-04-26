@@ -151,6 +151,7 @@
     <ClInclude Include="door.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="ghost.h" />
+    <ClInclude Include="item.h" />
     <ClInclude Include="Kairos\Absorel.hpp" />
     <ClInclude Include="Kairos\all.hpp" />
     <ClInclude Include="Kairos\BasicClock.hpp" />

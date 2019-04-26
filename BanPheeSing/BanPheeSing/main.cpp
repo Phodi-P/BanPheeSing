@@ -22,7 +22,8 @@ enum npcFormation
 {
 	front_line = 0,
 	back_line = 1,
-	follow_line = 2
+	follow_line = 2,
+	flee = 3
 };
 sf::Vector2f ghostPos = { 0,0 }, viewTarget = { 0,0 }, curViewTarget = { 0,0 };
 npcFormation npcFormat = back_line;
@@ -120,6 +121,13 @@ int main()
 	//rect.setFillColor(sf::Color::Black);
 	rect.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
+	//Howto rect
+	sf::Texture howtoTexture;
+	howtoTexture.loadFromFile(".//textures//ui//Controls.png");
+	sf::Sprite Howto;
+	Howto.setTexture(howtoTexture);
+	bool isHowto = false;
+
 
 	//Sound
 	sf::SoundBuffer spooky,switc,scream;
@@ -165,7 +173,7 @@ int main()
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
 	mp::parseMap(".\\maps\\demo.mMap", level);
-	//mp::parseMap(".\\maps\\newMapV2_smaller.mMap", level);
+	//mp::parseMap(".\\maps\\newMapV2.mMap", level);
 	level.update();
 
 	//Spawn all obj in level
@@ -197,8 +205,6 @@ int main()
 		if (level.objData[i].type == "ghost_spawn") ghostPos = { level.objData[i].pos.x * 4 , level.objData[i].pos.y * 4 };
 	}
 
-	triggerObj testLamp(&testEvent, "lamp", "lamp", {132,69},4.0f);
-	//triggers.push_back(triggerObj(&testEvent, "lamp", "lamp", { 132,69 }, 4.0f));
 
 	//Game loop
 
@@ -317,6 +323,7 @@ int main()
 			if (testEvent.checkEvent("game_start"))
 			{
 				isGameStart = true;
+				isHowto = true;
 				rectsemiDark.setTexture(&semidarkOverlay);
 				rectDark.setTexture(&darkOverlay);
 			}
@@ -343,6 +350,7 @@ int main()
 				break;
 
 			case sf::Event::KeyPressed: //Keyboard interfaces
+				if (isHowto) isHowto = false;
 				if (evnt.key.code == sf::Keyboard::Escape)
 				{
 					window.close();
@@ -360,6 +368,7 @@ int main()
 				break;
 
 			case sf::Event::MouseButtonPressed:
+				if (isHowto) isHowto = false;
 				if (evnt.key.code == sf::Mouse::Left)
 				{
 					testText.Continue();
@@ -380,7 +389,6 @@ int main()
 		{
 			triggers[i].update(Player);
 		}
-		testLamp.update(Player);
 
 		//Update for doors
 		for (int i = 0; i < doors.size(); i++)
@@ -469,6 +477,11 @@ int main()
 				if ((rand() % 101) <= 5) isDarker = true;
 				else isDarker = false;
 			}
+			if (isHowto)
+			{
+				gamePause = true;
+				Howto.setPosition(getViewOffset(view));
+			}
 			
 			rectNormal.setPosition(getViewOffset(view));
 			rect.setPosition(getViewOffset(view));
@@ -497,7 +510,8 @@ int main()
 					Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
 				}
 
-				//if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
+				if ((Player.getSpd().x != 0 || Player.getSpd().y)&&!isDark) npcFormat = follow_line;
+				if (isDark) npcFormat = flee;
 
 				//Player solids collision
 				for (int i = 0; i < solids.size(); i++)
@@ -544,7 +558,8 @@ int main()
 						"\n\ntimer: "+std::to_string(timer.getTime().asSeconds())+
 						"\ntimerDone: "+std::to_string(timer.isDone())+
 						"\nisDark: "+std::to_string(isDark)+
-						"\n\nLastestEvent: "+testEvent.getLastEvent());
+						"\n\nLastestEvent: "+testEvent.getLastEvent()+
+						"\n\nisHowto: "+std::to_string(isHowto));
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		deltaTime = 1.0f;
@@ -584,13 +599,14 @@ int main()
 		}
 		else window.draw(rectNormal, sf::BlendMultiply);
 
+		if (isHowto) window.draw(Howto);
+
 		if (showDeath) window.draw(rect);
 
 		testText.draw(window);
 
-		testLamp.draw(window);
 		
-		window.draw(FPS);
+		//window.draw(FPS);
 
 		window.display();
 	}
@@ -614,11 +630,13 @@ void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
 	{
 		if (format == front_line)
 		{
+			NPCs[i]->setSpd(4.5);
 			NPCs[i]->setVisibility(true);
 			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
 		}
 		if (format == back_line)
 		{
+			NPCs[i]->setSpd(4.5);
 			NPCs[i]->setVisibility(true);
 			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), 150));
 		}
@@ -627,8 +645,17 @@ void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
 			if (NPCs[i]->moveTo(Player.getPos())) { NPCs[i]->setVisibility(false); }
 			if (CUt::dist(NPCs[i]->getPos(), Player.getPos()) > 500)
 			{
-				NPCs[i]->setPos(Player.getPos());
+				NPCs[i]->setPos(Player.trailData[i].pos);
 			}
+			//NPCs[i]->setPos(Player.trailPos[i]);
+			//NPCs[i]->setPos(Player.trailData[i].pos);
+		}
+		if (format == flee)
+		{
+			NPCs[i]->setSpd(6.5);
+			NPCs[0]->moveTo({ 40000,15000 });
+			NPCs[1]->moveTo({ 20000,30000 });
+			NPCs[2]->moveTo({ -90000,69000 });
 		}
 		NPCs[i]->walkingAnimate();
 	}
