@@ -2,6 +2,21 @@
 
 #include "object.h"
 
+class TrailData
+{
+public:
+	sf::Vector2f pos;
+	float dist;
+
+	TrailData(sf::Vector2f, float);
+};
+
+TrailData::TrailData(sf::Vector2f pos, float dist)
+{
+	this->pos = pos;
+	this->dist = dist;
+}
+
 
 class Player : public Obj
 {
@@ -18,12 +33,16 @@ public:
 	bool isSprinting = false;
 	bool canWalk = true;
 
-	//std::vector<sf::Vector2f> trailPos;
-	//int trailCount = 0;
-	//float trailTime = 0;
-	//float trailTimeDist = 40;
+	std::vector<TrailData> trailData;
+	std::vector<sf::Vector2f> trailPos;
+	std::vector<float> trailDist;
+	int trailCount = 0;
+	float trailTimeDist = 80;
+	sf::Vector2f trailCurPos;
 
 	sf::Vector2f nonZeroSpd;
+
+	sf::CircleShape point1,point2,point3;
 
 
 protected:
@@ -41,11 +60,11 @@ protected:
 	bool canSprint = true; 
 
 	float maxStamina = 100.0f; //[Editable]
-	float minStamina = 50.0f; //[Editable]
+	float minStamina = 30.0f; //[Editable]
 	float curStamina = maxStamina;
 
-	float staminaRegenRate = 7.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
-	float staminaDrainRate = 30.5f; //[Editable]
+	float staminaRegenRate = 8.5f; //[Editable] //How much stamina will Regen/Drain in 1 second
+	float staminaDrainRate = 30.0f; //[Editable]
 
 	float staminaBarMaxWidth = 100.0f;
 
@@ -68,9 +87,21 @@ Player::Player(std::string ImgDirI, int frameIWidth, int frameIHeight, int frame
 
 	setSpd(this->speed);
 
-	//trailPos.push_back({ 0,0 });
-	//trailPos.push_back({ 0,0 });
-	//trailPos.push_back({ 0,0 });
+	trailPos.push_back({ 0,0 });
+	trailPos.push_back({ 0,0 });
+	trailPos.push_back({ 0,0 });
+
+	trailDist.push_back(0);
+	trailDist.push_back(0);
+	trailDist.push_back(0);
+
+	trailData.push_back(TrailData({ 0,0 }, 0));
+	trailData.push_back(TrailData({ 0,0 }, 0));
+	trailData.push_back(TrailData({ 0,0 }, 0));
+
+	point1.setFillColor(sf::Color::Red);
+	point1.setRadius(25);
+	point1.setOrigin({25/2,25/2});
 }
 
 //***[Note] This function is hard coded for 3x4 sprite sheet DirX is either 1,0,-1 DirY is either 1,0,-1***
@@ -170,18 +201,40 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 		float xMovement = float(Right - Left);
 		float yMovement = float(Down - Up);
 		/*
-		if (xMovement != 0 || yMovement != 0)
+		if (CUt::dist(getPos(), trailPos[0]) > trailTimeDist)
 		{
-			trailTime += deltaTime;
-			if (trailTime > trailTimeDist)
+			trailPos[1] = trailPos[0];
+			trailPos[0] = getPos();
+		}
+		if (CUt::dist(trailPos[0], trailPos[1]) > trailTimeDist)
+		{
+			trailPos[2] = trailPos[1];
+			trailPos[1] = trailPos[0];
+		}*/
+		/*
+		for (int i = 0; i < trailPos.size(); i++)
+		{
+			if (CUt::dist(trailPos[i], trailPos[i + 1]) > trailTimeDist)
 			{
-				trailTime = 0;
-				trailPos[trailCount] = getPos();
-				trailCount++;
-				if (trailCount > 2) trailCount = 0;
+				trailPos[i + 1] = trailPos[i];
 			}
 		}*/
+		//Get traiPos
+		if (CUt::dist(trailCurPos, getPos()) > trailTimeDist)
+		{
+			trailPos[trailCount] = trailCurPos;
+			trailDist[trailCount] = CUt::dist(trailPos[trailCount], getPos());
+			trailData[trailCount] = TrailData(trailPos[trailCount], trailDist[trailCount]);
+			trailCurPos = getPos();
+			trailCount++;
+			if (trailCount > 2) trailCount = 0;
+		}
 
+		/*
+		std::cout << "trail[0]: " << trailPos[0].x << "," << trailPos[0].y << "\t";
+		std::cout << "trail[1]: " << trailPos[1].x << "," << trailPos[1].y << "\t";
+		std::cout << "trail[2]: " << trailPos[2].x << "," << trailPos[2].y << "\n";
+		*/
 		float spd;
 		if (!canSprint && curStamina >= minStamina)
 		{
@@ -241,4 +294,5 @@ void Player::control(bool Right, bool Left, bool Down, bool Up, bool Sprint)
 void Player::drawStamina(sf::RenderWindow &window)
 {
 	window.draw(staminaBar);
+	window.draw(point1);
 }

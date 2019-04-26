@@ -80,6 +80,7 @@
     <ClInclude Include="event.h" />
     <ClInclude Include="trigger_obj.h" />
     <ClInclude Include="start_menu.h" />
+    <ClInclude Include="item.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kairos\Absorel.inl">

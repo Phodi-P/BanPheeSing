@@ -22,7 +22,8 @@ enum npcFormation
 {
 	front_line = 0,
 	back_line = 1,
-	follow_line = 2
+	follow_line = 2,
+	flee = 3
 };
 sf::Vector2f ghostPos = { 0,0 }, viewTarget = { 0,0 }, curViewTarget = { 0,0 };
 npcFormation npcFormat = back_line;
@@ -88,17 +89,21 @@ int main()
 	sf::Vector2f NPCTarget = sf::Vector2f(500.0f,500.0f);
 
 	//Dark overlay
-	sf::Texture darkOverlay;
+	sf::Texture darkOverlay, dark_ui_overlay;
 	darkOverlay.loadFromFile(".\\textures\\overlays\\dark_overlay.png");
+	dark_ui_overlay.loadFromFile(".\\textures\\overlays\\ui_dark_overlay.png");
 	sf::RectangleShape rectDark;
-	rectDark.setTexture(&darkOverlay);
+	//rectDark.setTexture(&darkOverlay);
+	rectDark.setTexture(&dark_ui_overlay);
 	rectDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
 	//semi-dark overlay
-	sf::Texture semidarkOverlay;
+	sf::Texture semidarkOverlay, normal_ui_overlay;
 	semidarkOverlay.loadFromFile(".\\textures\\overlays\\semi_dark_overlay.png");
+	normal_ui_overlay.loadFromFile(".\\textures\\overlays\\ui_normal_overlay.png");
 	sf::RectangleShape rectsemiDark;
-	rectsemiDark.setTexture(&semidarkOverlay);
+	//rectsemiDark.setTexture(&semidarkOverlay);
+	rectsemiDark.setTexture(&normal_ui_overlay);
 	rectsemiDark.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 
 	//Normal overlay
@@ -108,10 +113,20 @@ int main()
 	rectNormal.setTexture(&normalOverlay);
 	rectNormal.setSize(sf::Vector2f(WindowWidth, WindowHeight));
 	
-	//Black rect
+	//Dead rect
+	sf::Texture deadTexture;
+	deadTexture.loadFromFile(".//textures//ui//DeadBG.png");
 	sf::RectangleShape rect;
-	rect.setFillColor(sf::Color::Black);
+	rect.setTexture(&deadTexture);
+	//rect.setFillColor(sf::Color::Black);
 	rect.setSize(sf::Vector2f(WindowWidth, WindowHeight));
+
+	//Howto rect
+	sf::Texture howtoTexture;
+	howtoTexture.loadFromFile(".//textures//ui//Controls.png");
+	sf::Sprite Howto;
+	Howto.setTexture(howtoTexture);
+	bool isHowto = false;
 
 
 	//Sound
@@ -129,6 +144,7 @@ int main()
 	sf::Music music_children;
 	music_children.openFromFile(".//sounds//children_room.wav");
 	music_children.setLoop(true);
+	music_children.setVolume(0);
 	music_children.play();
 
 	//Font loading
@@ -157,6 +173,7 @@ int main()
 	level.setScale(sf::Vector2f(4, 4));
 	level.setTileset(light);
 	mp::parseMap(".\\maps\\demo.mMap", level);
+	//mp::parseMap(".\\maps\\newMapV2.mMap", level);
 	level.update();
 
 	//Spawn all obj in level
@@ -202,8 +219,11 @@ int main()
 
 	sf::Sprite title;
 	title.setTexture(titleTexture);
+	float titleWidth = title.getGlobalBounds().width;
 	title.setScale({5,5});
 	float titleAlpha = 0;
+	sf::Vector2f titleTarPos = { (WindowWidth / 2) - titleWidth / 2,100 };
+
 	//
 
 	while (window.isOpen())
@@ -224,14 +244,22 @@ int main()
 					break;
 				case sf::Event::KeyPressed:
 					titleAlpha = 1;
-					if (evnt.key.code == sf::Keyboard::Escape) window.close();
+					if (evnt.key.code == sf::Keyboard::Escape) testEvent.triggerEvent("game_close");
 					break;
 				case sf::Event::KeyReleased:
 					switch (evnt.key.code) {
 					case sf::Keyboard::Up: menu.moveUp(); break;
 					case sf::Keyboard::Down: menu.moveDown(); break;
+					case sf::Keyboard::W: menu.moveUp(); break;
+					case sf::Keyboard::S: menu.moveDown(); break;
 					case sf::Keyboard::Enter: {
-						if (menu.getSelectedIndex() == 0) isGameStart = true;
+						if (menu.getSelectedIndex() == 0) testEvent.triggerEvent("game_start");
+						else testEvent.triggerEvent("game_close");
+						break;
+					}
+					case sf::Keyboard::E: {
+						if (menu.getSelectedIndex() == 0) testEvent.triggerEvent("game_start");
+						else testEvent.triggerEvent("game_close");
 						break;
 					}
 
@@ -246,39 +274,65 @@ int main()
 						if (menu.getSelectedButton()->mouseCheck(mousePosition))
 						{
 							//std::cout << "menu.getSelectedIndex() =" << menu.getSelectedIndex() << "\n";
-							if (menu.getSelectedIndex() == 0) isGameStart = true;
-							else window.close();
+							if (menu.getSelectedIndex() == 0) testEvent.triggerEvent("game_start");
+							else testEvent.triggerEvent("game_close");
 						}
 					}
 					//case sf::Event::MouseMoved: std::cout << mousePosition.x << "\n";
 				}
 			}
-			if (isTitleFinished)
+			timestep.addFrame();
+			while (timestep.isUpdateRequired())
 			{
-				menu.update(mousePosition);
-			}
-			else
-			{
-				timestep.addFrame();
-				while (timestep.isUpdateRequired())
+				if (isTitleFinished) menu.update(mousePosition);
+				else
 				{
-					titleAlpha += 0.002;
-					//std::cout << "titleAlpha =" << titleAlpha << "\n";
-					if (titleAlpha >= 1)
-					{
-						titleAlpha = 1;
-						menu.drawButtons = true;
-						isTitleFinished = true;
-					}
-					title.setScale({1+(4 * (1 - titleAlpha)),1 + (4 * (1 - titleAlpha)) });
-					title.setPosition({(WindowWidth/2)-title.getGlobalBounds().width/2,100});
+					title.setScale({ 1 + (4 * (1 - titleAlpha)),1 + (4 * (1 - titleAlpha)) });
+					//titleTarPos = { (WindowWidth / 2) - title.getGlobalBounds().width / 2,100 };
+					titleTarPos = { (WindowWidth / 2) - titleWidth / 2,100 };
 					title.setColor(sf::Color(255, 255, 255, titleAlpha * 255));
 				}
+
+				if (titleAlpha >= 1)
+				{
+					titleAlpha = 1;
+					menu.drawButtons = true;
+					isTitleFinished = true;
+				}
+				else titleAlpha += 0.001;
+
+				music_children.setVolume(music_children.getVolume() + ((titleAlpha * 255) - music_children.getVolume())/50);
+				title.move({ (titleTarPos.x - title.getPosition().x) / 50,((titleTarPos.y - title.getPosition().y)) / 50 });
+
+				if ((rand() % 101) <= 3) isDarker = true;
+				else isDarker = false;
+
 			}
+
+
+
 			window.clear();
 			if (!isGameStart) menu.draw(window);
 			window.draw(title);
+
+			if(isDarker) window.draw(rectsemiDark, sf::BlendMultiply);
+			else window.draw(rectDark, sf::BlendMultiply);
+
 			window.display();
+
+			if (testEvent.checkEvent("game_start"))
+			{
+				isGameStart = true;
+				isHowto = true;
+				rectsemiDark.setTexture(&semidarkOverlay);
+				rectDark.setTexture(&darkOverlay);
+			}
+			if (testEvent.checkEvent("game_close"))
+			{
+				music_children.stop();
+				window.close();
+				std::exit(0);
+			}
 		}
 		//
 		mousePosition = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))); //Update global mouse pos
@@ -296,7 +350,12 @@ int main()
 				break;
 
 			case sf::Event::KeyPressed: //Keyboard interfaces
-				if (evnt.key.code == sf::Keyboard::Escape) window.close();
+				if (isHowto) isHowto = false;
+				if (evnt.key.code == sf::Keyboard::Escape)
+				{
+					window.close();
+					std::exit(0);
+				}
 				if (evnt.key.code == sf::Keyboard::P) gamePause = !gamePause;
 
 
@@ -309,6 +368,7 @@ int main()
 				break;
 
 			case sf::Event::MouseButtonPressed:
+				if (isHowto) isHowto = false;
 				if (evnt.key.code == sf::Mouse::Left)
 				{
 					testText.Continue();
@@ -327,7 +387,7 @@ int main()
 		//Collision for triggers
 		for (int i = 0; i < triggers.size(); i++)
 		{
-			triggers[i].collide(Player);
+			triggers[i].update(Player);
 		}
 
 		//Update for doors
@@ -340,7 +400,7 @@ int main()
 		if (testEvent.checkEvent("die"))
 		{
 			kairos::Duration wait;
-			wait.setFromSeconds(2);
+			wait.setFromSeconds(3.69);
 			timer.setTime(wait);
 			timer.start();
 			sound.stop();
@@ -372,7 +432,7 @@ int main()
 		if (testEvent.checkEvent("chat2") && !testText.isDisplay)
 		{
 			npcFormat = front_line;
-			curViewTarget = sf::Vector2f(36 * (4 * 4 * 4), 6 * (4 * 4 * 4)); //Points view to picture
+			curViewTarget = sf::Vector2f(37 * (4 * 4 * 4), 11 * (4 * 4 * 4)); //Points view to picture
 			curViewCoeff = 150.0f; //Slow down view
 			Player.moveDir({ 0,0 });
 			testText.addDialogue(TextDiaglogue("ก้อย", "โอ้พระเจ้าดูนั่นสิ!!!\nรูปนั่นมันมีเลือดไหลออกมาด้วยย!!!", mainFont));
@@ -399,7 +459,8 @@ int main()
 			
 		}
 
-		gamePause = testText.isDisplay; //Pause game when chat is being displayed
+		if (showDeath) gamePause = true;
+		else gamePause = testText.isDisplay; //Pause game when chat is being displayed
 
 
 		//Manage view target
@@ -415,6 +476,11 @@ int main()
 				rectsemiDark.setPosition(getViewOffset(view));
 				if ((rand() % 101) <= 5) isDarker = true;
 				else isDarker = false;
+			}
+			if (isHowto)
+			{
+				gamePause = true;
+				Howto.setPosition(getViewOffset(view));
 			}
 			
 			rectNormal.setPosition(getViewOffset(view));
@@ -444,7 +510,8 @@ int main()
 					Player.walkingAnimate(Right - Left, Down - Up, Player.isSprinting ? 12 : 6);
 				}
 
-				//if (Player.getSpd().x != 0 || Player.getSpd().y) npcFormat = follow_line;
+				if ((Player.getSpd().x != 0 || Player.getSpd().y)&&!isDark) npcFormat = follow_line;
+				if (isDark) npcFormat = flee;
 
 				//Player solids collision
 				for (int i = 0; i < solids.size(); i++)
@@ -491,7 +558,8 @@ int main()
 						"\n\ntimer: "+std::to_string(timer.getTime().asSeconds())+
 						"\ntimerDone: "+std::to_string(timer.isDone())+
 						"\nisDark: "+std::to_string(isDark)+
-						"\n\nLastestEvent: "+testEvent.getLastEvent());
+						"\n\nLastestEvent: "+testEvent.getLastEvent()+
+						"\n\nisHowto: "+std::to_string(isHowto));
 		FPS.setPosition(getViewOffset(view));
 		deltaTime = clock.getElapsedTime().asSeconds();
 		deltaTime = 1.0f;
@@ -510,6 +578,12 @@ int main()
 			doors[i].draw(window);
 		}
 
+		//draw triggers
+		for (int i = 0; i < triggers.size(); i++)
+		{
+			triggers[i].draw(window);
+		}
+
 
 		for (int i = 0; i < NPCs.size(); i++) NPCs[i]->draw(window); //Draw NPCs
 
@@ -525,11 +599,14 @@ int main()
 		}
 		else window.draw(rectNormal, sf::BlendMultiply);
 
+		if (isHowto) window.draw(Howto);
+
 		if (showDeath) window.draw(rect);
 
 		testText.draw(window);
+
 		
-		window.draw(FPS);
+		//window.draw(FPS);
 
 		window.display();
 	}
@@ -553,11 +630,13 @@ void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
 	{
 		if (format == front_line)
 		{
+			NPCs[i]->setSpd(4.5);
 			NPCs[i]->setVisibility(true);
 			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), -150));
 		}
 		if (format == back_line)
 		{
+			NPCs[i]->setSpd(4.5);
 			NPCs[i]->setVisibility(true);
 			NPCs[i]->moveTo(Player.getPos() + sf::Vector2f(-120 + (120 * i), 150));
 		}
@@ -566,8 +645,17 @@ void npcsMove(std::vector<Npc*> &NPCs, Player &Player, npcFormation format)
 			if (NPCs[i]->moveTo(Player.getPos())) { NPCs[i]->setVisibility(false); }
 			if (CUt::dist(NPCs[i]->getPos(), Player.getPos()) > 500)
 			{
-				NPCs[i]->setPos(Player.getPos());
+				NPCs[i]->setPos(Player.trailData[i].pos);
 			}
+			//NPCs[i]->setPos(Player.trailPos[i]);
+			//NPCs[i]->setPos(Player.trailData[i].pos);
+		}
+		if (format == flee)
+		{
+			NPCs[i]->setSpd(6.5);
+			NPCs[0]->moveTo({ 40000,15000 });
+			NPCs[1]->moveTo({ 20000,30000 });
+			NPCs[2]->moveTo({ -90000,69000 });
 		}
 		NPCs[i]->walkingAnimate();
 	}
